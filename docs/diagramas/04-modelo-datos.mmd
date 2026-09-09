@@ -1,0 +1,57 @@
+erDiagram
+    PERFILES ||--o| PRESUPUESTOS : declara
+    PERFILES ||--o{ COMPROMISOS : registra
+    PERFILES ||--o{ INGRESOS_EXTRA : registra
+    PERFILES ||--o| METAS_AHORRO : define
+    PERFILES ||--o{ PLANES : genera
+    PLANES ||--|{ ASIGNACIONES_SEMANALES : contiene
+
+    PERFILES {
+        uuid id PK
+        text correo
+        timestamptz creado_en
+    }
+    PRESUPUESTOS {
+        uuid id PK
+        uuid usuario_id FK
+        numeric monto
+        smallint dia_inicio_semana
+        text periodicidad
+    }
+    COMPROMISOS {
+        uuid id PK
+        uuid usuario_id FK
+        text denominacion
+        numeric monto
+        date fecha_limite
+        smallint ocurrencias
+    }
+    INGRESOS_EXTRA {
+        uuid id PK
+        uuid usuario_id FK
+        numeric monto
+        date fecha
+    }
+    METAS_AHORRO {
+        uuid id PK
+        uuid usuario_id FK
+        numeric monto_objetivo
+        date fecha_objetivo
+    }
+    PLANES {
+        uuid id PK
+        uuid usuario_id FK
+        timestamptz generado_en
+        smallint horizonte_meses
+        boolean meta_viable
+        text explicacion
+    }
+    ASIGNACIONES_SEMANALES {
+        uuid id PK
+        uuid plan_id FK
+        smallint numero_semana
+        date fecha_inicio
+        numeric monto_disponible
+        numeric monto_apartado
+        boolean sobrecargada
+    }

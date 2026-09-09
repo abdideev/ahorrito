@@ -1,0 +1,29 @@
+flowchart TB
+    subgraph Cliente["Capa de presentación (navegador)"]
+        UI["C-01 Interfaz web<br/>Next.js + Tailwind CSS"]
+    end
+
+    subgraph Servidor["Capa de aplicación (servidor)"]
+        API["C-02 Orquestador de planes<br/>Route Handlers"]
+        MOT["C-03 Motor de cálculo determinista<br/>TypeScript puro"]
+    end
+
+    subgraph Adaptadores["Capa de adaptadores"]
+        ADI["C-04 Adaptador de IA"]
+        ADP["C-05 Adaptador de persistencia"]
+    end
+
+    subgraph Externos["Servicios externos"]
+        AUT["C-06 Autenticación<br/>Supabase Auth"]
+        BD["C-07 Base de datos<br/>PostgreSQL con RLS"]
+        GEM["Gemini API"]
+    end
+
+    UI -->|"I-01 HTTPS / JSON"| API
+    API -->|"I-02 llamada en proceso"| MOT
+    API -->|"I-03 puerto de explicación"| ADI
+    API -->|"I-04 puerto de repositorio"| ADP
+    ADI -->|"I-05 HTTPS"| GEM
+    ADP -->|"I-06 SDK"| BD
+    UI -->|"I-07 sesión"| AUT
+    AUT --- BD

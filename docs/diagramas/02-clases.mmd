@@ -1,0 +1,55 @@
+classDiagram
+    class Usuario {
+        +id: UUID
+        +correo: string
+    }
+    class Presupuesto {
+        +id: UUID
+        +monto: decimal
+        +diaInicioSemana: int
+        +periodicidad: string
+    }
+    class Compromiso {
+        +id: UUID
+        +denominacion: string
+        +monto: decimal
+        +fechaLimite: date
+        +ocurrencias: int
+        +generarVencimientos() Vencimiento[]
+    }
+    class Vencimiento {
+        +fecha: date
+        +monto: decimal
+    }
+    class IngresoExtra {
+        +id: UUID
+        +monto: decimal
+        +fecha: date
+    }
+    class MetaAhorro {
+        +id: UUID
+        +montoObjetivo: decimal
+        +fechaObjetivo: date
+    }
+    class Plan {
+        +id: UUID
+        +fechaGeneracion: datetime
+        +horizonteMeses: int
+        +metaViable: boolean
+        +explicacion: string
+    }
+    class AsignacionSemanal {
+        +numeroSemana: int
+        +fechaInicio: date
+        +montoDisponible: decimal
+        +montoApartado: decimal
+        +sobrecargada: boolean
+    }
+
+    Usuario "1" --> "0..1" Presupuesto : declara
+    Usuario "1" --> "0..*" Compromiso : registra
+    Usuario "1" --> "0..*" IngresoExtra : registra
+    Usuario "1" --> "0..1" MetaAhorro : define
+    Usuario "1" --> "0..*" Plan : genera
+    Compromiso "1" --> "1..*" Vencimiento : deriva
+    Plan "1" --> "1..*" AsignacionSemanal : contiene
