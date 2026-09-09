@@ -13,6 +13,19 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    files: ["src/core/**/*.ts"],
+    rules: {
+      "no-restricted-imports": ["error", {
+        patterns: [
+          "next", "next/*",
+          "react", "react-*",
+          "@supabase/*",
+          "@/app/*", "@/components/*", "@/adapters/*"
+        ]
+      }]
+    }
+  }
 ]);
 
 export default eslintConfig;
