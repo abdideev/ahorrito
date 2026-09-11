@@ -1,6 +1,6 @@
 # PLAN.md — Ahorrito
 
-> Documento de trabajo para el desarrollo. Vive en la raíz del repositorio y es la
+> Documento de trabajo para el desarrollo. Vive en `docs/` y es la
 > referencia que debe leerse al inicio de cualquier sesión de trabajo sobre el código.
 > La documentación normativa completa vive en el documento maestro
 > (`docs/ACS-U1-APP-AvilaNeriAbdiel.docx`); aquí solo está lo necesario para construir.
@@ -59,15 +59,15 @@ código, no la regla.
 
 ```
 ahorrito/
-├── PLAN.md
-├── GITFLOW.md
 ├── README.md
 ├── .env.example
 ├── .env.local              ← nunca versionado
 ├── eslint.config.mjs
-├── vitest.config.ts
+├── vitest.config.mts       ← extensión .mts: módulo ESM (import.meta.dirname)
 ├── pnpm-lock.yaml
 ├── docs/
+│   ├── Ahorrito-PLAN.md
+│   ├── GITFLOW.md
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
 └── src/
