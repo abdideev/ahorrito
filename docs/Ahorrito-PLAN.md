@@ -1,6 +1,6 @@
 # PLAN.md — Ahorrito
 
-> Documento de trabajo para el desarrollo. Vive en la raíz del repositorio y es la
+> Documento de trabajo para el desarrollo. Vive en `docs/` y es la
 > referencia que debe leerse al inicio de cualquier sesión de trabajo sobre el código.
 > La documentación normativa completa vive en el documento maestro
 > (`docs/ACS-U1-APP-AvilaNeriAbdiel.docx`); aquí solo está lo necesario para construir.
@@ -59,15 +59,16 @@ código, no la regla.
 
 ```
 ahorrito/
-├── PLAN.md
-├── GITFLOW.md
 ├── README.md
 ├── .env.example
 ├── .env.local              ← nunca versionado
 ├── eslint.config.mjs
-├── vitest.config.ts
+├── vitest.config.mts       ← extensión .mts: módulo ESM (import.meta.dirname)
 ├── pnpm-lock.yaml
 ├── docs/
+│   ├── Ahorrito-PLAN.md
+│   ├── GITFLOW.md
+│   ├── motor-calculo.md    ← contrato de I-02 (C-03)
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
 └── src/
@@ -138,8 +139,7 @@ ahorrito/
 1. La semana presupuestal inicia el día configurado por el usuario, no necesariamente el lunes.
 2. Un compromiso recurrente se registra una sola vez con su número de ocurrencias, entre 1 y 6;
    las fechas de vencimiento se derivan en tiempo de cálculo y **no se almacenan**.
-3. El horizonte de planificación es de 6 meses como máximo, o hasta la última fecha límite
-   registrada, lo que ocurra primero.
+3. El horizonte de planificación es de 6 meses como máximo, o hasta la fecha más lejana entre la última fecha límite registrada y la fecha objetivo de la meta de ahorro, lo que ocurra primero (SC-01).
 4. Los importes se manejan en pesos mexicanos con dos decimales. **Nunca en punto flotante**:
    aritmética de enteros en centavos dentro del motor y `numeric(12,2)` en la base de datos.
 5. La explicación del modelo de lenguaje es opcional. Un plan sin explicación es un estado válido.
@@ -322,7 +322,9 @@ truncado a 6 meses · entrada sin meta de ahorro.
 | 12 | `docs: documenta el contrato de entrada y salida del motor` |
 
 **Criterio de salida:** 15 o más pruebas en verde, cobertura del núcleo del 80 % o más,
-ninguna importación del marco dentro de `src/core`. Al fusionar a `dev`, etiquetar `v0.1.0`.
+ninguna importación del marco dentro de `src/core`. Tras fusionar a `dev`, la versión se
+publica con un pull request de `dev` hacia `main` y se etiqueta `v0.1.0` sobre `main`,
+conforme a la sección 4 de GITFLOW.md.
 
 ---
 
@@ -412,7 +414,8 @@ numérico completo (CA-09).
 | 8 | `test(ui): verifica la operabilidad por teclado de los controles` |
 
 **Criterio de salida:** el flujo completo se recorre en menos de 8 minutos con un usuario sin
-experiencia previa. Al fusionar, etiquetar `v0.9.0`.
+experiencia previa. La versión se publica desde `main` con la etiqueta `v0.9.0`, conforme
+a la sección 4 de GITFLOW.md.
 
 ---
 
@@ -473,9 +476,9 @@ trazabilidad del documento maestro (sección 2.7).
 
 | Requisito | Componente | Archivo principal | Prueba |
 |---|---|---|---|
-| RF-07 | C-03 | `src/core/distribucion.ts` | `distribucion.test.ts` |
-| RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts` |
-| RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts` |
+| RF-07 | C-03 | `src/core/distribucion.ts`, `src/core/plan.ts` | `distribucion.test.ts`, `plan.test.ts` |
+| RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
+| RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-01 | C-06 | `src/app/(auth)` | CA-01 |
 | RF-10 | C-04 | `src/adapters/ia` | CA-09 |
 | RF-11 | C-01 | `src/components` | CA-07 |
