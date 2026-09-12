@@ -148,6 +148,28 @@ ahorrito/
 
 ---
 
+### 1.7 Estado del proyecto
+
+Actualizado al 12 de septiembre de 2026, cierre de la Fase 1.
+
+| Fase | Contenido | Estado | Evidencia |
+|---|---|---|---|
+| 0 | Preparación del entorno | Completada | Ramas `main` y `dev`, etiquetas de incidencias, proyecto compilando |
+| 1 | Motor de cálculo determinista (C-03) | **Completada** | 94 pruebas en verde, cobertura del núcleo 99.2 %, versión `v0.1.0` |
+| 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Siguiente** | — |
+| 3 | Integración con la IA (C-04) | Pendiente | — |
+| 4 | Interfaz de usuario (C-01) | Pendiente | — |
+| 5 | Verificación | Pendiente | — |
+| 6 | Despliegue y liberación | Pendiente | — |
+| 7 | Validación y cierre | Pendiente | — |
+
+**Requisitos implementados:** RF-07, RF-08 y RF-09, con RNF-06 y RNF-08 verificados.
+
+**Cambios de alcance aprobados:** SC-01, que extiende el horizonte hasta la fecha objetivo
+de la meta de ahorro conservando el tope de seis meses.
+
+---
+
 ## 2. Reglas de desarrollo
 
 ### 2.1 Gestor de paquetes
@@ -250,7 +272,7 @@ commit ni se parte una función a la mitad. Si al describir el commit hace falta
 
 ## 3. Plan de desarrollo por fases
 
-### Fase 0 — Preparación del entorno *(manual, previa)*
+### Fase 0 — Preparación del entorno *(manual, previa)* · COMPLETADA
 
 ```bash
 pnpm create next-app@latest ahorrito --ts --tailwind --eslint --app --src-dir --import-alias "@/*"
@@ -278,7 +300,7 @@ request, y crear las etiquetas `defecto`, `cambio`, `requisito` y las tres de pr
 
 ---
 
-### Fase 1 — Motor de cálculo determinista (C-03)
+### Fase 1 — Motor de cálculo determinista (C-03) · COMPLETADA
 
 **Semana 8 · Rama:** `feature/motor-calculo` · **Requisitos:** RF-07, RF-08, RF-09, RNF-06, RNF-08
 
@@ -326,9 +348,14 @@ ninguna importación del marco dentro de `src/core`. Tras fusionar a `dev`, la v
 publica con un pull request de `dev` hacia `main` y se etiqueta `v0.1.0` sobre `main`,
 conforme a la sección 4 de GITFLOW.md.
 
+**Resultado obtenido.** 94 pruebas unitarias y de integración en verde, cobertura del núcleo
+del 99.2 % en líneas y del 100 % en funciones, los 15 casos obligatorios cubiertos y ninguna
+importación del marco dentro de `src/core`. El contrato quedó documentado en
+`docs/motor-calculo.md`. Durante la fase se aprobó SC-01 y no se materializó el riesgo RSG-08.
+
 ---
 
-### Fase 2 — Persistencia y autenticación (C-05, C-06, C-07)
+### Fase 2 — Persistencia y autenticación (C-05, C-06, C-07) · SIGUIENTE
 
 **Semana 9 · Rama:** `feature/persistencia-auth` · **Requisitos:** RF-01, RF-12, RNF-04, RNF-05
 
@@ -399,6 +426,11 @@ numérico completo (CA-09).
 | 4.5 | Descargo de responsabilidad visible sin desplazamiento |
 | 4.6 | Regeneración del plan al modificar los datos |
 | 4.7 | Contraste, foco visible y navegación por teclado |
+
+**Nota.** Durante la semana 8 se adelantó un prototipo de demostración en `src/app/demo`,
+que ejecuta `calcularPlan` en el navegador sin persistencia, sin sesión y sin el servicio de
+inteligencia artificial. Su única finalidad es hacer visible el motor en la presentación de
+avance; no sustituye ninguno de los pasos 4.1 a 4.7 ni los requisitos que estos implementan.
 
 **Commits**
 
