@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Salida generada por vitest --coverage; no es codigo del proyecto.
+    "coverage/**",
   ]),
   // RNF-08: el nucleo de dominio (C-03) no depende del marco, de servicios externos
   // ni de las capas que lo rodean. Si esta regla falla, el problema es el codigo.
