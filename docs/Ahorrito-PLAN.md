@@ -68,6 +68,7 @@ ahorrito/
 ├── docs/
 │   ├── Ahorrito-PLAN.md
 │   ├── GITFLOW.md
+│   ├── motor-calculo.md    ← contrato de I-02 (C-03)
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
 └── src/
@@ -321,7 +322,9 @@ truncado a 6 meses · entrada sin meta de ahorro.
 | 12 | `docs: documenta el contrato de entrada y salida del motor` |
 
 **Criterio de salida:** 15 o más pruebas en verde, cobertura del núcleo del 80 % o más,
-ninguna importación del marco dentro de `src/core`. Al fusionar a `dev`, etiquetar `v0.1.0`.
+ninguna importación del marco dentro de `src/core`. Tras fusionar a `dev`, la versión se
+publica con un pull request de `dev` hacia `main` y se etiqueta `v0.1.0` sobre `main`,
+conforme a la sección 4 de GITFLOW.md.
 
 ---
 
@@ -411,7 +414,8 @@ numérico completo (CA-09).
 | 8 | `test(ui): verifica la operabilidad por teclado de los controles` |
 
 **Criterio de salida:** el flujo completo se recorre en menos de 8 minutos con un usuario sin
-experiencia previa. Al fusionar, etiquetar `v0.9.0`.
+experiencia previa. La versión se publica desde `main` con la etiqueta `v0.9.0`, conforme
+a la sección 4 de GITFLOW.md.
 
 ---
 
@@ -472,9 +476,9 @@ trazabilidad del documento maestro (sección 2.7).
 
 | Requisito | Componente | Archivo principal | Prueba |
 |---|---|---|---|
-| RF-07 | C-03 | `src/core/distribucion.ts` | `distribucion.test.ts` |
-| RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts` |
-| RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts` |
+| RF-07 | C-03 | `src/core/distribucion.ts`, `src/core/plan.ts` | `distribucion.test.ts`, `plan.test.ts` |
+| RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
+| RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-01 | C-06 | `src/app/(auth)` | CA-01 |
 | RF-10 | C-04 | `src/adapters/ia` | CA-09 |
 | RF-11 | C-01 | `src/components` | CA-07 |
