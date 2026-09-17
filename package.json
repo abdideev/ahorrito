@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "test:integracion": "vitest run --config vitest.integracion.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
