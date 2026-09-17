@@ -9,9 +9,12 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "test:integracion": "vitest run --config vitest.integracion.mts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.116.0",
     "canvas-confetti": "^1.9.4",
     "next": "16.3.4",
     "react": "19.2.8",
@@ -26,6 +29,7 @@
     "@vitest/coverage-v8": "^5.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "supabase": "^2.117.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.0"
