@@ -64,17 +64,27 @@ ahorrito/
 ├── .env.local              ← nunca versionado
 ├── eslint.config.mjs
 ├── vitest.config.mts       ← extensión .mts: módulo ESM (import.meta.dirname)
+├── vitest.integracion.mts  ← pruebas que tocan la base de datos real
+├── supabase/
+│   ├── config.toml
+│   ├── migrations/         ← esquema, seguridad por fila y guardado atómico
+│   └── verificacion/       ← consultas de evidencia (RNF-04, RNF-05)
 ├── pnpm-lock.yaml
 ├── docs/
 │   ├── Ahorrito-PLAN.md
 │   ├── GITFLOW.md
 │   ├── motor-calculo.md    ← contrato de I-02 (C-03)
+│   ├── autenticacion.md    ← RNF-05 y protección de rutas (C-06)
+│   ├── persistencia.md     ← contrato de I-04 y CA-10 (C-05, C-07)
+│   ├── huevo-de-pascua.md  ← secuencia y verificación de RF-14 (SC-02)
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
 └── src/
+    ├── proxy.ts            ← renueva la sesión y protege las rutas
     ├── app/
-    │   ├── (auth)/         ← registro e inicio de sesión
+    │   ├── (auth)/         ← registro, inicio de sesión y confirmación
     │   ├── (app)/          ← pantallas autenticadas
+    │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
     │   ├── api/
     │   │   └── planes/
     │   │       └── route.ts
@@ -89,13 +99,19 @@ ahorrito/
     │   ├── plan.ts             ← función de entrada calcularPlan()
     │   └── *.test.ts
     ├── ports/              ← contratos I-02, I-03, I-04
-    │   ├── explicacion.ts
+    │   ├── explicacion.ts      (F3)
     │   └── repositorio.ts
     ├── adapters/
     │   ├── ia/             ← C-04
     │   └── persistencia/   ← C-05
     ├── components/         ← C-01
+    │   ├── ui/confetti.tsx     ← Magic UI (MIT)
+    │   └── creditos/           ← plan de créditos (SC-02)
     └── lib/                ← utilidades compartidas
+        ├── dinero.ts           ← frontera pesos ↔ centavos
+        ├── autenticacion/      ← rutas, validación y mensajes (C-06)
+        ├── supabase/           ← clientes y sesión
+        └── huevo/              ← lógica del huevo de Pascua (SC-02)
 ```
 
 ### 1.5 Requisitos por implementar
@@ -117,6 +133,7 @@ ahorrito/
 | RF-11 | Mostrar el descargo de responsabilidad | Alta | F4 |
 | RF-12 | Almacenar y consultar los planes generados | Media | F2 |
 | RF-13 | Regenerar el plan ante cambios en los datos | Media | F4 |
+| RF-14 | Revelar los créditos mediante una secuencia oculta de interacción | Baja | SC-02 |
 
 **No funcionales**
 
@@ -148,6 +165,35 @@ ahorrito/
 
 ---
 
+### 1.7 Estado del proyecto
+
+Actualizado al 17 de septiembre de 2026.
+
+| Fase | Contenido | Estado | Evidencia |
+|---|---|---|---|
+| 0 | Preparación del entorno | Completada | Ramas `main` y `dev`, etiquetas de incidencias, proyecto compilando |
+| 1 | Motor de cálculo determinista (C-03) | **Completada** | 94 pruebas en verde, cobertura del núcleo 99.2 %, versión `v0.1.0` |
+| 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Completada** | 7 pruebas de integración en verde, CA-10 cumplido con 11 intentos |
+| 3 | Integración con la IA (C-04) | **Siguiente** | — |
+| 4 | Interfaz de usuario (C-01) | Pendiente | — |
+| 5 | Verificación | Pendiente | — |
+| 6 | Despliegue y liberación | Pendiente | — |
+| 7 | Validación y cierre | Pendiente | — |
+
+**Requisitos implementados:** RF-01, RF-07, RF-08, RF-09, RF-12 y RF-14, con RNF-04, RNF-05,
+RNF-06 y RNF-08 verificados.
+
+**Cambios de alcance aprobados:**
+
+| ID | Incidencia | Cambio | Estado |
+|---|---|---|---|
+| SC-01 | — | Extiende el horizonte hasta la fecha objetivo de la meta, con tope de seis meses | Implementado |
+| SC-02 | #8 | Huevo de Pascua que revela los créditos del proyecto (RF-14) | Implementado |
+| SC-03 | #10 | Ajuste del modelo de datos para almacenar el plan completo | Implementado |
+| SC-04 | #13 | El repositorio de planes no recibe el identificador de usuario | Implementado |
+
+---
+
 ## 2. Reglas de desarrollo
 
 ### 2.1 Gestor de paquetes
@@ -165,6 +211,7 @@ repositorio; si aparece alguno, se elimina. El único archivo de bloqueo válido
 | Compilar | `pnpm build` |
 | Pruebas | `pnpm test` |
 | Pruebas con cobertura | `pnpm test:cov` |
+| Pruebas de integración | `pnpm test:integracion` |
 | Análisis estático | `pnpm lint` |
 
 ### 2.2 Ramas
@@ -250,7 +297,7 @@ commit ni se parte una función a la mitad. Si al describir el commit hace falta
 
 ## 3. Plan de desarrollo por fases
 
-### Fase 0 — Preparación del entorno *(manual, previa)*
+### Fase 0 — Preparación del entorno *(manual, previa)* · COMPLETADA
 
 ```bash
 pnpm create next-app@latest ahorrito --ts --tailwind --eslint --app --src-dir --import-alias "@/*"
@@ -278,7 +325,7 @@ request, y crear las etiquetas `defecto`, `cambio`, `requisito` y las tres de pr
 
 ---
 
-### Fase 1 — Motor de cálculo determinista (C-03)
+### Fase 1 — Motor de cálculo determinista (C-03) · COMPLETADA
 
 **Semana 8 · Rama:** `feature/motor-calculo` · **Requisitos:** RF-07, RF-08, RF-09, RNF-06, RNF-08
 
@@ -326,9 +373,14 @@ ninguna importación del marco dentro de `src/core`. Tras fusionar a `dev`, la v
 publica con un pull request de `dev` hacia `main` y se etiqueta `v0.1.0` sobre `main`,
 conforme a la sección 4 de GITFLOW.md.
 
+**Resultado obtenido.** 94 pruebas unitarias y de integración en verde, cobertura del núcleo
+del 99.2 % en líneas y del 100 % en funciones, los 15 casos obligatorios cubiertos y ninguna
+importación del marco dentro de `src/core`. El contrato quedó documentado en
+`docs/motor-calculo.md`. Durante la fase se aprobó SC-01 y no se materializó el riesgo RSG-08.
+
 ---
 
-### Fase 2 — Persistencia y autenticación (C-05, C-06, C-07)
+### Fase 2 — Persistencia y autenticación (C-05, C-06, C-07) · COMPLETADA
 
 **Semana 9 · Rama:** `feature/persistencia-auth` · **Requisitos:** RF-01, RF-12, RNF-04, RNF-05
 
@@ -355,9 +407,14 @@ conforme a la sección 4 de GITFLOW.md.
 
 **Criterio de salida:** diez intentos de acceso cruzado devuelven conjunto vacío (CA-10).
 
+**Resultado obtenido.** 163 pruebas unitarias y 7 de integración en verde. CA-10 cumplido con
+once intentos de acceso cruzado, todos con cero filas. RNF-05 verificado en la base de datos:
+contraseñas derivadas con bcrypt. Durante la fase se aprobaron SC-03 y SC-04. El contrato y la
+evidencia quedaron en `docs/persistencia.md` y `docs/autenticacion.md`.
+
 ---
 
-### Fase 3 — Integración con la inteligencia artificial (C-04)
+### Fase 3 — Integración con la inteligencia artificial (C-04) · SIGUIENTE
 
 **Semana 10 · Rama:** `feature/adaptador-ia` · **Requisitos:** RF-10, RNF-03, RNF-10
 
@@ -399,6 +456,11 @@ numérico completo (CA-09).
 | 4.5 | Descargo de responsabilidad visible sin desplazamiento |
 | 4.6 | Regeneración del plan al modificar los datos |
 | 4.7 | Contraste, foco visible y navegación por teclado |
+
+**Nota.** Durante la semana 8 se adelantó un prototipo de demostración en `src/app/demo`,
+que ejecuta `calcularPlan` en el navegador sin persistencia, sin sesión y sin el servicio de
+inteligencia artificial. Su única finalidad es hacer visible el motor en la presentación de
+avance; no sustituye ninguno de los pasos 4.1 a 4.7 ni los requisitos que estos implementan.
 
 **Commits**
 
@@ -446,6 +508,10 @@ defectos como incidencias, corrección y pruebas de regresión.
 Variables de entorno en Vercel, despliegue, verificación del entorno productivo, manual de
 instalación, procedimiento de reversión y acta de liberación.
 
+**Obligatorio en esta fase:** configurar un servidor SMTP propio en Supabase. El proveedor por
+omisión solo entrega correos a los miembros del proyecto, a razón de 2 por hora, y no permite
+editar plantillas, de modo que ningún usuario real podría confirmar su cuenta.
+
 **Commits**
 
 | # | Mensaje |
@@ -479,9 +545,11 @@ trazabilidad del documento maestro (sección 2.7).
 | RF-07 | C-03 | `src/core/distribucion.ts`, `src/core/plan.ts` | `distribucion.test.ts`, `plan.test.ts` |
 | RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
-| RF-01 | C-06 | `src/app/(auth)` | CA-01 |
+| RF-01 | C-06 | `src/app/(auth)`, `src/lib/autenticacion` | `validacion.test.ts`, `rutas.test.ts`; CA-01 en F5 |
+| RF-12 | C-05 | `src/adapters/persistencia`, `supabase/migrations` | `filas.test.ts`, `aislamiento.integracion.test.ts` (CA-10) |
 | RF-10 | C-04 | `src/adapters/ia` | CA-09 |
 | RF-11 | C-01 | `src/components` | CA-07 |
+| RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 |
 
 ---
 
