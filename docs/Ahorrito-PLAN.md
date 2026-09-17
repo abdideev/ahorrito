@@ -69,12 +69,14 @@ ahorrito/
 │   ├── Ahorrito-PLAN.md
 │   ├── GITFLOW.md
 │   ├── motor-calculo.md    ← contrato de I-02 (C-03)
+│   ├── huevo-de-pascua.md  ← secuencia y verificación de RF-14 (SC-02)
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
 └── src/
     ├── app/
     │   ├── (auth)/         ← registro e inicio de sesión
     │   ├── (app)/          ← pantallas autenticadas
+    │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
     │   ├── api/
     │   │   └── planes/
     │   │       └── route.ts
@@ -95,7 +97,11 @@ ahorrito/
     │   ├── ia/             ← C-04
     │   └── persistencia/   ← C-05
     ├── components/         ← C-01
+    │   ├── ui/confetti.tsx     ← Magic UI (MIT)
+    │   └── creditos/           ← plan de créditos (SC-02)
     └── lib/                ← utilidades compartidas
+        ├── dinero.ts           ← frontera pesos ↔ centavos
+        └── huevo/              ← lógica del huevo de Pascua (SC-02)
 ```
 
 ### 1.5 Requisitos por implementar
@@ -117,6 +123,7 @@ ahorrito/
 | RF-11 | Mostrar el descargo de responsabilidad | Alta | F4 |
 | RF-12 | Almacenar y consultar los planes generados | Media | F2 |
 | RF-13 | Regenerar el plan ante cambios en los datos | Media | F4 |
+| RF-14 | Revelar los créditos mediante una secuencia oculta de interacción | Baja | SC-02 |
 
 **No funcionales**
 
@@ -150,7 +157,7 @@ ahorrito/
 
 ### 1.7 Estado del proyecto
 
-Actualizado al 12 de septiembre de 2026, cierre de la Fase 1.
+Actualizado al 16 de septiembre de 2026.
 
 | Fase | Contenido | Estado | Evidencia |
 |---|---|---|---|
@@ -165,8 +172,13 @@ Actualizado al 12 de septiembre de 2026, cierre de la Fase 1.
 
 **Requisitos implementados:** RF-07, RF-08 y RF-09, con RNF-06 y RNF-08 verificados.
 
-**Cambios de alcance aprobados:** SC-01, que extiende el horizonte hasta la fecha objetivo
-de la meta de ahorro conservando el tope de seis meses.
+**Cambios de alcance aprobados:**
+
+| ID | Incidencia | Cambio | Estado |
+|---|---|---|---|
+| SC-01 | — | Extiende el horizonte hasta la fecha objetivo de la meta, con tope de seis meses | Implementado |
+| SC-02 | #8 | Huevo de Pascua que revela los créditos del proyecto (RF-14) | Implementado |
+| SC-03 | #10 | Ajuste del modelo de datos para almacenar el plan completo | Autorizado, se aplica en la Fase 2 |
 
 ---
 
@@ -514,6 +526,7 @@ trazabilidad del documento maestro (sección 2.7).
 | RF-01 | C-06 | `src/app/(auth)` | CA-01 |
 | RF-10 | C-04 | `src/adapters/ia` | CA-09 |
 | RF-11 | C-01 | `src/components` | CA-07 |
+| RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 |
 
 ---
 
