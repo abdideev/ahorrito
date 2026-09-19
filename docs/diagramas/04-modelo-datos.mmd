@@ -14,9 +14,8 @@ erDiagram
     PRESUPUESTOS {
         uuid id PK
         uuid usuario_id FK
-        numeric monto
+        numeric monto_semanal
         smallint dia_inicio_semana
-        text periodicidad
     }
     COMPROMISOS {
         uuid id PK
@@ -25,12 +24,14 @@ erDiagram
         numeric monto
         date fecha_limite
         smallint ocurrencias
+        timestamptz creado_en
     }
     INGRESOS_EXTRA {
         uuid id PK
         uuid usuario_id FK
         numeric monto
         date fecha
+        timestamptz creado_en
     }
     METAS_AHORRO {
         uuid id PK
@@ -42,8 +43,15 @@ erDiagram
         uuid id PK
         uuid usuario_id FK
         timestamptz generado_en
-        smallint horizonte_meses
+        date fecha_referencia
+        date inicio_horizonte
+        date fin_horizonte
+        numeric meta_monto_objetivo
+        date meta_fecha_objetivo
         boolean meta_viable
+        numeric ahorro_posible
+        numeric faltante_meta
+        jsonb advertencias
         text explicacion
     }
     ASIGNACIONES_SEMANALES {
@@ -51,7 +59,14 @@ erDiagram
         uuid plan_id FK
         smallint numero_semana
         date fecha_inicio
+        date fecha_fin
+        numeric ingresos_extra
         numeric monto_disponible
         numeric monto_apartado
+        numeric monto_vencimientos
+        numeric remanente
+        numeric aporte_meta
         boolean sobrecargada
+        boolean en_deficit
+        jsonb detalle
     }

@@ -44,3 +44,6 @@ next-env.d.ts
 # otros gestores de paquetes
 package-lock.json
 yarn.lock
+
+# archivos temporales de Office
+~$*

@@ -36,6 +36,12 @@ export interface RepositorioPlanes {
   /** Guarda el plan y sus semanas de forma atómica. Devuelve el identificador asignado. */
   guardarPlan(plan: Plan): Promise<string>;
 
+  /**
+   * Agrega la explicación a un plan propio; es lo único de un plan guardado que puede
+   * cambiar (SC-05). Devuelve false si el plan no existe o pertenece a otro usuario.
+   */
+  guardarExplicacion(id: string, explicacion: string): Promise<boolean>;
+
   /** Planes del usuario de la sesión, del más reciente al más antiguo. */
   listarPlanes(): Promise<ResumenPlan[]>;
 

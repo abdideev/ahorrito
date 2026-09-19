@@ -76,6 +76,7 @@ ahorrito/
 │   ├── motor-calculo.md    ← contrato de I-02 (C-03)
 │   ├── autenticacion.md    ← RNF-05 y protección de rutas (C-06)
 │   ├── persistencia.md     ← contrato de I-04 y CA-10 (C-05, C-07)
+│   ├── explicacion.md      ← I-03, carga anonimizada, POST /api/planes, CA-09 y CA-11 (C-02, C-04)
 │   ├── huevo-de-pascua.md  ← secuencia y verificación de RF-14 (SC-02)
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
@@ -87,7 +88,8 @@ ahorrito/
     │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
     │   ├── api/
     │   │   └── planes/
-    │   │       └── route.ts
+    │   │       ├── route.ts         ← HTTP: sesión, cuerpo y códigos de estado
+    │   │       └── orquestador.ts   ← secuencia de la Figura 8 y flujo NDJSON (SC-05)
     │   ├── layout.tsx
     │   └── page.tsx
     ├── core/               ← C-03. Sin dependencias externas
@@ -99,10 +101,10 @@ ahorrito/
     │   ├── plan.ts             ← función de entrada calcularPlan()
     │   └── *.test.ts
     ├── ports/              ← contratos I-02, I-03, I-04
-    │   ├── explicacion.ts      (F3)
+    │   ├── explicacion.ts      ← I-03
     │   └── repositorio.ts
     ├── adapters/
-    │   ├── ia/             ← C-04
+    │   ├── ia/             ← C-04: carga.ts (anonimización) y gemini.ts (cliente REST)
     │   └── persistencia/   ← C-05
     ├── components/         ← C-01
     │   ├── ui/confetti.tsx     ← Magic UI (MIT)
@@ -167,21 +169,21 @@ ahorrito/
 
 ### 1.7 Estado del proyecto
 
-Actualizado al 17 de septiembre de 2026.
+Actualizado al 18 de septiembre de 2026.
 
 | Fase | Contenido | Estado | Evidencia |
 |---|---|---|---|
 | 0 | Preparación del entorno | Completada | Ramas `main` y `dev`, etiquetas de incidencias, proyecto compilando |
 | 1 | Motor de cálculo determinista (C-03) | **Completada** | 94 pruebas en verde, cobertura del núcleo 99.2 %, versión `v0.1.0` |
 | 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Completada** | 7 pruebas de integración en verde, CA-10 cumplido con 11 intentos |
-| 3 | Integración con la IA (C-04) | **Siguiente** | — |
-| 4 | Interfaz de usuario (C-01) | Pendiente | — |
+| 3 | Integración con la IA (C-02, C-04) | **Completada** | 224 pruebas unitarias en verde, CA-09 cumplido 10 de 10 en el servidor, primera evidencia de CA-11 |
+| 4 | Interfaz de usuario (C-01) | **Siguiente** | — |
 | 5 | Verificación | Pendiente | — |
 | 6 | Despliegue y liberación | Pendiente | — |
 | 7 | Validación y cierre | Pendiente | — |
 
-**Requisitos implementados:** RF-01, RF-07, RF-08, RF-09, RF-12 y RF-14, con RNF-04, RNF-05,
-RNF-06 y RNF-08 verificados.
+**Requisitos implementados:** RF-01, RF-07, RF-08, RF-09, RF-10, RF-12 y RF-14, con RNF-03,
+RNF-04, RNF-05, RNF-06 y RNF-08 verificados y RNF-10 con su primera evidencia (CA-11).
 
 **Cambios de alcance aprobados:**
 
@@ -191,6 +193,7 @@ RNF-06 y RNF-08 verificados.
 | SC-02 | #8 | Huevo de Pascua que revela los créditos del proyecto (RF-14) | Implementado |
 | SC-03 | #10 | Ajuste del modelo de datos para almacenar el plan completo | Implementado |
 | SC-04 | #13 | El repositorio de planes no recibe el identificador de usuario | Implementado |
+| SC-05 | #17 | El orquestador toma la entrada del repositorio y responde en dos tiempos; `guardarExplicacion` en I-04 | Implementado |
 
 ---
 
@@ -414,7 +417,7 @@ evidencia quedaron en `docs/persistencia.md` y `docs/autenticacion.md`.
 
 ---
 
-### Fase 3 — Integración con la inteligencia artificial (C-04) · SIGUIENTE
+### Fase 3 — Integración con la inteligencia artificial (C-04) · COMPLETADA
 
 **Semana 10 · Rama:** `feature/adaptador-ia` · **Requisitos:** RF-10, RNF-03, RNF-10
 
@@ -441,9 +444,18 @@ evidencia quedaron en `docs/persistencia.md` y `docs/autenticacion.md`.
 **Criterio de salida:** cinco ejecuciones con el servicio deshabilitado entregan el plan
 numérico completo (CA-09).
 
+**Resultado obtenido.** 224 pruebas unitarias y 8 de integración en verde. CA-09 cumplido en
+el servidor de producción local: 5 de 5 con la clave vacía y 5 de 5 con una clave inválida.
+Primera evidencia de CA-11: ninguna denominación, cuenta, nombre ni correo en las solicitudes
+registradas. Con el servicio disponible, el plan llegó a los 1.06 s y la explicación a los
+2.88 s. Durante la fase se aprobó SC-05, que llevó la entrada al repositorio, la respuesta a un
+flujo NDJSON de dos líneas y agregó `guardarExplicacion` a I-04; por eso los commits 5 y 6
+quedaron en orden inverso y se sumaron tres commits de prueba. El contrato y la evidencia
+quedaron en `docs/explicacion.md`.
+
 ---
 
-### Fase 4 — Interfaz de usuario (C-01)
+### Fase 4 — Interfaz de usuario (C-01) · SIGUIENTE
 
 **Semanas 10 y 11 · Rama:** `feature/interfaz` · **Requisitos:** RF-02 a RF-06, RF-11, RF-13, RNF-02, RNF-11
 
@@ -547,7 +559,7 @@ trazabilidad del documento maestro (sección 2.7).
 | RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-01 | C-06 | `src/app/(auth)`, `src/lib/autenticacion` | `validacion.test.ts`, `rutas.test.ts`; CA-01 en F5 |
 | RF-12 | C-05 | `src/adapters/persistencia`, `supabase/migrations` | `filas.test.ts`, `aislamiento.integracion.test.ts` (CA-10) |
-| RF-10 | C-04 | `src/adapters/ia` | CA-09 |
+| RF-10 | C-02, C-04 | `src/adapters/ia`, `src/app/api/planes` | `carga.test.ts`, `gemini.test.ts`, `orquestador.test.ts`, `degradacion.test.ts`; CA-09, CA-11 |
 | RF-11 | C-01 | `src/components` | CA-07 |
 | RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 |
 

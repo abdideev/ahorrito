@@ -81,6 +81,19 @@ export function crearRepositorioSupabase(cliente: SupabaseClient): RepositorioPl
       return data;
     },
 
+    async guardarExplicacion(id, explicacion) {
+      if (!esUuid(id)) {
+        return false;
+      }
+      // El privilegio de actualizacion se limita a esta columna y la politica a los
+      // planes propios: con un id ajeno la consulta no actualiza ninguna fila.
+      const { data, error } = await cliente.from("planes").update({ explicacion }).eq("id", id).select("id");
+      if (error) {
+        throw new ErrorPersistencia("No se pudo guardar la explicacion del plan.", error.code);
+      }
+      return (data ?? []).length > 0;
+    },
+
     async listarPlanes() {
       const { data, error } = await cliente
         .from("planes")

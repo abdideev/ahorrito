@@ -6,20 +6,24 @@ sequenceDiagram
     participant ADI as C-04 Adaptador IA
     participant BD as C-07 Base de datos
 
-    U->>UI: Captura presupuesto, compromisos y meta
+    Note over U,BD: La captura (RF-02 a RF-06) ya está guardada en la base de datos (SC-05)
+    U->>UI: Solicita el plan
     UI->>API: POST /api/planes
-    API->>API: Valida la entrada y la sesión
+    API->>API: Valida el cuerpo y la sesión
+    API->>BD: obtenerDatosEntrada(fechaReferencia)
+    BD-->>API: Presupuesto, compromisos, ingresos y meta
     API->>MOT: calcularPlan(entrada)
     MOT-->>API: Plan numérico con advertencias
     API->>BD: Guarda el plan y las asignaciones
-    API-->>UI: Responde el plan numérico
+    API-->>UI: Línea 1 del flujo: plan numérico
     UI-->>U: Muestra el plan y el descargo
     API->>ADI: explicarPlan(plan)
     alt El servicio responde dentro del tiempo límite
         ADI-->>API: Explicación
-        API->>BD: Actualiza el plan con la explicación
-        API-->>UI: Envía la explicación
+        API->>BD: guardarExplicacion(id, explicacion)
+        API-->>UI: Línea 2 del flujo: explicación
     else Falla o excede el tiempo límite
         ADI-->>API: null
-        API-->>UI: Indica que la explicación no está disponible
+        API-->>UI: Línea 2 del flujo: explicación nula
+        UI-->>U: Indica que la explicación no está disponible
     end

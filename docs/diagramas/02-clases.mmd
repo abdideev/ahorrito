@@ -5,45 +5,61 @@ classDiagram
     }
     class Presupuesto {
         +id: UUID
-        +monto: decimal
-        +diaInicioSemana: int
-        +periodicidad: string
+        +montoSemanal: Centavos
+        +diaInicioSemana: DiaSemana
     }
     class Compromiso {
         +id: UUID
         +denominacion: string
-        +monto: decimal
-        +fechaLimite: date
+        +monto: Centavos
+        +fechaLimite: FechaIso
         +ocurrencias: int
         +generarVencimientos() Vencimiento[]
     }
     class Vencimiento {
-        +fecha: date
-        +monto: decimal
+        +compromisoId: UUID
+        +ocurrencia: int
+        +fecha: FechaIso
+        +monto: Centavos
     }
     class IngresoExtra {
         +id: UUID
-        +monto: decimal
-        +fecha: date
+        +monto: Centavos
+        +fecha: FechaIso
     }
     class MetaAhorro {
-        +id: UUID
-        +montoObjetivo: decimal
-        +fechaObjetivo: date
+        +montoObjetivo: Centavos
+        +fechaObjetivo: FechaIso
     }
     class Plan {
         +id: UUID
-        +fechaGeneracion: datetime
-        +horizonteMeses: int
-        +metaViable: boolean
+        +generadoEn: datetime
+        +fechaReferencia: FechaIso
+        +inicioHorizonte: FechaIso
+        +finHorizonte: FechaIso
         +explicacion: string
+    }
+    class EvaluacionMeta {
+        +montoObjetivo: Centavos
+        +fechaObjetivo: FechaIso
+        +ahorroPosible: Centavos
+        +viable: boolean
+        +faltante: Centavos
     }
     class AsignacionSemanal {
         +numeroSemana: int
-        +fechaInicio: date
-        +montoDisponible: decimal
-        +montoApartado: decimal
+        +fechaInicio: FechaIso
+        +fechaFin: FechaIso
+        +montoDisponible: Centavos
+        +montoApartado: Centavos
+        +montoVencimientos: Centavos
+        +remanente: Centavos
+        +aporteMeta: Centavos
         +sobrecargada: boolean
+        +enDeficit: boolean
+    }
+    class Advertencia {
+        +tipo: string
     }
 
     Usuario "1" --> "0..1" Presupuesto : declara
@@ -53,3 +69,6 @@ classDiagram
     Usuario "1" --> "0..*" Plan : genera
     Compromiso "1" --> "1..*" Vencimiento : deriva
     Plan "1" --> "1..*" AsignacionSemanal : contiene
+    Plan "1" --> "0..1" EvaluacionMeta : evalua
+    Plan "1" --> "0..*" Advertencia : informa
+    AsignacionSemanal "1" --> "0..*" Vencimiento : incluye

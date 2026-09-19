@@ -5,15 +5,16 @@
 | Requisitos | RF-12, RNF-04 · control AM-01 |
 | Interfaz | I-04, `src/ports/repositorio.ts` |
 | Fase | 2, pasos 2.1, 2.2, 2.5 y 2.6 |
-| Cambios de alcance aplicados | SC-03 (#10) modelo de datos · SC-04 (#13) firma de I-04 |
+| Cambios de alcance aplicados | SC-03 (#10) modelo de datos · SC-04 (#13) firma de I-04 · SC-05 (#17) `guardarExplicacion` |
 
 ---
 
-## 1. Contrato del repositorio (I-04, modificado por SC-04)
+## 1. Contrato del repositorio (I-04, modificado por SC-04 y SC-05)
 
 ```ts
 interface RepositorioPlanes {
   guardarPlan(plan: Plan): Promise<string>;
+  guardarExplicacion(id: string, explicacion: string): Promise<boolean>;
   listarPlanes(): Promise<ResumenPlan[]>;
   obtenerPlan(id: string): Promise<PlanGuardado | null>;
   obtenerDatosEntrada(fechaReferencia: FechaIso): Promise<EntradaPlan | null>;
@@ -26,6 +27,10 @@ el cliente de la sesión y la seguridad por fila decide qué registros alcanza. 
 
 `obtenerPlan` devuelve `null` tanto si el plan no existe como si pertenece a otro usuario:
 distinguir ambos casos revelaría qué identificadores existen.
+
+`guardarExplicacion` (SC-05, Fase 3) actualiza solo la columna `explicacion`, que es lo
+único de un plan guardado que puede cambiar. Con un plan ajeno o inexistente la seguridad
+por fila no actualiza ninguna fila y la operación devuelve `false`.
 
 ## 2. Modelo de datos (SC-03)
 
@@ -97,7 +102,8 @@ volvería la prueba inútil. Requieren en `.env.local` los cuatro valores declar
 Los usuarios de prueba se crean en Authentication → Users → Add user, con autoconfirmación y
 un dominio reservado (`.test`).
 
-**Resultado del 17 de septiembre de 2026: 7 pruebas en verde.**
+**Resultado del 17 de septiembre de 2026: 7 pruebas en verde.** El 18 de septiembre, al
+agregar `guardarExplicacion` (SC-05), se sumó una prueba: **8 en verde**.
 
 | Verificación | Resultado |
 |---|---|
@@ -105,6 +111,7 @@ un dominio reservado (`.test`).
 | El plan aparece en la lista con su número de semanas | Correcto |
 | Una lista de asignaciones vacía se rechaza y no deja planes huérfanos | Correcto |
 | Un importe con tres decimales es rechazado | Correcto |
+| La explicación solo se guarda en el plan propio y no altera las cifras (SC-05, 18/09/2026) | Correcto |
 | **Once intentos de acceso cruzado del usuario B: cero filas en todos** | **CA-10 cumplido** |
 | B no puede crear un plan a nombre de A | Error `42501` |
 | Una sesión anónima no obtiene ninguna fila de ninguna tabla | Correcto |
