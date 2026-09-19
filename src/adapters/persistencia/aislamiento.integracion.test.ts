@@ -109,6 +109,17 @@ describe.skipIf(!CONFIGURADO)("CA-10 · aislamiento entre usuarios", () => {
       expect(resumen?.metaViable).toBe(planCalculado.evaluacionMeta?.viable);
     });
 
+    it("guarda la explicacion solo en el plan propio (SC-05)", async () => {
+      await expect(repositorioB.guardarExplicacion(idPlanDeA, "intrusion")).resolves.toBe(false);
+      await expect(repositorioA.guardarExplicacion("no-es-uuid", "texto")).resolves.toBe(false);
+      await expect(repositorioA.guardarExplicacion(idPlanDeA, "Aparta 200 cada semana.")).resolves.toBe(true);
+
+      const guardado = await repositorioA.obtenerPlan(idPlanDeA);
+      expect(guardado?.explicacion).toBe("Aparta 200 cada semana.");
+      // Las cifras no cambian al agregar la explicacion.
+      expect(guardado?.plan).toEqual(planCalculado);
+    });
+
     it("guardar un plan es atomico: no existe plan sin asignaciones", async () => {
       // La funcion guardar_plan rechaza una lista vacia antes de insertar el plan.
       const { error } = await clienteA.rpc("guardar_plan", {
