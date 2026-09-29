@@ -77,6 +77,7 @@ ahorrito/
 │   ├── autenticacion.md    ← RNF-05 y protección de rutas (C-06)
 │   ├── persistencia.md     ← contrato de I-04 y CA-10 (C-05, C-07)
 │   ├── explicacion.md      ← I-03, carga anonimizada, POST /api/planes, CA-09 y CA-11 (C-02, C-04)
+│   ├── interfaz.md         ← pantallas, decisiones de diseño y evidencia de RNF-11 (C-01)
 │   ├── huevo-de-pascua.md  ← secuencia y verificación de RF-14 (SC-02)
 │   ├── ACS-U1-APP-AvilaNeriAbdiel.docx
 │   └── diagramas/          ← archivos .mmd versionados
@@ -85,10 +86,14 @@ ahorrito/
     ├── app/
     │   ├── (auth)/         ← registro, inicio de sesión y confirmación
     │   ├── (app)/          ← pantallas autenticadas
+    │   │   ├── acciones.ts     ← Server Actions de captura (RF-02 a RF-06)
+    │   │   ├── panel/          ← captura, generación del plan y resultado
+    │   │   └── planes/         ← historial (RF-12)
     │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
     │   ├── api/
     │   │   └── planes/
-    │   │       ├── route.ts         ← HTTP: sesión, cuerpo y códigos de estado
+    │   │       ├── route.ts         ← POST y GET del índice de planes
+    │   │       ├── [id]/route.ts    ← GET del detalle de un plan
     │   │       └── orquestador.ts   ← secuencia de la Figura 8 y flujo NDJSON (SC-05)
     │   ├── layout.tsx
     │   └── page.tsx
@@ -107,10 +112,15 @@ ahorrito/
     │   ├── ia/             ← C-04: carga.ts (anonimización) y gemini.ts (cliente REST)
     │   └── persistencia/   ← C-05
     ├── components/         ← C-01
+    │   ├── captura/            ← formularios de RF-02 a RF-06
+    │   ├── plan/               ← descargo, tabla, generador e historial
     │   ├── ui/confetti.tsx     ← Magic UI (MIT)
     │   └── creditos/           ← plan de créditos (SC-02)
     └── lib/                ← utilidades compartidas
         ├── dinero.ts           ← frontera pesos ↔ centavos
+        ├── fecha.ts            ← fecha del servidor en America/Mexico_City
+        ├── captura/            ← validación en el servidor (RF-02 a RF-06)
+        ├── plan/               ← advertencias, etiquetas y lectura del flujo
         ├── autenticacion/      ← rutas, validación y mensajes (C-06)
         ├── supabase/           ← clientes y sesión
         └── huevo/              ← lógica del huevo de Pascua (SC-02)
@@ -169,7 +179,7 @@ ahorrito/
 
 ### 1.7 Estado del proyecto
 
-Actualizado al 18 de septiembre de 2026.
+Actualizado al 29 de septiembre de 2026.
 
 | Fase | Contenido | Estado | Evidencia |
 |---|---|---|---|
@@ -177,13 +187,14 @@ Actualizado al 18 de septiembre de 2026.
 | 1 | Motor de cálculo determinista (C-03) | **Completada** | 94 pruebas en verde, cobertura del núcleo 99.2 %, versión `v0.1.0` |
 | 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Completada** | 7 pruebas de integración en verde, CA-10 cumplido con 11 intentos |
 | 3 | Integración con la IA (C-02, C-04) | **Completada** | 224 pruebas unitarias en verde, CA-09 cumplido 10 de 10 en el servidor, primera evidencia de CA-11 |
-| 4 | Interfaz de usuario (C-01) | **Siguiente** | — |
-| 5 | Verificación | Pendiente | — |
+| 4 | Interfaz de usuario (C-01) | **Completada** | 330 pruebas unitarias y 21 de integración en verde, CA-07, CA-09 y CA-13 verificados en la aplicación, contraste mínimo 7.55:1 |
+| 5 | Verificación | **Siguiente** | — |
 | 6 | Despliegue y liberación | Pendiente | — |
 | 7 | Validación y cierre | Pendiente | — |
 
-**Requisitos implementados:** RF-01, RF-07, RF-08, RF-09, RF-10, RF-12 y RF-14, con RNF-03,
-RNF-04, RNF-05, RNF-06 y RNF-08 verificados y RNF-10 con su primera evidencia (CA-11).
+**Requisitos implementados:** los catorce, RF-01 a RF-14. Verificados RNF-03, RNF-04, RNF-05,
+RNF-06, RNF-08 y RNF-11; RNF-10 con su primera evidencia (CA-11). Quedan para la Fase 5 la
+medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7 la de RNF-02.
 
 **Cambios de alcance aprobados:**
 
@@ -194,6 +205,7 @@ RNF-04, RNF-05, RNF-06 y RNF-08 verificados y RNF-10 con su primera evidencia (C
 | SC-03 | #10 | Ajuste del modelo de datos para almacenar el plan completo | Implementado |
 | SC-04 | #13 | El repositorio de planes no recibe el identificador de usuario | Implementado |
 | SC-05 | #17 | El orquestador toma la entrada del repositorio y responde en dos tiempos; `guardarExplicacion` en I-04 | Implementado |
+| SC-06 | #21 | I-04 incorpora las operaciones de captura de RF-02 a RF-06 | Implementado |
 
 ---
 
@@ -455,7 +467,7 @@ quedaron en `docs/explicacion.md`.
 
 ---
 
-### Fase 4 — Interfaz de usuario (C-01) · SIGUIENTE
+### Fase 4 — Interfaz de usuario (C-01) · COMPLETADA
 
 **Semanas 10 y 11 · Rama:** `feature/interfaz` · **Requisitos:** RF-02 a RF-06, RF-11, RF-13, RNF-02, RNF-11
 
@@ -491,9 +503,22 @@ avance; no sustituye ninguno de los pasos 4.1 a 4.7 ni los requisitos que estos 
 experiencia previa. La versión se publica desde `main` con la etiqueta `v0.9.0`, conforme
 a la sección 4 de GITFLOW.md.
 
+**Resultado obtenido.** 330 pruebas unitarias y 21 de integración en verde. Se construyeron
+RF-02 a RF-06, RF-11 y RF-13, se completó I-01 con los dos `GET`, y el huevo de Pascua (RF-14)
+se trasladó de `/demo` a la vista real del plan. Verificados en la aplicación: CA-07, con el
+descargo a 79 px del borde superior; CA-09 desde la interfaz, con el aviso de explicación no
+disponible; y CA-13, con la secuencia completada solo con teclado. RNF-11 medido sobre la
+pantalla renderizada: 119 textos en tema oscuro con mínimo 7.55:1 y 118 en claro con 7.72:1,
+sin `tabindex` positivos. Durante la fase se aprobó SC-06, que incorporó a I-04 las doce
+operaciones de captura que la sección 3.9.1 ya le asignaba. El contrato y la evidencia
+quedaron en `docs/interfaz.md`.
+
+**Medición de RNF-02 pendiente.** El criterio de salida se verifica con usuarios reales en la
+Fase 7; aquí solo se construyó el flujo que lo hace posible.
+
 ---
 
-### Fase 5 — Verificación
+### Fase 5 — Verificación · SIGUIENTE
 
 **Semanas 11 y 12 · Rama:** `feature/verificacion` · **Requisitos:** puntos 6.1 a 6.10
 
@@ -560,8 +585,10 @@ trazabilidad del documento maestro (sección 2.7).
 | RF-01 | C-06 | `src/app/(auth)`, `src/lib/autenticacion` | `validacion.test.ts`, `rutas.test.ts`; CA-01 en F5 |
 | RF-12 | C-05 | `src/adapters/persistencia`, `supabase/migrations` | `filas.test.ts`, `aislamiento.integracion.test.ts` (CA-10) |
 | RF-10 | C-02, C-04 | `src/adapters/ia`, `src/app/api/planes` | `carga.test.ts`, `gemini.test.ts`, `orquestador.test.ts`, `degradacion.test.ts`; CA-09, CA-11 |
-| RF-11 | C-01 | `src/components` | CA-07 |
-| RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 |
+| RF-11 | C-01 | `src/components/plan/descargo.tsx` | CA-07 verificado en la Fase 4 |
+| RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos`, `src/components/plan/tabla-semanas.tsx` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 verificado en la Fase 4 |
+| RF-02 a RF-06 | C-01, C-05 | `src/app/(app)/acciones.ts`, `src/components/captura`, `src/adapters/persistencia` | `validacion.test.ts`, `captura.integracion.test.ts` |
+| RF-13 | C-01, C-02 | `src/components/plan/generador-plan.tsx` | Medición del recálculo, Fase 4 |
 
 ---
 
