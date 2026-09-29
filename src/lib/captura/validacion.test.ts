@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  LONGITUD_MAXIMA_DENOMINACION,
   PESOS_MAXIMOS,
+  validarCompromiso,
   validarDiaSemana,
   validarFecha,
   validarImporte,
@@ -98,5 +100,57 @@ describe("validarPresupuesto (RF-02)", () => {
       valido: true,
       presupuesto: { montoSemanal: 120_075, diaInicioSemana: 0 },
     });
+  });
+});
+
+describe("validarCompromiso (RF-03)", () => {
+  const valido = () => validarCompromiso("Tarjeta de credito", "600", "2026-10-30", "3");
+
+  it("construye el compromiso con el monto en centavos", () => {
+    expect(valido()).toEqual({
+      valido: true,
+      datos: {
+        denominacion: "Tarjeta de credito",
+        monto: 60_000,
+        fechaLimite: "2026-10-30",
+        ocurrencias: 3,
+      },
+    });
+  });
+
+  it("recorta los espacios de la denominacion", () => {
+    const resultado = validarCompromiso("  Renta  ", "700", "2026-10-05", "1");
+    expect(resultado.valido && resultado.datos.denominacion).toBe("Renta");
+  });
+
+  it("acepta una fecha limite ya vencida, que el motor señala con una advertencia", () => {
+    expect(validarCompromiso("Renta", "700", "2020-01-31", "1").valido).toBe(true);
+  });
+
+  it.each([
+    ["denominacion vacia", ["", "600", "2026-10-30", "3"], "denominacion"],
+    ["denominacion de solo espacios", ["   ", "600", "2026-10-30", "3"], "denominacion"],
+    ["denominacion demasiado larga", ["x".repeat(LONGITUD_MAXIMA_DENOMINACION + 1), "600", "2026-10-30", "3"], "denominacion"],
+    ["monto cero", ["Renta", "0", "2026-10-30", "3"], "monto"],
+    ["monto con tres decimales", ["Renta", "600.555", "2026-10-30", "3"], "monto"],
+    ["fecha inexistente", ["Renta", "600", "2026-02-31", "3"], "fechaLimite"],
+    ["cero ocurrencias", ["Renta", "600", "2026-10-30", "0"], "ocurrencias"],
+    ["siete ocurrencias, fuera de la regla de negocio 2", ["Renta", "600", "2026-10-30", "7"], "ocurrencias"],
+    ["ocurrencias con decimales", ["Renta", "600", "2026-10-30", "1.5"], "ocurrencias"],
+  ])("rechaza %s y marca el campo", (_caso, entrada, campo) => {
+    const [denominacion, monto, fecha, ocurrencias] = entrada as string[];
+    const resultado = validarCompromiso(denominacion, monto, fecha, ocurrencias);
+
+    expect(resultado.valido).toBe(false);
+    if (resultado.valido) return;
+    expect(resultado.errores[campo as keyof typeof resultado.errores]).toBeDefined();
+  });
+
+  it("informa todos los campos invalidos a la vez", () => {
+    const resultado = validarCompromiso("", "", "", "");
+
+    expect(resultado.valido).toBe(false);
+    if (resultado.valido) return;
+    expect(Object.values(resultado.errores).filter(Boolean)).toHaveLength(4);
   });
 });

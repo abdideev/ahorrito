@@ -112,3 +112,87 @@ export function validarPresupuesto(montoRecibido: unknown, diaRecibido: unknown)
   }
   return { valido: true, presupuesto: { montoSemanal: monto.monto, diaInicioSemana: dia.dia } };
 }
+
+export const LONGITUD_MAXIMA_DENOMINACION = 80;
+export const OCURRENCIAS_MINIMAS = 1;
+export const OCURRENCIAS_MAXIMAS = 6;
+
+export interface ErroresCompromiso {
+  readonly denominacion?: string;
+  readonly monto?: string;
+  readonly fechaLimite?: string;
+  readonly ocurrencias?: string;
+}
+
+export interface DatosCompromisoValidados {
+  readonly denominacion: string;
+  readonly monto: Centavos;
+  readonly fechaLimite: string;
+  readonly ocurrencias: number;
+}
+
+export type ResultadoCompromiso =
+  | { readonly valido: true; readonly datos: DatosCompromisoValidados }
+  | { readonly valido: false; readonly errores: ErroresCompromiso };
+
+/**
+ * RF-03: compromiso de pago con denominación, monto, fecha límite y ocurrencias.
+ *
+ * Las ocurrencias van de 1 a 6 (regla de negocio 2). Una fecha límite anterior a hoy se
+ * acepta: el motor la señala con una advertencia en lugar de rechazarla, porque el
+ * usuario puede estar registrando un pago que ya venció y quiere ver reflejado.
+ */
+export function validarCompromiso(
+  denominacionRecibida: unknown,
+  montoRecibido: unknown,
+  fechaRecibida: unknown,
+  ocurrenciasRecibidas: unknown,
+): ResultadoCompromiso {
+  const denominacion = typeof denominacionRecibida === "string" ? denominacionRecibida.trim() : "";
+  const monto = validarImporte(montoRecibido, "el monto del pago");
+  const fecha = validarFecha(fechaRecibida, "la fecha límite");
+  const ocurrencias = validarOcurrencias(ocurrenciasRecibidas);
+
+  let errorDenominacion: string | undefined;
+  if (denominacion === "") {
+    errorDenominacion = "Escribe cómo reconoces este pago.";
+  } else if (denominacion.length > LONGITUD_MAXIMA_DENOMINACION) {
+    errorDenominacion = `Usa ${LONGITUD_MAXIMA_DENOMINACION} caracteres o menos.`;
+  }
+
+  if (errorDenominacion || !monto.valido || !fecha.valido || !ocurrencias.valido) {
+    return {
+      valido: false,
+      errores: {
+        denominacion: errorDenominacion,
+        monto: monto.valido ? undefined : monto.error,
+        fechaLimite: fecha.valido ? undefined : fecha.error,
+        ocurrencias: ocurrencias.valido ? undefined : ocurrencias.error,
+      },
+    };
+  }
+  return {
+    valido: true,
+    datos: {
+      denominacion,
+      monto: monto.monto,
+      fechaLimite: fecha.fecha,
+      ocurrencias: ocurrencias.ocurrencias,
+    },
+  };
+}
+
+type ResultadoOcurrencias =
+  | { readonly valido: true; readonly ocurrencias: number }
+  | { readonly valido: false; readonly error: string };
+
+function validarOcurrencias(recibido: unknown): ResultadoOcurrencias {
+  const texto = typeof recibido === "string" ? recibido.trim() : "";
+  if (!/^[1-6]$/.test(texto)) {
+    return {
+      valido: false,
+      error: `Elige entre ${OCURRENCIAS_MINIMAS} y ${OCURRENCIAS_MAXIMAS} repeticiones mensuales.`,
+    };
+  }
+  return { valido: true, ocurrencias: Number(texto) };
+}
