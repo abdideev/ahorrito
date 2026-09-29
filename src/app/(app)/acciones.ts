@@ -13,7 +13,13 @@ import { revalidatePath } from "next/cache";
 import { fechaIso } from "@/core/calendario";
 import { ErrorPersistencia } from "@/adapters/persistencia/repositorio-supabase";
 import { texto, type EstadoCaptura } from "@/lib/captura/estado";
-import { validarCompromiso, validarPresupuesto } from "@/lib/captura/validacion";
+import {
+  validarCompromiso,
+  validarIngreso,
+  validarMeta,
+  validarPresupuesto,
+} from "@/lib/captura/validacion";
+import { fechaDeHoyEnMexico } from "@/lib/fecha";
 import { RUTA_PANEL } from "@/lib/autenticacion/rutas";
 import { repositorioDeLaSesion } from "@/lib/supabase/repositorio";
 
@@ -146,6 +152,86 @@ export async function eliminarCompromiso(
 
   revalidatePath(RUTA_PANEL);
   return { tipo: "exito", mensaje: "Pago eliminado.", errores: {}, valores: {} };
+}
+
+/** RF-05: registra un ingreso extraordinario. */
+export async function agregarIngreso(
+  _estadoPrevio: EstadoCaptura,
+  formulario: FormData,
+): Promise<EstadoCaptura> {
+  const valores = { monto: texto(formulario, "monto"), fecha: texto(formulario, "fecha") };
+  const validacion = validarIngreso(valores.monto, valores.fecha);
+  if (!validacion.valido) {
+    return { tipo: "error", mensaje: "Revisa los campos marcados.", errores: { ...validacion.errores }, valores };
+  }
+
+  try {
+    const repositorio = await repositorioDeLaSesion();
+    await repositorio.agregarIngreso({ monto: validacion.monto, fecha: fechaIso(validacion.fecha) });
+  } catch (error) {
+    return fallo(error, "No se pudo guardar el ingreso. Intenta de nuevo.", valores);
+  }
+
+  revalidatePath(RUTA_PANEL);
+  return { tipo: "exito", mensaje: "Ingreso agregado.", errores: {}, valores: {} };
+}
+
+/** RF-05: quita un ingreso extraordinario propio. */
+export async function eliminarIngreso(
+  _estadoPrevio: EstadoCaptura,
+  formulario: FormData,
+): Promise<EstadoCaptura> {
+  try {
+    const repositorio = await repositorioDeLaSesion();
+    const eliminado = await repositorio.eliminarIngreso(texto(formulario, "id"));
+    if (!eliminado) {
+      return { tipo: "error", mensaje: "No encontramos ese ingreso.", errores: {}, valores: {} };
+    }
+  } catch (error) {
+    return fallo(error, "No se pudo eliminar el ingreso. Intenta de nuevo.", {});
+  }
+
+  revalidatePath(RUTA_PANEL);
+  return { tipo: "exito", mensaje: "Ingreso eliminado.", errores: {}, valores: {} };
+}
+
+/** RF-06: define o reemplaza la meta de ahorro. */
+export async function guardarMeta(
+  _estadoPrevio: EstadoCaptura,
+  formulario: FormData,
+): Promise<EstadoCaptura> {
+  const valores = {
+    montoObjetivo: texto(formulario, "montoObjetivo"),
+    fechaObjetivo: texto(formulario, "fechaObjetivo"),
+  };
+  const validacion = validarMeta(valores.montoObjetivo, valores.fechaObjetivo, fechaDeHoyEnMexico());
+  if (!validacion.valido) {
+    return { tipo: "error", mensaje: "Revisa los campos marcados.", errores: { ...validacion.errores }, valores };
+  }
+
+  try {
+    const repositorio = await repositorioDeLaSesion();
+    await repositorio.guardarMeta({
+      montoObjetivo: validacion.montoObjetivo,
+      fechaObjetivo: fechaIso(validacion.fechaObjetivo),
+    });
+  } catch (error) {
+    return fallo(error, "No se pudo guardar tu meta. Intenta de nuevo.", valores);
+  }
+
+  revalidatePath(RUTA_PANEL);
+  return { tipo: "exito", mensaje: "Meta guardada.", errores: {}, valores: {} };
+}
+
+/** RF-06: quita la meta de ahorro. El plan sigue siendo válido sin ella. */
+export async function eliminarMeta(): Promise<void> {
+  try {
+    const repositorio = await repositorioDeLaSesion();
+    await repositorio.eliminarMeta();
+  } catch (error) {
+    console.error("[captura] No se pudo eliminar la meta.", describirError(error));
+  }
+  revalidatePath(RUTA_PANEL);
 }
 
 function valoresDeCompromiso(formulario: FormData): Record<string, string> {
