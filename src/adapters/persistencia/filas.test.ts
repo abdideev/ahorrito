@@ -3,11 +3,19 @@ import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import { centavos, type EntradaPlan } from "@/core/tipos";
 import {
+  compromisoAFila,
   esUuid,
+  filaACompromiso,
+  filaAIngreso,
+  filaAMeta,
+  filaAPresupuesto,
   filaAResumen,
   filasAEntrada,
   filasAPlan,
+  ingresoAFila,
+  metaAFila,
   planAFilas,
+  presupuestoAFila,
   type FilaPlanLeida,
 } from "./filas";
 
@@ -153,5 +161,65 @@ describe("esUuid", () => {
     expect(esUuid("0b9e8d6a-2f4c-4f7a-9b1e-3c5d7e9f1a2b")).toBe(true);
     expect(esUuid("123")).toBe(false);
     expect(esUuid("0b9e8d6a-2f4c-4f7a-9b1e-3c5d7e9f1a2b' or '1'='1")).toBe(false);
+  });
+});
+
+describe("captura del usuario (SC-06)", () => {
+  it("convierte el presupuesto en los dos sentidos sin perder centavos", () => {
+    const presupuesto = { montoSemanal: pesos(1234.05), diaInicioSemana: 3 as const };
+
+    const fila = presupuestoAFila(presupuesto);
+
+    expect(fila).toEqual({ monto_semanal: "1234.05", dia_inicio_semana: 3 });
+    expect(filaAPresupuesto(fila)).toEqual(presupuesto);
+  });
+
+  it("conserva la denominacion del compromiso, que el motor no usa", () => {
+    const fila = {
+      id: "0b9e8d6a-2f4c-4f7a-9b1e-3c5d7e9f1a2b",
+      denominacion: "Tarjeta de credito",
+      monto: "600.00",
+      fecha_limite: "2026-09-30",
+      ocurrencias: 3,
+    };
+
+    const compromiso = filaACompromiso(fila);
+
+    expect(compromiso).toEqual({
+      id: fila.id,
+      denominacion: "Tarjeta de credito",
+      monto: pesos(600),
+      fechaLimite: f("2026-09-30"),
+      ocurrencias: 3,
+    });
+    // La fila de escritura no lleva identificador: lo asigna la base de datos.
+    expect(compromisoAFila(compromiso)).toEqual({
+      denominacion: "Tarjeta de credito",
+      monto: "600.00",
+      fecha_limite: "2026-09-30",
+      ocurrencias: 3,
+    });
+  });
+
+  it("rechaza una fila de compromiso con ocurrencias no enteras", () => {
+    expect(() =>
+      filaACompromiso({
+        id: "0b9e8d6a-2f4c-4f7a-9b1e-3c5d7e9f1a2b",
+        denominacion: "Renta",
+        monto: "700.00",
+        fecha_limite: "2026-09-16",
+        ocurrencias: 1.5,
+      }),
+    ).toThrow(RangeError);
+  });
+
+  it("convierte ingresos y meta en los dos sentidos", () => {
+    const ingreso = { id: "0b9e8d6a-2f4c-4f7a-9b1e-3c5d7e9f1a2b", monto: pesos(750.5), fecha: f("2026-10-01") };
+    const meta = { montoObjetivo: pesos(3000), fechaObjetivo: f("2026-11-30") };
+
+    expect(filaAIngreso({ id: ingreso.id, monto: "750.50", fecha: "2026-10-01" })).toEqual(ingreso);
+    expect(ingresoAFila(ingreso)).toEqual({ monto: "750.50", fecha: "2026-10-01" });
+    expect(metaAFila(meta)).toEqual({ monto_objetivo: "3000.00", fecha_objetivo: "2026-11-30" });
+    expect(filaAMeta(metaAFila(meta))).toEqual(meta);
   });
 });
