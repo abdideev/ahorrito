@@ -24,3 +24,15 @@ export function pesosACentavos(pesos: number | string): Centavos {
 export function formatearPesos(importe: Centavos): string {
   return FORMATO_PESOS.format(importe / 100);
 }
+
+/**
+ * Importe en centavos como texto plano de dos decimales ("1234.50"), sin símbolo ni
+ * separadores de miles: es lo que necesita el atributo `value` de un campo numérico.
+ * La aritmética es entera para no reintroducir el punto flotante en la presentación.
+ */
+export function centavosATextoPlano(importe: Centavos): string {
+  const absoluto = Math.abs(importe);
+  const centenas = absoluto % 100;
+  const pesos = (absoluto - centenas) / 100;
+  return `${importe < 0 ? "-" : ""}${pesos}.${String(centenas).padStart(2, "0")}`;
+}
