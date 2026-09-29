@@ -23,18 +23,18 @@ export default async function Planes() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-6 py-12">
-      <header className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="text-3xl font-semibold">Planes guardados</h1>
-        <Link href="/panel" className="text-sm font-medium underline underline-offset-2">
+    <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-black tracking-tight text-texto sm:text-4xl">Planes guardados</h1>
+        <Link href="/panel" className="boton-secundario text-sm">
           Volver al panel
         </Link>
       </header>
-      <p className="mt-2 text-zinc-700 dark:text-zinc-300">
+      <p className="mt-3 leading-7 text-texto-suave">
         Cada vez que generas un plan, Ahorrito lo guarda tal como lo viste.
       </p>
 
-      <div className="mt-8">
+      <div className="mt-10">
         <HistorialPlanes denominaciones={denominaciones} />
       </div>
     </main>

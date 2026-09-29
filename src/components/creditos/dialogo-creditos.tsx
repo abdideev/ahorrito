@@ -50,7 +50,7 @@ export function DialogoCreditos({ abierto, onCerrar }: Props) {
       ref={dialogoRef}
       onClose={onCerrar}
       aria-labelledby="titulo-creditos"
-      className="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-lg bg-white p-6 text-zinc-900 shadow-xl backdrop:bg-black/60 dark:bg-zinc-900 dark:text-zinc-100"
+      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-2xl border border-borde bg-superficie p-5 text-texto shadow-xl backdrop:bg-black/60 sm:p-7"
     >
       <Confetti
         ref={confetiRef}
@@ -60,17 +60,17 @@ export function DialogoCreditos({ abierto, onCerrar }: Props) {
         aria-hidden="true"
       />
 
-      <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
+      <p className="text-sm font-bold text-alerta">
         Cuadre perfecto: cada centavo encontró su lugar.
       </p>
-      <h2 id="titulo-creditos" className="mt-1 text-2xl font-semibold">
+      <h2 id="titulo-creditos" className="mt-2 text-2xl font-black tracking-tight">
         Plan de créditos · {CREDITOS.proyecto}
       </h2>
 
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+      <div className="mt-5 overflow-x-auto rounded-xl border border-borde">
+        <table className="w-full min-w-xl border-collapse bg-fondo text-sm">
           <thead>
-            <tr className="border-b border-zinc-400 text-left dark:border-zinc-600">
+            <tr className="border-b border-borde bg-superficie-hundida text-left">
               <th className={celda}>Semana</th>
               <th className={celda}>Rol</th>
               <th className={celda}>Aportación</th>
@@ -79,11 +79,11 @@ export function DialogoCreditos({ abierto, onCerrar }: Props) {
           </thead>
           <tbody>
             {ROLES.map((rol, indice) => (
-              <tr key={rol.rol} className="border-b border-zinc-200 dark:border-zinc-800">
+              <tr key={rol.rol} className="border-b border-borde">
                 <td className={celda}>{indice + 1}</td>
                 <td className={celda}>
                   <span className="font-medium">{rol.rol}</span>
-                  <span className="block text-zinc-600 dark:text-zinc-400">{rol.responsable}</span>
+                  <span className="block text-texto-suave">{rol.responsable}</span>
                 </td>
                 <td className={celda}>{rol.aportacion}</td>
                 <td className={`${celda} text-right tabular-nums`}>{rol.horas}</td>
@@ -134,7 +134,7 @@ export function DialogoCreditos({ abierto, onCerrar }: Props) {
         type="button"
         autoFocus
         onClick={onCerrar}
-        className="mt-6 rounded bg-zinc-900 px-5 py-2.5 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:bg-zinc-100 dark:text-zinc-900"
+        className="boton-primario mt-6"
       >
         Cerrar
       </button>

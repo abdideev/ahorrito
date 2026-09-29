@@ -68,40 +68,43 @@ export function HistorialPlanes({ denominaciones }: Props) {
 
   if (error !== null && resumenes === null) {
     return (
-      <p role="alert" className="rounded border border-red-600 p-3 text-sm text-red-700 dark:text-red-400">
+      <p
+        role="alert"
+        className="rounded-xl border border-error bg-error/6 p-4 text-sm font-semibold text-error"
+      >
         {error}
       </p>
     );
   }
 
   if (resumenes === null) {
-    return <p className="text-zinc-600 dark:text-zinc-400">Cargando tus planes…</p>;
+    return <p className="text-texto-suave">Cargando tus planes…</p>;
   }
 
   if (resumenes.length === 0) {
     return (
-      <p className="rounded border border-dashed border-zinc-400 p-4 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
+      <p className="rounded-xl border border-dashed border-borde bg-superficie p-5 text-texto-suave">
         Todavía no has generado ningún plan.
       </p>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <ul className="space-y-3">
+    <div className="space-y-8">
+      <ul className="space-y-4">
         {resumenes.map((resumen) => (
           <li
             key={resumen.id}
-            className="flex flex-wrap items-center justify-between gap-3 rounded border border-zinc-300 p-4 dark:border-zinc-700"
+            className="elevado flex flex-wrap items-center justify-between gap-4 p-5"
           >
             <div>
-              <p className="font-medium">
+              <p className="font-bold text-texto">
                 {new Date(resumen.generadoEn).toLocaleString("es-MX", {
                   dateStyle: "long",
                   timeStyle: "short",
                 })}
               </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="mt-1 text-sm leading-6 text-texto-suave">
                 {resumen.semanas} semanas, del {resumen.inicioHorizonte} al {resumen.finHorizonte}
                 {resumen.metaViable !== null &&
                   (resumen.metaViable ? " · meta alcanzable" : " · meta no alcanzable")}
@@ -112,7 +115,7 @@ export function HistorialPlanes({ denominaciones }: Props) {
               onClick={() => abrir(resumen.id)}
               disabled={cargandoDetalle !== null}
               aria-expanded={abierto?.id === resumen.id}
-              className="rounded border border-zinc-400 px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:border-zinc-600"
+              className="boton-secundario text-sm"
             >
               {cargandoDetalle === resumen.id ? "Abriendo…" : "Ver el plan"}
             </button>
@@ -121,7 +124,10 @@ export function HistorialPlanes({ denominaciones }: Props) {
       </ul>
 
       {error !== null && (
-        <p role="alert" className="rounded border border-red-600 p-3 text-sm text-red-700 dark:text-red-400">
+        <p
+          role="alert"
+          className="rounded-xl border border-error bg-error/6 p-4 text-sm font-semibold text-error"
+        >
           {error}
         </p>
       )}
@@ -142,10 +148,10 @@ function DetallePlan({
   const advertencias = describirAdvertencias(plan.advertencias, denominaciones);
 
   return (
-    <section aria-label="Plan guardado" className="space-y-4 border-t border-zinc-300 pt-6 dark:border-zinc-700">
+    <section aria-label="Plan guardado" className="superficie space-y-6 p-5 sm:p-7">
       <Descargo />
 
-      <p className="text-zinc-700 dark:text-zinc-300">
+      <p className="text-lg leading-8 text-texto">
         Generado el{" "}
         {new Date(guardado.generadoEn).toLocaleString("es-MX", { dateStyle: "long", timeStyle: "short" })}.
         {plan.evaluacionMeta !== null && (
@@ -158,17 +164,25 @@ function DetallePlan({
       </p>
 
       {advertencias.length > 0 && (
-        <ul className="space-y-2">
+        <ul className="space-y-3">
           {advertencias.map((advertencia, indice) => (
             <li
               key={`${advertencia.tipo}-${indice}`}
-              className={
-                advertencia.gravedad === "alta"
-                  ? "rounded border border-red-600 p-3 text-sm text-red-800 dark:text-red-300"
-                  : "rounded border border-amber-600 p-3 text-sm text-amber-900 dark:text-amber-200"
-              }
+              className={`flex items-start gap-3 rounded-xl border border-borde border-l-4 bg-fondo p-4 text-sm leading-6 text-texto ${
+                advertencia.gravedad === "alta" ? "border-l-error" : "border-l-alerta"
+              }`}
             >
-              {advertencia.texto}
+              <span
+                aria-hidden="true"
+                className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full border text-xs font-black ${
+                  advertencia.gravedad === "alta"
+                    ? "border-error text-error"
+                    : "border-alerta text-alerta"
+                }`}
+              >
+                !
+              </span>
+              <span>{advertencia.texto}</span>
             </li>
           ))}
         </ul>
@@ -176,19 +190,19 @@ function DetallePlan({
 
       <TablaSemanas plan={plan} denominaciones={denominaciones} />
 
-      <section aria-labelledby="titulo-explicacion-guardada">
-        <h3 id="titulo-explicacion-guardada" className="font-semibold">
+      <section aria-labelledby="titulo-explicacion-guardada" className="border-t border-borde pt-6">
+        <h3 id="titulo-explicacion-guardada" className="text-lg font-bold text-texto">
           Qué significa este plan
         </h3>
         {guardado.explicacion === null ? (
-          <p className="mt-2 rounded border border-zinc-400 p-3 text-sm dark:border-zinc-600">
+          <p className="mt-3 rounded-xl border border-borde bg-fondo p-4 text-sm">
             Este plan se guardó sin explicación.
           </p>
         ) : (
           conDenominaciones(guardado.explicacion, plan, denominaciones)
             .split("\n\n")
             .map((parrafo, indice) => (
-              <p key={indice} className="mt-2 whitespace-pre-line text-zinc-700 dark:text-zinc-300">
+              <p key={indice} className="mt-3 whitespace-pre-line leading-7 text-texto">
                 {parrafo}
               </p>
             ))
