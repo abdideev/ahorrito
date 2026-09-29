@@ -14,6 +14,7 @@
 
 import { calcularPlan } from "@/core/plan";
 import type { FechaIso, Plan } from "@/core/tipos";
+import { fechaDeHoyEnMexico } from "@/lib/fecha";
 import type { ServicioExplicacion } from "@/ports/explicacion";
 import type { RepositorioPlanes } from "@/ports/repositorio";
 
@@ -103,22 +104,6 @@ function crearFlujo(
   });
 }
 
-const FORMATO_FECHA_MEXICO = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "America/Mexico_City",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
-
-/**
- * Fecha de hoy en la zona horaria del centro de México, AAAA-MM-DD (SC-05). El servidor
- * corre en UTC: sin esta conversión, un plan pedido después de las 18:00 quedaría fechado
- * al día siguiente. El formato en-CA es el que produce AAAA-MM-DD.
- */
-export function fechaDeHoyEnMexico(ahora: Date): string {
-  return FORMATO_FECHA_MEXICO.format(ahora);
-}
-
 export type CuerpoValidado = { readonly valido: true; readonly explicar: boolean } | { readonly valido: false };
 
 /**
@@ -146,3 +131,6 @@ export function validarCuerpo(texto: string): CuerpoValidado {
   }
   return { valido: true, explicar: explicar ?? true };
 }
+
+// Se reexporta para que el Route Handler y las pruebas la tomen desde el orquestador.
+export { fechaDeHoyEnMexico };

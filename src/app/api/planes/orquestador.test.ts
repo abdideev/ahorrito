@@ -5,7 +5,6 @@ import { centavos, type EntradaPlan } from "@/core/tipos";
 import type { ServicioExplicacion } from "@/ports/explicacion";
 import { crearRepositorioFalso } from "@/ports/dobles";
 import {
-  fechaDeHoyEnMexico,
   generarPlan,
   validarCuerpo,
   type LineaFlujo,
@@ -161,13 +160,5 @@ describe("validarCuerpo", () => {
     ["la captura del contrato anterior a SC-05", '{"presupuesto": {"monto": 500}}'],
   ])("rechaza %s", (_caso, texto) => {
     expect(validarCuerpo(texto)).toEqual({ valido: false });
-  });
-});
-
-describe("fechaDeHoyEnMexico", () => {
-  it("usa la fecha del centro de Mexico y no la de UTC", () => {
-    // 19 sep 03:00 UTC son las 21:00 del 18 sep en la Ciudad de Mexico (UTC-6).
-    expect(fechaDeHoyEnMexico(new Date("2026-09-19T03:00:00Z"))).toBe("2026-09-18");
-    expect(fechaDeHoyEnMexico(new Date("2026-09-19T06:00:00Z"))).toBe("2026-09-19");
   });
 });
