@@ -5,11 +5,11 @@
 | Requisitos | RF-12, RNF-04 · control AM-01 |
 | Interfaz | I-04, `src/ports/repositorio.ts` |
 | Fase | 2, pasos 2.1, 2.2, 2.5 y 2.6 |
-| Cambios de alcance aplicados | SC-03 (#10) modelo de datos · SC-04 (#13) firma de I-04 · SC-05 (#17) `guardarExplicacion` |
+| Cambios de alcance aplicados | SC-03 (#10) modelo de datos · SC-04 (#13) firma de I-04 · SC-05 (#17) `guardarExplicacion` · SC-06 (#21) operaciones de captura |
 
 ---
 
-## 1. Contrato del repositorio (I-04, modificado por SC-04 y SC-05)
+## 1. Contrato del repositorio (I-04, modificado por SC-04, SC-05 y SC-06)
 
 ```ts
 interface RepositorioPlanes {
@@ -18,6 +18,20 @@ interface RepositorioPlanes {
   listarPlanes(): Promise<ResumenPlan[]>;
   obtenerPlan(id: string): Promise<PlanGuardado | null>;
   obtenerDatosEntrada(fechaReferencia: FechaIso): Promise<EntradaPlan | null>;
+
+  // Captura del usuario (RF-02 a RF-06), incorporada por SC-06
+  obtenerPresupuesto(): Promise<Presupuesto | null>;
+  guardarPresupuesto(presupuesto: Presupuesto): Promise<void>;
+  listarCompromisos(): Promise<CompromisoGuardado[]>;
+  agregarCompromiso(datos: DatosCompromiso): Promise<string>;
+  actualizarCompromiso(id: string, datos: DatosCompromiso): Promise<boolean>;
+  eliminarCompromiso(id: string): Promise<boolean>;
+  listarIngresos(): Promise<IngresoExtra[]>;
+  agregarIngreso(datos: DatosIngreso): Promise<string>;
+  eliminarIngreso(id: string): Promise<boolean>;
+  obtenerMeta(): Promise<MetaAhorro | null>;
+  guardarMeta(meta: MetaAhorro): Promise<void>;
+  eliminarMeta(): Promise<boolean>;
 }
 ```
 
@@ -31,6 +45,12 @@ distinguir ambos casos revelaría qué identificadores existen.
 `guardarExplicacion` (SC-05, Fase 3) actualiza solo la columna `explicacion`, que es lo
 único de un plan guardado que puede cambiar. Con un plan ajeno o inexistente la seguridad
 por fila no actualiza ninguna fila y la operación devuelve `false`.
+
+Las operaciones de captura (SC-06, Fase 4) siguen el mismo principio: ninguna recibe el
+identificador de usuario. Las altas necesitan escribir `usuario_id`, y ese valor se toma de la
+sesión verificada **dentro del adaptador**, nunca de un parámetro. `CompromisoGuardado` agrega
+la denominación al tipo del motor, porque la interfaz la muestra; el motor sigue sin conocerla
+y por eso no puede llegar al proveedor de inteligencia artificial (RNF-10).
 
 ## 2. Modelo de datos (SC-03)
 
@@ -103,7 +123,8 @@ Los usuarios de prueba se crean en Authentication → Users → Add user, con au
 un dominio reservado (`.test`).
 
 **Resultado del 17 de septiembre de 2026: 7 pruebas en verde.** El 18 de septiembre, al
-agregar `guardarExplicacion` (SC-05), se sumó una prueba: **8 en verde**.
+agregar `guardarExplicacion` (SC-05), se sumó una prueba: **8 en verde**. El 29 de septiembre,
+las doce operaciones de captura de SC-06 sumaron `captura.integracion.test.ts`: **21 en verde**.
 
 | Verificación | Resultado |
 |---|---|
