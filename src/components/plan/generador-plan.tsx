@@ -129,13 +129,13 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
   const advertencias = plan === null ? [] : describirAdvertencias(plan.advertencias, denominaciones);
 
   return (
-    <div className="mt-4">
+    <div className="mt-6">
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() => generar(plan === null)}
           disabled={generando || faltanDatos}
-          className="rounded bg-zinc-900 px-5 py-2.5 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+          className="boton-primario"
         >
           {generando ? "Calculando…" : plan === null ? "Generar mi plan" : "Recalcular con mis datos"}
         </button>
@@ -145,14 +145,14 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
             type="button"
             onClick={() => generar(true)}
             disabled={generando}
-            className="rounded border border-zinc-400 px-4 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:border-zinc-600"
+            className="boton-secundario text-sm"
           >
             Recalcular y explicar
           </button>
         )}
       </div>
       {faltanDatos && (
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-3 text-sm text-texto-suave">
           Captura tu presupuesto y al menos un pago para generar el plan.
         </p>
       )}
@@ -160,7 +160,7 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
       {error && (
         <p
           role="alert"
-          className="mt-4 rounded border border-red-600 p-3 text-sm text-red-700 dark:text-red-400"
+          className="mt-4 rounded-xl border border-error bg-error/6 p-4 text-sm font-semibold text-error"
         >
           {error}
         </p>
@@ -171,12 +171,12 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
           ref={resultado}
           tabIndex={-1}
           aria-live="polite"
-          className="mt-6 scroll-mt-4 space-y-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-500"
+          className="superficie mt-8 scroll-mt-4 space-y-6 p-5 sm:p-7"
         >
           <h3 className="sr-only">Resultado de tu plan</h3>
           <Descargo />
 
-          <p className="text-zinc-700 dark:text-zinc-300">
+          <p className="text-lg leading-8 text-texto">
             Plan del <strong>{plan.inicioHorizonte}</strong> al <strong>{plan.finHorizonte}</strong>,{" "}
             {plan.asignaciones.length} semanas.
             {plan.evaluacionMeta !== null && (
@@ -197,17 +197,25 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
           </p>
 
           {advertencias.length > 0 && (
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {advertencias.map((advertencia, indice) => (
                 <li
                   key={`${advertencia.tipo}-${indice}`}
-                  className={
-                    advertencia.gravedad === "alta"
-                      ? "rounded border border-red-600 p-3 text-sm text-red-800 dark:text-red-300"
-                      : "rounded border border-amber-600 p-3 text-sm text-amber-900 dark:text-amber-200"
-                  }
+                  className={`flex items-start gap-3 rounded-xl border border-borde border-l-4 bg-fondo p-4 text-sm leading-6 text-texto ${
+                    advertencia.gravedad === "alta" ? "border-l-error" : "border-l-alerta"
+                  }`}
                 >
-                  {advertencia.texto}
+                  <span
+                    aria-hidden="true"
+                    className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full border text-xs font-black ${
+                      advertencia.gravedad === "alta"
+                        ? "border-error text-error"
+                        : "border-alerta text-alerta"
+                    }`}
+                  >
+                    !
+                  </span>
+                  <span>{advertencia.texto}</span>
                 </li>
               ))}
             </ul>
@@ -220,20 +228,20 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
             alDepositar={depositar}
           />
 
-          <section aria-labelledby="titulo-explicacion">
-            <h3 id="titulo-explicacion" className="font-semibold">
+          <section aria-labelledby="titulo-explicacion" className="border-t border-borde pt-6">
+            <h3 id="titulo-explicacion" className="text-lg font-bold text-texto">
               Qué significa tu plan
             </h3>
-            <div aria-live="polite" className="mt-2 text-zinc-700 dark:text-zinc-300">
+            <div aria-live="polite" className="mt-3 leading-7 text-texto">
               {estadoExplicacion === "sin-pedir" && (
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="text-sm text-texto-suave">
                   Este plan se recalculó sin pedir explicación. Usa &quot;Recalcular y explicar&quot;
                   si quieres el texto que la acompaña.
                 </p>
               )}
               {estadoExplicacion === "esperando" && <p>Preparando la explicación…</p>}
               {estadoExplicacion === "no-disponible" && (
-                <p className="rounded border border-zinc-400 p-3 text-sm dark:border-zinc-600">
+                <p className="rounded-xl border border-borde bg-fondo p-4 text-sm">
                   La explicación no está disponible en este momento. Tu plan y sus cifras están
                   completos: solo falta el texto que los acompaña.
                 </p>
