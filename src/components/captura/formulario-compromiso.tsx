@@ -2,7 +2,7 @@
 
 import { useActionState, useId } from "react";
 import { CampoCaptura, describedBy } from "@/components/captura/campo-captura";
-import { campo, mensaje as claseMensaje } from "@/components/captura/estilos";
+import { botonPrimario, campo, mensaje as claseMensaje } from "@/components/captura/estilos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 import { LONGITUD_MAXIMA_DENOMINACION, OCURRENCIAS_MAXIMAS } from "@/lib/captura/validacion";
 
@@ -38,7 +38,7 @@ export function FormularioCompromiso({ accion, id, iniciales, textoBoton }: Prop
   const errorDe = (nombre: keyof ValoresCompromiso) => estado.errores[nombre];
 
   return (
-    <form action={enviar} noValidate className="space-y-3">
+    <form action={enviar} noValidate className="space-y-5">
       {id && <input type="hidden" name="id" value={id} />}
 
       <CampoCaptura
@@ -64,7 +64,7 @@ export function FormularioCompromiso({ accion, id, iniciales, textoBoton }: Prop
         />
       </CampoCaptura>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-3">
         <CampoCaptura idCampo={idDe("monto")} etiqueta="Monto de cada pago" mensajeError={errorDe("monto")}>
           <input
             id={idDe("monto")}
@@ -120,7 +120,7 @@ export function FormularioCompromiso({ accion, id, iniciales, textoBoton }: Prop
       <button
         type="submit"
         disabled={pendiente}
-        className="rounded bg-zinc-900 px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+        className={botonPrimario}
       >
         {pendiente ? "Guardando…" : textoBoton}
       </button>

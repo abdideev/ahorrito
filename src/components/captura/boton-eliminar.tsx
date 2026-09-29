@@ -23,21 +23,21 @@ export function BotonEliminar({ accion, id, descripcion }: Props) {
   const [confirmando, setConfirmando] = useState(false);
 
   return (
-    <form action={enviar} className="flex items-center gap-2">
+    <form action={enviar} className="flex flex-wrap items-center gap-2">
       <input type="hidden" name="id" value={id} />
       {confirmando ? (
         <>
           <button
             type="submit"
             disabled={pendiente}
-            className="rounded border border-red-600 px-3 py-1.5 text-sm font-medium text-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:text-red-400"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-error bg-transparent px-4 py-2 text-sm font-bold text-error disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pendiente ? "Eliminando…" : "Confirmar"}
           </button>
           <button
             type="button"
             onClick={() => setConfirmando(false)}
-            className="rounded px-3 py-1.5 text-sm underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+            className="boton-secundario px-4 py-2 text-sm"
           >
             Cancelar
           </button>
@@ -46,13 +46,13 @@ export function BotonEliminar({ accion, id, descripcion }: Props) {
         <button
           type="button"
           onClick={() => setConfirmando(true)}
-          className="rounded border border-zinc-400 px-3 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:border-zinc-600"
+          className="boton-secundario px-4 py-2 text-sm"
         >
           Eliminar<span className="sr-only"> {descripcion}</span>
         </button>
       )}
       {estado.tipo === "error" && estado.mensaje && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm font-semibold text-error">
           {estado.mensaje}
         </p>
       )}

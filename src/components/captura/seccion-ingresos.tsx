@@ -3,7 +3,7 @@
 import { useActionState, useId } from "react";
 import { BotonEliminar } from "@/components/captura/boton-eliminar";
 import { CampoCaptura, describedBy } from "@/components/captura/campo-captura";
-import { campo, mensaje as claseMensaje } from "@/components/captura/estilos";
+import { botonPrimario, campo, mensaje as claseMensaje } from "@/components/captura/estilos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 import { formatearPesos } from "@/lib/dinero";
 import type { IngresoExtra } from "@/core/tipos";
@@ -27,17 +27,17 @@ export function SeccionIngresos({ ingresos, agregar, eliminar }: Props) {
   const idFecha = `${prefijo}-fecha`;
 
   return (
-    <div className="mt-4">
+    <div className="mt-6">
       {ingresos.length > 0 && (
         <ul className="mb-4 space-y-2">
           {ingresos.map((ingreso) => (
             <li
               key={ingreso.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded border border-zinc-300 px-4 py-3 dark:border-zinc-700"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-borde bg-superficie px-4 py-3"
             >
               <span>
                 {formatearPesos(ingreso.monto)}
-                <span className="text-zinc-600 dark:text-zinc-400"> · {ingreso.fecha}</span>
+                <span className="text-texto-suave"> · {ingreso.fecha}</span>
               </span>
               <BotonEliminar
                 accion={eliminar}
@@ -49,8 +49,8 @@ export function SeccionIngresos({ ingresos, agregar, eliminar }: Props) {
         </ul>
       )}
 
-      <form action={enviar} noValidate className="space-y-3">
-        <div className="grid gap-3 sm:grid-cols-2">
+      <form action={enviar} noValidate className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
           <CampoCaptura idCampo={idMonto} etiqueta="¿De cuánto?" mensajeError={estado.errores.monto}>
             <input
               id={idMonto}
@@ -89,7 +89,7 @@ export function SeccionIngresos({ ingresos, agregar, eliminar }: Props) {
         <button
           type="submit"
           disabled={pendiente}
-          className="rounded border border-zinc-400 px-4 py-2 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:border-zinc-600"
+          className={botonPrimario}
         >
           {pendiente ? "Guardando…" : "Agregar ingreso"}
         </button>

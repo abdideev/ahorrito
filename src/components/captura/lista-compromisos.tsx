@@ -21,24 +21,24 @@ interface Props {
 export function ListaCompromisos({ compromisos, actualizar, eliminar }: Props) {
   if (compromisos.length === 0) {
     return (
-      <p className="mt-4 rounded border border-dashed border-zinc-400 p-4 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
+      <p className="mt-5 rounded-xl border border-dashed border-borde bg-superficie p-4 text-texto-suave">
         Todavía no registras ningún pago. Agrega al menos uno para generar tu plan.
       </p>
     );
   }
 
   return (
-    <ul className="mt-4 space-y-3">
+    <ul className="mt-5 space-y-4">
       {compromisos.map((compromiso) => (
         <li
           key={compromiso.id}
-          className="rounded border border-zinc-300 p-4 dark:border-zinc-700"
+          className="elevado p-5"
         >
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <p className="font-medium">{compromiso.denominacion}</p>
-            <p className="text-zinc-700 dark:text-zinc-300">
+            <p className="font-bold text-texto">{compromiso.denominacion}</p>
+            <p className="text-texto">
               {formatearPesos(compromiso.monto)}
-              <span className="text-zinc-600 dark:text-zinc-400">
+              <span className="text-texto-suave">
                 {" · "}
                 {compromiso.ocurrencias === 1
                   ? `vence el ${compromiso.fechaLimite}`
@@ -49,10 +49,10 @@ export function ListaCompromisos({ compromisos, actualizar, eliminar }: Props) {
 
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <details className="w-full">
-              <summary className="cursor-pointer rounded px-1 py-1 text-sm underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+              <summary className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border border-borde bg-fondo px-4 py-2 text-sm font-bold text-texto">
                 Editar<span className="sr-only"> {compromiso.denominacion}</span>
               </summary>
-              <div className="mt-3">
+              <div className="mt-4 border-t border-borde pt-4">
                 <FormularioCompromiso
                   accion={actualizar}
                   id={compromiso.id}
