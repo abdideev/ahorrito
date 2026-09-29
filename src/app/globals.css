@@ -52,7 +52,6 @@
   --color-texto: var(--texto);
   --color-texto-suave: var(--texto-suave);
   --color-verde-marca: var(--verde-500);
-  --color-verde-accesible: var(--verde-700);
   --color-error: var(--error);
   --color-alerta: var(--alerta);
   --font-sans: var(--font-geist-sans);
@@ -104,7 +103,9 @@ body {
   color: #18181b;
 }
 
-:focus-visible {
+:focus-visible,
+input[type="date"]:focus,
+input[type="date"]:focus-within {
   outline: 3px solid var(--foco);
   outline-offset: 3px;
 }
@@ -172,6 +173,48 @@ body {
   transform: translateY(1px);
 }
 
+.boton-interactivo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.boton-interactivo-contenido,
+.boton-interactivo-alterno {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+}
+
+.boton-interactivo-contenido {
+  position: relative;
+  z-index: 1;
+}
+
+.boton-interactivo-punto {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 999px;
+  background: #18181b;
+}
+
+.boton-interactivo-alterno {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  color: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(3rem);
+}
+
+.texto-brillante-animado {
+  color: var(--texto-suave);
+  font-weight: 650;
+}
+
 .salto-contenido {
   position: fixed;
   z-index: 50;
@@ -204,5 +247,51 @@ body {
   .boton-secundario:hover {
     filter: brightness(0.97);
     transform: translateY(-1px);
+  }
+
+  .boton-interactivo-punto,
+  .boton-interactivo-contenido,
+  .boton-interactivo-alterno {
+    transition:
+      transform 300ms ease,
+      opacity 300ms ease;
+  }
+
+  .boton-interactivo:not(:disabled):hover .boton-interactivo-punto {
+    transform: scale(120);
+  }
+
+  .boton-interactivo:not(:disabled):hover .boton-interactivo-contenido {
+    opacity: 0;
+    transform: translateX(3rem);
+  }
+
+  .boton-interactivo:not(:disabled):hover .boton-interactivo-alterno {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .texto-brillante-animado {
+    color: transparent;
+    background-image: linear-gradient(
+      90deg,
+      var(--texto-suave) 0%,
+      var(--texto-suave) 38%,
+      var(--texto) 50%,
+      var(--texto-suave) 62%,
+      var(--texto-suave) 100%
+    );
+    background-size: calc(100% + var(--shiny-width)) 100%;
+    background-clip: text;
+    animation: texto-brillante 2s ease-out 1;
+  }
+
+  @keyframes texto-brillante {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: -100% 0;
+    }
   }
 }

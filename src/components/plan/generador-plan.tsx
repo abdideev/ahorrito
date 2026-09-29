@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { DialogoCreditos } from "@/components/creditos/dialogo-creditos";
 import { Descargo } from "@/components/plan/descargo";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { TablaSemanas } from "@/components/plan/tabla-semanas";
 import type { Plan } from "@/core/tipos";
 import { describirAdvertencias, type Denominaciones } from "@/lib/plan/advertencias";
@@ -131,14 +133,13 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
   return (
     <div className="mt-6">
       <div className="flex flex-wrap items-center gap-3">
-        <button
+        <InteractiveHoverButton
           type="button"
           onClick={() => generar(plan === null)}
           disabled={generando || faltanDatos}
-          className="boton-primario"
         >
           {generando ? "Calculando…" : plan === null ? "Generar mi plan" : "Recalcular con mis datos"}
-        </button>
+        </InteractiveHoverButton>
 
         {plan !== null && (
           <button
@@ -239,7 +240,11 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
                   si quieres el texto que la acompaña.
                 </p>
               )}
-              {estadoExplicacion === "esperando" && <p>Preparando la explicación…</p>}
+              {estadoExplicacion === "esperando" && (
+                <p>
+                  <AnimatedShinyText>Preparando la explicación…</AnimatedShinyText>
+                </p>
+              )}
               {estadoExplicacion === "no-disponible" && (
                 <p className="rounded-xl border border-borde bg-fondo p-4 text-sm">
                   La explicación no está disponible en este momento. Tu plan y sus cifras están
