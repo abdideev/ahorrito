@@ -196,3 +196,69 @@ function validarOcurrencias(recibido: unknown): ResultadoOcurrencias {
   }
   return { valido: true, ocurrencias: Number(texto) };
 }
+
+export interface ErroresIngreso {
+  readonly monto?: string;
+  readonly fecha?: string;
+}
+
+export type ResultadoIngreso =
+  | { readonly valido: true; readonly monto: Centavos; readonly fecha: string }
+  | { readonly valido: false; readonly errores: ErroresIngreso };
+
+/**
+ * RF-05: ingreso extraordinario con monto y fecha de recepción.
+ *
+ * No se exige que la fecha caiga dentro del horizonte: el horizonte depende del plan que
+ * todavía no se ha calculado, y el motor ya avisa con `ingreso-fuera-de-horizonte`.
+ */
+export function validarIngreso(montoRecibido: unknown, fechaRecibida: unknown): ResultadoIngreso {
+  const monto = validarImporte(montoRecibido, "el monto del ingreso");
+  const fecha = validarFecha(fechaRecibida, "la fecha del ingreso");
+
+  if (!monto.valido || !fecha.valido) {
+    return {
+      valido: false,
+      errores: {
+        monto: monto.valido ? undefined : monto.error,
+        fecha: fecha.valido ? undefined : fecha.error,
+      },
+    };
+  }
+  return { valido: true, monto: monto.monto, fecha: fecha.fecha };
+}
+
+export interface ErroresMeta {
+  readonly montoObjetivo?: string;
+  readonly fechaObjetivo?: string;
+}
+
+export type ResultadoMeta =
+  | { readonly valido: true; readonly montoObjetivo: Centavos; readonly fechaObjetivo: string }
+  | { readonly valido: false; readonly errores: ErroresMeta };
+
+/**
+ * RF-06: meta de ahorro con monto objetivo y fecha objetivo.
+ *
+ * El contrato de I-01 exige que la fecha objetivo sea posterior a hoy. La fecha de hoy se
+ * recibe como dato, no se lee del reloj, para que la función sea comprobable; quien la
+ * llama usa la fecha del centro de México (`fechaDeHoyEnMexico`).
+ */
+export function validarMeta(montoRecibido: unknown, fechaRecibida: unknown, hoy: string): ResultadoMeta {
+  const monto = validarImporte(montoRecibido, "el monto de tu meta");
+  const fecha = validarFecha(fechaRecibida, "la fecha en que quieres lograrla");
+
+  let errorFecha = fecha.valido ? undefined : (fecha as { error: string }).error;
+  if (fecha.valido && fecha.fecha <= hoy) {
+    // Las fechas AAAA-MM-DD se comparan como cadenas: su orden alfabético es cronológico.
+    errorFecha = "Elige una fecha posterior a hoy.";
+  }
+
+  if (!monto.valido || errorFecha) {
+    return {
+      valido: false,
+      errores: { montoObjetivo: monto.valido ? undefined : monto.error, fechaObjetivo: errorFecha },
+    };
+  }
+  return { valido: true, montoObjetivo: monto.monto, fechaObjetivo: (fecha as { fecha: string }).fecha };
+}

@@ -6,6 +6,8 @@ import {
   validarDiaSemana,
   validarFecha,
   validarImporte,
+  validarIngreso,
+  validarMeta,
   validarPresupuesto,
 } from "./validacion";
 
@@ -152,5 +154,65 @@ describe("validarCompromiso (RF-03)", () => {
     expect(resultado.valido).toBe(false);
     if (resultado.valido) return;
     expect(Object.values(resultado.errores).filter(Boolean)).toHaveLength(4);
+  });
+});
+
+describe("validarIngreso (RF-05)", () => {
+  it("acepta monto y fecha validos", () => {
+    expect(validarIngreso("1200.75", "2026-10-10")).toEqual({
+      valido: true,
+      monto: 120_075,
+      fecha: "2026-10-10",
+    });
+  });
+
+  it("acepta una fecha lejana: el motor avisa si queda fuera del horizonte", () => {
+    expect(validarIngreso("500", "2030-01-01").valido).toBe(true);
+  });
+
+  it.each([
+    ["monto vacio", "", "2026-10-10", "monto"],
+    ["monto negativo", "-100", "2026-10-10", "monto"],
+    ["fecha inexistente", "500", "2026-02-30", "fecha"],
+  ])("rechaza %s", (_caso, monto, fecha, campo) => {
+    const resultado = validarIngreso(monto, fecha);
+    expect(resultado.valido).toBe(false);
+    if (resultado.valido) return;
+    expect(resultado.errores[campo as keyof typeof resultado.errores]).toBeDefined();
+  });
+});
+
+describe("validarMeta (RF-06)", () => {
+  const HOY = "2026-09-29";
+
+  it("acepta monto y fecha posterior a hoy", () => {
+    expect(validarMeta("3000", "2026-12-31", HOY)).toEqual({
+      valido: true,
+      montoObjetivo: 300_000,
+      fechaObjetivo: "2026-12-31",
+    });
+  });
+
+  it("rechaza la fecha de hoy, porque el contrato exige una posterior", () => {
+    const resultado = validarMeta("3000", HOY, HOY);
+    expect(resultado.valido).toBe(false);
+    if (resultado.valido) return;
+    expect(resultado.errores.fechaObjetivo).toBe("Elige una fecha posterior a hoy.");
+  });
+
+  it("rechaza una fecha pasada", () => {
+    expect(validarMeta("3000", "2026-01-01", HOY).valido).toBe(false);
+  });
+
+  it("acepta el dia siguiente", () => {
+    expect(validarMeta("3000", "2026-09-30", HOY).valido).toBe(true);
+  });
+
+  it("informa los dos errores a la vez", () => {
+    const resultado = validarMeta("0", "2020-01-01", HOY);
+    expect(resultado.valido).toBe(false);
+    if (resultado.valido) return;
+    expect(resultado.errores.montoObjetivo).toBeDefined();
+    expect(resultado.errores.fechaObjetivo).toBeDefined();
   });
 });
