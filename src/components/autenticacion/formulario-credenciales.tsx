@@ -1,6 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
+import {
+  ayuda as claseAyuda,
+  botonPrimario,
+  campo,
+  error as claseError,
+  etiqueta,
+  mensaje as claseMensaje,
+} from "@/components/captura/estilos";
 import { ESTADO_INICIAL, type EstadoFormulario } from "@/lib/autenticacion/estado";
 
 interface Props {
@@ -29,10 +37,6 @@ export function FormularioCredenciales({
 }: Props) {
   const [estado, enviar, pendiente] = useActionState(accion, ESTADO_INICIAL);
 
-  const etiqueta = "block text-sm font-medium text-zinc-700 dark:text-zinc-300";
-  const campo =
-    "mt-1 w-full rounded border border-zinc-400 bg-white px-3 py-2 text-zinc-900 aria-[invalid=true]:border-red-600 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
-  const error = "mt-1 text-sm text-red-700 dark:text-red-400";
 
   const describeContrasena =
     [ayudaContrasena ? "ayuda-contrasena" : null, estado.errores.contrasena ? "error-contrasena" : null]
@@ -40,7 +44,7 @@ export function FormularioCredenciales({
       .join(" ") || undefined;
 
   return (
-    <form action={enviar} noValidate className="mt-6 space-y-4">
+    <form action={enviar} noValidate className="mt-8 space-y-5">
       {siguiente && <input type="hidden" name="siguiente" value={siguiente} />}
 
       <div>
@@ -59,7 +63,7 @@ export function FormularioCredenciales({
           className={campo}
         />
         {estado.errores.correo && (
-          <p id="error-correo" className={error}>
+          <p id="error-correo" className={claseError}>
             {estado.errores.correo}
           </p>
         )}
@@ -80,12 +84,12 @@ export function FormularioCredenciales({
           className={campo}
         />
         {ayudaContrasena && (
-          <p id="ayuda-contrasena" className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <p id="ayuda-contrasena" className={claseAyuda}>
             {ayudaContrasena}
           </p>
         )}
         {estado.errores.contrasena && (
-          <p id="error-contrasena" className={error}>
+          <p id="error-contrasena" className={claseError}>
             {estado.errores.contrasena}
           </p>
         )}
@@ -94,11 +98,7 @@ export function FormularioCredenciales({
       {estado.mensaje && (
         <p
           role={estado.tipo === "error" ? "alert" : "status"}
-          className={
-            estado.tipo === "error"
-              ? "rounded border border-red-600 p-3 text-sm text-red-700 dark:text-red-400"
-              : "rounded border border-emerald-600 p-3 text-sm text-emerald-800 dark:text-emerald-300"
-          }
+          className={claseMensaje(estado.tipo)}
         >
           {estado.mensaje}
         </p>
@@ -107,7 +107,7 @@ export function FormularioCredenciales({
       <button
         type="submit"
         disabled={pendiente}
-        className="w-full rounded bg-zinc-900 px-5 py-2.5 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+        className={`${botonPrimario} w-full`}
       >
         {pendiente ? "Procesando…" : textoBoton}
       </button>
