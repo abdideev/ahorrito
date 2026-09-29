@@ -22,10 +22,17 @@ import {
   type EntradaPlan,
   type FechaIso,
   type IngresoExtra,
+  type MetaAhorro,
   type Plan,
+  type Presupuesto,
   type Vencimiento,
 } from "@/core/tipos";
-import type { ResumenPlan } from "@/ports/repositorio";
+import type {
+  CompromisoGuardado,
+  DatosCompromiso,
+  DatosIngreso,
+  ResumenPlan,
+} from "@/ports/repositorio";
 import { centavosATexto, textoACentavos } from "./importes";
 
 // ---------------------------------------------------------------------------
@@ -95,6 +102,11 @@ export interface FilaCompromiso {
   readonly monto: string;
   readonly fecha_limite: string;
   readonly ocurrencias: number;
+}
+
+/** El motor no usa la denominación; la interfaz sí (SC-06). */
+export interface FilaCompromisoGuardado extends FilaCompromiso {
+  readonly denominacion: string;
 }
 
 export interface FilaIngresoExtra {
@@ -251,6 +263,69 @@ export function filasAEntrada(
       meta === null
         ? null
         : { montoObjetivo: textoACentavos(meta.monto_objetivo), fechaObjetivo: fechaIso(meta.fecha_objetivo) },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Captura del usuario (RF-02 a RF-06), incorporada a I-04 por SC-06
+// ---------------------------------------------------------------------------
+
+export function filaAPresupuesto(fila: FilaPresupuesto): Presupuesto {
+  return {
+    montoSemanal: textoACentavos(fila.monto_semanal),
+    diaInicioSemana: comoDiaSemana(fila.dia_inicio_semana),
+  };
+}
+
+export function presupuestoAFila(presupuesto: Presupuesto): FilaPresupuesto {
+  return {
+    monto_semanal: centavosATexto(presupuesto.montoSemanal),
+    dia_inicio_semana: presupuesto.diaInicioSemana,
+  };
+}
+
+export function filaACompromiso(fila: FilaCompromisoGuardado): CompromisoGuardado {
+  return {
+    id: fila.id,
+    denominacion: comoTexto(fila.denominacion, "denominacion"),
+    monto: textoACentavos(fila.monto),
+    fechaLimite: fechaIso(fila.fecha_limite),
+    ocurrencias: comoEntero(fila.ocurrencias, "ocurrencias"),
+  };
+}
+
+export function compromisoAFila(datos: DatosCompromiso): Omit<FilaCompromisoGuardado, "id"> {
+  return {
+    denominacion: datos.denominacion,
+    monto: centavosATexto(datos.monto),
+    fecha_limite: datos.fechaLimite,
+    ocurrencias: datos.ocurrencias,
+  };
+}
+
+export function filaAIngreso(fila: FilaIngresoExtra): IngresoExtra {
+  return {
+    id: fila.id,
+    monto: textoACentavos(fila.monto),
+    fecha: fechaIso(fila.fecha),
+  };
+}
+
+export function ingresoAFila(datos: DatosIngreso): Omit<FilaIngresoExtra, "id"> {
+  return { monto: centavosATexto(datos.monto), fecha: datos.fecha };
+}
+
+export function filaAMeta(fila: FilaMetaAhorro): MetaAhorro {
+  return {
+    montoObjetivo: textoACentavos(fila.monto_objetivo),
+    fechaObjetivo: fechaIso(fila.fecha_objetivo),
+  };
+}
+
+export function metaAFila(meta: MetaAhorro): FilaMetaAhorro {
+  return {
+    monto_objetivo: centavosATexto(meta.montoObjetivo),
+    fecha_objetivo: meta.fechaObjetivo,
   };
 }
 

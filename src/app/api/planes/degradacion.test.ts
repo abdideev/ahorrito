@@ -15,6 +15,7 @@ import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import { centavos, type EntradaPlan } from "@/core/tipos";
 import type { ServicioExplicacion } from "@/ports/explicacion";
+import { crearRepositorioFalso } from "@/ports/dobles";
 import type { RepositorioPlanes } from "@/ports/repositorio";
 import { generarPlan, type LineaFlujo } from "./orquestador";
 
@@ -33,13 +34,7 @@ const ENTRADA: EntradaPlan = {
 const PLAN_ESPERADO = calcularPlan(ENTRADA);
 
 function repositorioFalso() {
-  return {
-    obtenerDatosEntrada: vi.fn(async () => ENTRADA),
-    guardarPlan: vi.fn(async () => ID_PLAN),
-    guardarExplicacion: vi.fn(async () => true),
-    listarPlanes: vi.fn(async () => []),
-    obtenerPlan: vi.fn(async () => null),
-  } satisfies RepositorioPlanes;
+  return crearRepositorioFalso(ENTRADA, ID_PLAN);
 }
 
 /** Ejecuta una solicitud completa y devuelve todas las líneas del flujo. */

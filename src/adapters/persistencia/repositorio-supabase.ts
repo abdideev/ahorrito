@@ -8,15 +8,24 @@
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { FechaIso } from "@/core/tipos";
-import type { RepositorioPlanes } from "@/ports/repositorio";
+import type { FechaIso, MetaAhorro, Presupuesto } from "@/core/tipos";
+import type { DatosCompromiso, DatosIngreso, RepositorioPlanes } from "@/ports/repositorio";
 import {
+  compromisoAFila,
   esUuid,
+  filaACompromiso,
+  filaAIngreso,
+  filaAMeta,
+  filaAPresupuesto,
   filaAResumen,
   filasAEntrada,
   filasAPlan,
+  ingresoAFila,
+  metaAFila,
   planAFilas,
+  presupuestoAFila,
   type FilaCompromiso,
+  type FilaCompromisoGuardado,
   type FilaIngresoExtra,
   type FilaMetaAhorro,
   type FilaPlanLeida,
@@ -151,5 +160,171 @@ export function crearRepositorioSupabase(cliente: SupabaseClient): RepositorioPl
         meta.data as unknown as FilaMetaAhorro | null,
       );
     },
+
+    // -----------------------------------------------------------------------
+    // Captura del usuario (RF-02 a RF-06), incorporada a I-04 por SC-06.
+    //
+    // Las altas necesitan escribir `usuario_id`, que la seguridad por fila exige
+    // igual a auth.uid(). Ese identificador se toma de la sesión verificada por
+    // Supabase, nunca de un parámetro: es el principio que fijó SC-04.
+    // -----------------------------------------------------------------------
+
+    async obtenerPresupuesto() {
+      const { data, error } = await cliente
+        .from("presupuestos")
+        .select("monto_semanal::text, dia_inicio_semana")
+        .maybeSingle();
+      if (error) {
+        throw new ErrorPersistencia("No se pudo consultar el presupuesto.", error.code);
+      }
+      return data === null ? null : filaAPresupuesto(data as unknown as FilaPresupuesto);
+    },
+
+    async guardarPresupuesto(presupuesto: Presupuesto) {
+      const usuarioId = await idDeLaSesion(cliente);
+      // Hay un presupuesto por usuario: la columna usuario_id es unique, así que el
+      // upsert reemplaza el existente en lugar de crear un segundo.
+      const { error } = await cliente
+        .from("presupuestos")
+        .upsert({ usuario_id: usuarioId, ...presupuestoAFila(presupuesto) }, { onConflict: "usuario_id" });
+      if (error) {
+        throw new ErrorPersistencia("No se pudo guardar el presupuesto.", error.code);
+      }
+    },
+
+    async listarCompromisos() {
+      const { data, error } = await cliente
+        .from("compromisos")
+        .select("id, denominacion, monto::text, fecha_limite, ocurrencias")
+        .order("creado_en", { ascending: true });
+      if (error) {
+        throw new ErrorPersistencia("No se pudieron consultar los compromisos.", error.code);
+      }
+      return (data as unknown as FilaCompromisoGuardado[]).map(filaACompromiso);
+    },
+
+    async agregarCompromiso(datos: DatosCompromiso) {
+      const usuarioId = await idDeLaSesion(cliente);
+      const { data, error } = await cliente
+        .from("compromisos")
+        .insert({ usuario_id: usuarioId, ...compromisoAFila(datos) })
+        .select("id")
+        .single();
+      if (error) {
+        throw new ErrorPersistencia("No se pudo guardar el compromiso.", error.code);
+      }
+      return (data as { id: string }).id;
+    },
+
+    async actualizarCompromiso(id: string, datos: DatosCompromiso) {
+      if (!esUuid(id)) {
+        return false;
+      }
+      const { data, error } = await cliente
+        .from("compromisos")
+        .update(compromisoAFila(datos))
+        .eq("id", id)
+        .select("id");
+      if (error) {
+        throw new ErrorPersistencia("No se pudo modificar el compromiso.", error.code);
+      }
+      return (data ?? []).length > 0;
+    },
+
+    async eliminarCompromiso(id: string) {
+      return eliminarFila(cliente, "compromisos", id, "No se pudo eliminar el compromiso.");
+    },
+
+    async listarIngresos() {
+      const { data, error } = await cliente
+        .from("ingresos_extra")
+        .select("id, monto::text, fecha")
+        .order("fecha", { ascending: true });
+      if (error) {
+        throw new ErrorPersistencia("No se pudieron consultar los ingresos.", error.code);
+      }
+      return (data as unknown as FilaIngresoExtra[]).map(filaAIngreso);
+    },
+
+    async agregarIngreso(datos: DatosIngreso) {
+      const usuarioId = await idDeLaSesion(cliente);
+      const { data, error } = await cliente
+        .from("ingresos_extra")
+        .insert({ usuario_id: usuarioId, ...ingresoAFila(datos) })
+        .select("id")
+        .single();
+      if (error) {
+        throw new ErrorPersistencia("No se pudo guardar el ingreso.", error.code);
+      }
+      return (data as { id: string }).id;
+    },
+
+    async eliminarIngreso(id: string) {
+      return eliminarFila(cliente, "ingresos_extra", id, "No se pudo eliminar el ingreso.");
+    },
+
+    async obtenerMeta() {
+      const { data, error } = await cliente
+        .from("metas_ahorro")
+        .select("monto_objetivo::text, fecha_objetivo")
+        .maybeSingle();
+      if (error) {
+        throw new ErrorPersistencia("No se pudo consultar la meta de ahorro.", error.code);
+      }
+      return data === null ? null : filaAMeta(data as unknown as FilaMetaAhorro);
+    },
+
+    async guardarMeta(meta: MetaAhorro) {
+      const usuarioId = await idDeLaSesion(cliente);
+      const { error } = await cliente
+        .from("metas_ahorro")
+        .upsert({ usuario_id: usuarioId, ...metaAFila(meta) }, { onConflict: "usuario_id" });
+      if (error) {
+        throw new ErrorPersistencia("No se pudo guardar la meta de ahorro.", error.code);
+      }
+    },
+
+    async eliminarMeta() {
+      const usuarioId = await idDeLaSesion(cliente);
+      const { data, error } = await cliente
+        .from("metas_ahorro")
+        .delete()
+        .eq("usuario_id", usuarioId)
+        .select("id");
+      if (error) {
+        throw new ErrorPersistencia("No se pudo eliminar la meta de ahorro.", error.code);
+      }
+      return (data ?? []).length > 0;
+    },
   };
+}
+
+/**
+ * Identificador del usuario de la sesión, verificado por Supabase. Solo se usa para
+ * escribir `usuario_id` en las altas; nunca llega como parámetro desde la interfaz.
+ */
+async function idDeLaSesion(cliente: SupabaseClient): Promise<string> {
+  const { data, error } = await cliente.auth.getClaims();
+  const id = data?.claims?.sub;
+  if (error || typeof id !== "string") {
+    throw new ErrorPersistencia("No hay sesion para guardar los datos.", error?.code);
+  }
+  return id;
+}
+
+/** Baja por identificador. La seguridad por fila limita el alcance a las filas propias. */
+async function eliminarFila(
+  cliente: SupabaseClient,
+  tabla: "compromisos" | "ingresos_extra",
+  id: string,
+  mensaje: string,
+): Promise<boolean> {
+  if (!esUuid(id)) {
+    return false;
+  }
+  const { data, error } = await cliente.from(tabla).delete().eq("id", id).select("id");
+  if (error) {
+    throw new ErrorPersistencia(mensaje, error.code);
+  }
+  return (data ?? []).length > 0;
 }
