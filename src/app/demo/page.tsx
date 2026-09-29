@@ -12,6 +12,7 @@
  */
 
 import { useState } from "react";
+import { botonPrimario, botonSecundario, campo, etiqueta } from "@/components/captura/estilos";
 import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import type { Advertencia, DiaSemana, Plan } from "@/core/tipos";
@@ -103,19 +104,18 @@ export default function DemostracionMotor() {
     }
   }
 
-  const etiqueta = "block text-sm font-medium text-zinc-700 dark:text-zinc-300";
-  const campo =
-    "mt-1 w-full rounded border border-zinc-400 bg-white px-2 py-1.5 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <h1 className="text-3xl font-semibold">Ahorrito · demostración del motor</h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+    <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+      <h1 className="text-3xl font-black tracking-tight text-texto sm:text-4xl">
+        Ahorrito · demostración del motor
+      </h1>
+      <p className="mt-3 max-w-3xl leading-7 text-texto-suave">
         Prototipo para presentar el componente C-03. Ejecuta <code>calcularPlan</code> sin base
         de datos, sin sesión y sin el servicio de inteligencia artificial.
       </p>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-3">
+      <section className="superficie mt-8 grid gap-5 p-5 sm:grid-cols-3 sm:p-7">
         <div>
           <label className={etiqueta} htmlFor="fecha">
             Fecha de cálculo
@@ -161,11 +161,11 @@ export default function DemostracionMotor() {
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-medium">Compromisos de pago</h2>
+      <section className="superficie mt-8 p-5 sm:p-7">
+        <h2 className="text-2xl font-black tracking-tight text-texto">Compromisos de pago</h2>
         <div className="mt-3 space-y-3">
           {compromisos.map((fila, indice) => (
-            <div key={indice} className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+            <div key={indice} className="elevado grid gap-3 p-4 sm:grid-cols-[2fr_1fr_1fr_1fr_auto]">
               <input
                 aria-label="Denominación"
                 className={campo}
@@ -205,7 +205,7 @@ export default function DemostracionMotor() {
               />
               <button
                 type="button"
-                className="rounded border border-zinc-400 px-3 py-1.5 text-sm dark:border-zinc-600"
+                className={`${botonSecundario} text-sm`}
                 onClick={() => setCompromisos((filas) => filas.filter((_, i) => i !== indice))}
               >
                 Quitar
@@ -215,7 +215,7 @@ export default function DemostracionMotor() {
         </div>
         <button
           type="button"
-          className="mt-3 rounded border border-zinc-400 px-3 py-1.5 text-sm dark:border-zinc-600"
+          className={`${botonSecundario} mt-4 text-sm`}
           onClick={() =>
             setCompromisos((filas) => [
               ...filas,
@@ -227,7 +227,7 @@ export default function DemostracionMotor() {
         </button>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2">
+      <section className="superficie mt-8 grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
         <div>
           <label className={etiqueta} htmlFor="meta-monto">
             Meta de ahorro (opcional, MXN)
@@ -258,30 +258,30 @@ export default function DemostracionMotor() {
 
       <button
         type="button"
-        className="mt-8 rounded bg-zinc-900 px-5 py-2.5 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
+        className={`${botonPrimario} mt-8`}
         onClick={calcular}
       >
         Calcular plan
       </button>
 
       {error !== null && (
-        <p role="alert" className="mt-6 rounded border border-red-500 p-3 text-red-700 dark:text-red-400">
+        <p role="alert" className="mt-6 rounded-xl border border-error bg-error/6 p-4 font-semibold text-error">
           El motor rechazó la entrada: {error}
         </p>
       )}
 
       {plan !== null && (
-        <section className="mt-10">
-          <h2 className="text-xl font-medium">Plan semanal</h2>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <section className="superficie mt-10 p-5 sm:p-7">
+          <h2 className="text-2xl font-black tracking-tight text-texto">Plan semanal</h2>
+          <p className="mt-2 text-sm text-texto-suave">
             Horizonte del {plan.inicioHorizonte} al {plan.finHorizonte} · {plan.asignaciones.length}{" "}
             semanas
           </p>
 
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-zinc-400 text-left dark:border-zinc-600">
+          <div className="mt-5 overflow-x-auto rounded-xl border border-borde">
+            <table className="w-full min-w-4xl border-collapse bg-fondo text-sm">
+              <thead className="bg-superficie-hundida">
+                <tr className="border-b border-borde text-left">
                   <th className="py-2 pr-3">Semana</th>
                   <th className="py-2 pr-3">Periodo</th>
                   <th className="py-2 pr-3 text-right">Disponible</th>
@@ -296,7 +296,7 @@ export default function DemostracionMotor() {
                 {plan.asignaciones.map((asignacion) => (
                   <tr
                     key={asignacion.numeroSemana}
-                    className="border-b border-zinc-200 dark:border-zinc-800"
+                    className="border-b border-borde last:border-b-0"
                   >
                     <td className="py-2 pr-3">{asignacion.numeroSemana}</td>
                     <td className="py-2 pr-3">
@@ -336,7 +336,7 @@ export default function DemostracionMotor() {
           </div>
 
           {plan.evaluacionMeta !== null && (
-            <p className="mt-4">
+            <p className="mt-5 leading-7">
               <strong>Meta de ahorro:</strong>{" "}
               {plan.evaluacionMeta.viable
                 ? `alcanzable. Se apartan ${formatearPesos(plan.evaluacionMeta.montoObjetivo)} antes del ${plan.evaluacionMeta.fechaObjetivo}.`
@@ -345,8 +345,8 @@ export default function DemostracionMotor() {
           )}
 
           {plan.advertencias.length > 0 && (
-            <div className="mt-4">
-              <h3 className="font-medium">Advertencias</h3>
+            <div className="mt-5 border-t border-borde pt-5">
+              <h3 className="font-bold text-texto">Advertencias</h3>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
                 {plan.advertencias.map((advertencia, indice) => (
                   <li key={indice}>{describir(advertencia)}</li>
@@ -357,7 +357,7 @@ export default function DemostracionMotor() {
         </section>
       )}
 
-      <p className="mt-10 border-t border-zinc-300 pt-4 text-sm text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+      <p className="mt-10 border-t border-borde pt-5 text-sm leading-6 text-texto-suave">
         Este plan es una sugerencia de organización personal y no constituye asesoría financiera
         profesional (RF-11).
       </p>

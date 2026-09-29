@@ -20,6 +20,6 @@ export const botonSecundario = "boton-secundario";
 
 export function mensaje(tipo: "error" | "exito" | null): string {
   return tipo === "error"
-    ? "rounded-xl border border-error bg-error/[0.06] p-3 text-sm font-semibold text-error"
-    : "rounded-xl border border-[var(--verde-600)] bg-verde-marca/[0.08] p-3 text-sm font-semibold text-texto";
+    ? "rounded-xl border border-error bg-error/6 p-3 text-sm font-semibold text-error"
+    : "rounded-xl border border-[var(--verde-600)] bg-verde-marca/8 p-3 text-sm font-semibold text-texto";
 }
