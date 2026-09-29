@@ -123,6 +123,13 @@ export default async function Panel() {
           Ahorrito reparte tu presupuesto para que cada pago llegue a tiempo.
         </p>
         <GeneradorPlan denominaciones={denominaciones} faltanDatos={faltanDatos} />
+        {planes.length > 0 && (
+          <p className="mt-4 text-sm">
+            <Link href="/planes" className="font-medium underline underline-offset-2">
+              Ver mis {planes.length === 1 ? "plan guardado" : `${planes.length} planes guardados`}
+            </Link>
+          </p>
+        )}
       </section>
 
       {mostrarOpcionales && (
@@ -172,8 +179,7 @@ export default async function Panel() {
       )}
 
       <p className="mt-12 text-sm text-zinc-600 dark:text-zinc-400">
-        El historial de planes se incorpora en el siguiente paso de esta fase. Mientras tanto,
-        puedes usar la{" "}
+        ¿Quieres ver cómo funciona el motor de cálculo por dentro? Visita la{" "}
         <Link href="/demo" className="font-medium underline underline-offset-2">
           demostración del motor
         </Link>
