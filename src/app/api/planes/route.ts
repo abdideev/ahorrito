@@ -5,7 +5,10 @@
  * dependencias de la petición y traduce el resultado a códigos de estado. La secuencia
  * vive en orquestador.ts.
  *
- * Respuestas:
+ * GET /api/planes devuelve los planes guardados del usuario, del más reciente al más
+ * antiguo (RF-12). El detalle de uno vive en GET /api/planes/{id}.
+ *
+ * Respuestas de POST:
  * - 200 application/x-ndjson: línea `plan` en cuanto se guarda; línea `explicacion`
  *   después, salvo que se envíe `{"explicar": false}`.
  * - 400 cuerpo inválido · 401 sin sesión · 422 faltan datos obligatorios
@@ -82,4 +85,21 @@ function describirError(error: unknown): string {
     return `ErrorPersistencia(${error.codigo ?? "sin codigo"})`;
   }
   return error instanceof Error ? error.name : "desconocido";
+}
+
+/** GET /api/planes: índice de planes guardados del usuario (I-01, RF-12). */
+export async function GET(): Promise<Response> {
+  const supabase = await crearClienteServidor();
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims) {
+    return Response.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  try {
+    const planes = await crearRepositorioSupabase(supabase).listarPlanes();
+    return Response.json({ planes }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("[planes] No se pudieron listar los planes.", describirError(error));
+    return Response.json({ error: "No se pudo acceder a tus datos. Intenta de nuevo." }, { status: 503 });
+  }
 }
