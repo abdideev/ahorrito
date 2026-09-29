@@ -15,6 +15,7 @@ import { FormularioPresupuesto } from "@/components/captura/formulario-presupues
 import { FormularioMeta } from "@/components/captura/formulario-meta";
 import { ListaCompromisos } from "@/components/captura/lista-compromisos";
 import { SeccionIngresos } from "@/components/captura/seccion-ingresos";
+import { GeneradorPlan } from "@/components/plan/generador-plan";
 import { fechaDeMananaEnMexico } from "@/lib/fecha";
 import { centavosATextoPlano, formatearPesos } from "@/lib/dinero";
 import { repositorioDeLaSesion } from "@/lib/supabase/repositorio";
@@ -34,12 +35,21 @@ export const metadata: Metadata = {
  */
 export default async function Panel() {
   const [usuario, repositorio] = await Promise.all([obtenerUsuarioActual(), repositorioDeLaSesion()]);
-  const [presupuesto, compromisos, ingresos, meta] = await Promise.all([
+  const [presupuesto, compromisos, ingresos, meta, planes] = await Promise.all([
     repositorio.obtenerPresupuesto(),
     repositorio.listarCompromisos(),
     repositorio.listarIngresos(),
     repositorio.obtenerMeta(),
+    repositorio.listarPlanes(),
   ]);
+
+  const faltanDatos = presupuesto === null || compromisos.length === 0;
+  // Regla de negocio 6: lo opcional se pide después de mostrar el primer plan. Si el
+  // usuario ya capturó algo, la sección sigue visible para que pueda corregirlo.
+  const mostrarOpcionales = planes.length > 0 || ingresos.length > 0 || meta !== null;
+  const denominaciones = Object.fromEntries(
+    compromisos.map((compromiso) => [compromiso.id, compromiso.denominacion]),
+  );
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-12">
@@ -105,9 +115,20 @@ export default async function Panel() {
         </details>
       </section>
 
+      <section aria-labelledby="titulo-plan" className="mt-12">
+        <h2 id="titulo-plan" className="text-xl font-semibold">
+          3. Tu plan semanal
+        </h2>
+        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+          Ahorrito reparte tu presupuesto para que cada pago llegue a tiempo.
+        </p>
+        <GeneradorPlan denominaciones={denominaciones} faltanDatos={faltanDatos} />
+      </section>
+
+      {mostrarOpcionales && (
       <section aria-labelledby="titulo-opcionales" className="mt-12">
         <h2 id="titulo-opcionales" className="text-xl font-semibold">
-          3. Opcional: ingresos extra y meta de ahorro
+          4. Opcional: ingresos extra y meta de ahorro
         </h2>
         <p className="mt-1 text-zinc-700 dark:text-zinc-300">
           Nada de esto es obligatorio para generar tu plan. Complétalo cuando quieras afinarlo.
@@ -148,9 +169,11 @@ export default async function Panel() {
           />
         </details>
       </section>
+      )}
 
       <p className="mt-12 text-sm text-zinc-600 dark:text-zinc-400">
-        La vista del plan se incorpora en el siguiente paso de esta fase. Mientras tanto, puedes usar la{" "}
+        El historial de planes se incorpora en el siguiente paso de esta fase. Mientras tanto,
+        puedes usar la{" "}
         <Link href="/demo" className="font-medium underline underline-offset-2">
           demostración del motor
         </Link>
