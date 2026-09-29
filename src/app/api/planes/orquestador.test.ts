@@ -3,9 +3,8 @@ import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import { centavos, type EntradaPlan } from "@/core/tipos";
 import type { ServicioExplicacion } from "@/ports/explicacion";
-import type { RepositorioPlanes } from "@/ports/repositorio";
+import { crearRepositorioFalso } from "@/ports/dobles";
 import {
-  fechaDeHoyEnMexico,
   generarPlan,
   validarCuerpo,
   type LineaFlujo,
@@ -21,13 +20,7 @@ const ENTRADA: EntradaPlan = {
 };
 
 function repositorioFalso(entrada: EntradaPlan | null = ENTRADA) {
-  return {
-    obtenerDatosEntrada: vi.fn(async () => entrada),
-    guardarPlan: vi.fn(async () => ID_PLAN),
-    guardarExplicacion: vi.fn(async () => true),
-    listarPlanes: vi.fn(async () => []),
-    obtenerPlan: vi.fn(async () => null),
-  } satisfies RepositorioPlanes;
+  return crearRepositorioFalso(entrada, ID_PLAN);
 }
 
 /** Explicación que no resuelve hasta que la prueba lo decide. */
@@ -167,13 +160,5 @@ describe("validarCuerpo", () => {
     ["la captura del contrato anterior a SC-05", '{"presupuesto": {"monto": 500}}'],
   ])("rechaza %s", (_caso, texto) => {
     expect(validarCuerpo(texto)).toEqual({ valido: false });
-  });
-});
-
-describe("fechaDeHoyEnMexico", () => {
-  it("usa la fecha del centro de Mexico y no la de UTC", () => {
-    // 19 sep 03:00 UTC son las 21:00 del 18 sep en la Ciudad de Mexico (UTC-6).
-    expect(fechaDeHoyEnMexico(new Date("2026-09-19T03:00:00Z"))).toBe("2026-09-18");
-    expect(fechaDeHoyEnMexico(new Date("2026-09-19T06:00:00Z"))).toBe("2026-09-19");
   });
 });

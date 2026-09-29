@@ -14,6 +14,7 @@
 
 import type { Advertencia, AsignacionSemanal, FechaIso, Plan } from "@/core/tipos";
 import { centavosATexto } from "@/adapters/persistencia/importes";
+import { etiquetasDeCompromisos, PREFIJO_INGRESO } from "@/lib/plan/etiquetas";
 
 /** Importe en pesos con dos decimales, como texto exacto ("1234.50"). */
 export type ImporteCarga = string;
@@ -79,28 +80,12 @@ export interface CargaAnonimizada {
   readonly advertencias: readonly AdvertenciaCarga[];
 }
 
-/**
- * Asigna etiquetas genéricas en orden de primera aparición. El orden es determinista para
- * un mismo plan, lo que hace reproducibles las pruebas y la inspección de CA-11.
- */
-class Etiquetador {
-  private readonly etiquetas = new Map<string, string>();
-
-  constructor(private readonly prefijo: string) {}
-
-  etiqueta(id: string): string {
-    let etiqueta = this.etiquetas.get(id);
-    if (etiqueta === undefined) {
-      etiqueta = `${this.prefijo} ${this.etiquetas.size + 1}`;
-      this.etiquetas.set(id, etiqueta);
-    }
-    return etiqueta;
-  }
-}
-
 export function construirCarga(plan: Plan): CargaAnonimizada {
-  const compromisos = new Etiquetador("Compromiso");
-  const ingresos = new Etiquetador("Ingreso");
+  // El etiquetado de compromisos es compartido con la interfaz, que lo deshace al
+  // mostrar la explicación: si los dos órdenes divergieran, la interfaz atribuiría un
+  // pago a otro (src/lib/plan/etiquetas.ts).
+  const compromisos = etiquetasDeCompromisos(plan);
+  const ingresos = new EtiquetadorIngresos();
 
   return {
     moneda: "MXN",
@@ -124,7 +109,30 @@ export function construirCarga(plan: Plan): CargaAnonimizada {
   };
 }
 
-function semanaACarga(asignacion: AsignacionSemanal, compromisos: Etiquetador): SemanaCarga {
+/** Los ingresos no llevan etiqueta compartida: la interfaz nunca los menciona por nombre. */
+class EtiquetadorIngresos {
+  private readonly etiquetas = new Map<string, string>();
+
+  etiqueta(id: string): string {
+    let etiqueta = this.etiquetas.get(id);
+    if (etiqueta === undefined) {
+      etiqueta = `${PREFIJO_INGRESO} ${this.etiquetas.size + 1}`;
+      this.etiquetas.set(id, etiqueta);
+    }
+    return etiqueta;
+  }
+}
+
+/**
+ * Toda etiqueta pedida existe, porque el mapa se construyó recorriendo el mismo plan.
+ * El respaldo es una etiqueta genérica sin número: nunca el identificador, que es lo
+ * que RNF-10 prohíbe enviar.
+ */
+function etiquetaDe(compromisos: Map<string, string>, id: string): string {
+  return compromisos.get(id) ?? "Compromiso";
+}
+
+function semanaACarga(asignacion: AsignacionSemanal, compromisos: Map<string, string>): SemanaCarga {
   return {
     numero: asignacion.numeroSemana,
     inicio: asignacion.fechaInicio,
@@ -138,13 +146,13 @@ function semanaACarga(asignacion: AsignacionSemanal, compromisos: Etiquetador): 
     sobrecargada: asignacion.sobrecargada,
     enDeficit: asignacion.enDeficit,
     vencimientos: asignacion.vencimientos.map((vencimiento) => ({
-      compromiso: compromisos.etiqueta(vencimiento.compromisoId),
+      compromiso: etiquetaDe(compromisos, vencimiento.compromisoId),
       ocurrencia: vencimiento.ocurrencia,
       fecha: vencimiento.fecha,
       monto: centavosATexto(vencimiento.monto),
     })),
     apartados: asignacion.apartados.map((apartado) => ({
-      compromiso: compromisos.etiqueta(apartado.compromisoId),
+      compromiso: etiquetaDe(compromisos, apartado.compromisoId),
       ocurrencia: apartado.ocurrencia,
       monto: centavosATexto(apartado.monto),
     })),
@@ -153,8 +161,8 @@ function semanaACarga(asignacion: AsignacionSemanal, compromisos: Etiquetador): 
 
 function advertenciaACarga(
   advertencia: Advertencia,
-  compromisos: Etiquetador,
-  ingresos: Etiquetador,
+  compromisos: Map<string, string>,
+  ingresos: EtiquetadorIngresos,
 ): AdvertenciaCarga {
   switch (advertencia.tipo) {
     case "semana-sobrecargada":
@@ -181,7 +189,7 @@ function advertenciaACarga(
     case "vencimiento-fuera-de-horizonte":
       return {
         tipo: advertencia.tipo,
-        compromiso: compromisos.etiqueta(advertencia.compromisoId),
+        compromiso: etiquetaDe(compromisos, advertencia.compromisoId),
         ocurrencia: advertencia.ocurrencia,
         fecha: advertencia.fecha,
       };

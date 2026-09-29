@@ -7,7 +7,7 @@
 | Prioridad | Baja |
 | Origen | Indicación del docente (STK-03) |
 | Criterio de aceptación | CA-13 |
-| Componente | C-01, alojado en `/demo` hasta la Fase 4 |
+| Componente | C-01, en la vista del plan del panel desde la Fase 4 |
 
 ---
 
@@ -27,18 +27,25 @@ Pascua premia la propiedad técnica central del sistema.
 
 ## 2. Receta verificable
 
-En `http://localhost:3000/demo`:
+En `http://localhost:3000/panel`, con la sesión iniciada:
 
 | Campo | Valor |
 |---|---|
-| Fecha de cálculo | 2026-09-14 |
 | Presupuesto semanal | 200 |
 | La semana inicia en | Lunes |
-| Compromisos | Uno solo: monto 600, fecha límite 2026-09-30, 1 ocurrencia |
-| Meta de ahorro | Vacía |
+| Compromisos | Uno solo: monto 600, una sola vez, con fecha límite en el **último día de la tercera semana** |
+| Ingresos extraordinarios | Ninguno |
+| Meta de ahorro | Sin definir |
+
+La fecha de cálculo ya no se captura: la fija el servidor con la fecha de hoy en
+`America/Mexico_City` (SC-05). Por eso la fecha límite se calcula respecto del inicio de la
+semana en curso: si la semana 1 empieza el lunes *L*, la fecha límite es *L* + 20 días.
 
 El plan resultante tiene tres semanas con $200.00 apartados y $0.00 de remanente. Activar las
 tres monedas en orden abre los créditos.
+
+Ejemplo verificado el 29 de septiembre de 2026: semana 1 desde el 2026-09-28, fecha límite
+2026-10-18.
 
 ## 3. Criterio de aceptación CA-13
 
@@ -46,7 +53,7 @@ tres monedas en orden abre los créditos.
 |---|---|---|
 | 1 | Ejecutar la receta de la sección 2 | Se abre el plan de créditos |
 | 2 | Activar una moneda fuera de orden | La alcancía se reinicia y no se abren los créditos |
-| 3 | Calcular un plan que no cuadra (presupuesto 201 en la receta) | No aparece ninguna moneda activable |
+| 3 | Calcular un plan que no cuadra (presupuesto 201 en la receta) | No aparece ninguna moneda activable: la columna muestra el importe |
 | 4 | Completar la secuencia solo con teclado (Tab y Enter) y cerrar con Esc | Todo se opera sin ratón; el foco vuelve a la página al cerrar |
 | 5 | Activar "reducir movimiento" en el sistema operativo y repetir | Los créditos se muestran sin confeti |
 
@@ -58,7 +65,7 @@ tres monedas en orden abre los créditos.
 | `src/lib/huevo/creditos.ts` | Roles, horas y créditos tomados de las secciones 1.7.2 y 1.8.5 del documento maestro |
 | `src/components/ui/confetti.tsx` | Componente Confetti de Magic UI (MIT), sin `ConfettiButton` |
 | `src/components/creditos/dialogo-creditos.tsx` | Diálogo accesible con el plan de créditos |
-| `src/app/demo/page.tsx` | Integración en la vista del plan |
+| `src/components/plan/tabla-semanas.tsx` | Integración en la vista del plan: la columna "Te queda" se vuelve moneda |
 
 **Decisiones:**
 
@@ -74,7 +81,13 @@ tres monedas en orden abre los créditos.
   `prefers-reduced-motion`.
 - **Sin red (RNF-10).** Nada de la secuencia sale del navegador.
 
-## 5. Pendiente
+## 5. Estado
 
-Cuando se construya la vista del plan de la Fase 4 (paso 4.4), la integración de `/demo` debe
-trasladarse a esa vista.
+Trasladado a la vista real del plan en la Fase 4 (commit `e687dcb`) y retirado del prototipo
+`/demo`, que lo alojaba de forma temporal: existe una sola implementación.
+
+**Verificación del 29 de septiembre de 2026.** Los pasos 1 a 4 de CA-13 se ejecutaron en el
+panel con el usuario de prueba: la secuencia en orden abre los créditos, activar una moneda
+fuera de orden reinicia la alcancía, un plan que no cuadra no muestra monedas, y todo se opera
+con teclado, con el diálogo modal cerrándose con Esc. El paso 5, con "reducir movimiento"
+activado en el sistema operativo, queda para la Fase 5.

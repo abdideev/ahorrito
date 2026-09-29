@@ -7,22 +7,15 @@
  * servicio de inteligencia artificial. Ejecuta calcularPlan en el navegador para
  * hacer visible el resultado del motor durante la presentación de avance.
  *
- * Aloja también el huevo de Pascua de SC-02 (RF-14) hasta que exista la vista del plan
- * de la Fase 4 (paso 4.4), a la que deberá trasladarse.
+ * El huevo de Pascua de SC-02 (RF-14) vivió aquí hasta la Fase 4; ahora está en la vista
+ * real del plan, dentro del panel.
  */
 
 import { useState } from "react";
 import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import type { Advertencia, DiaSemana, Plan } from "@/core/tipos";
-import { DialogoCreditos } from "@/components/creditos/dialogo-creditos";
 import { formatearPesos, pesosACentavos } from "@/lib/dinero";
-import {
-  crearAlcancia,
-  depositarMoneda,
-  esCuadrePerfecto,
-  type EstadoAlcancia,
-} from "@/lib/huevo/secuencia";
 
 interface FilaCompromiso {
   denominacion: string;
@@ -75,9 +68,6 @@ export default function DemostracionMotor() {
   const [metaFecha, setMetaFecha] = useState("2026-11-30");
   const [plan, setPlan] = useState<Plan | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // SC-02: la alcancía solo existe mientras el plan mostrado cuadra al centavo.
-  const [alcancia, setAlcancia] = useState<EstadoAlcancia | null>(null);
-  const [creditosAbiertos, setCreditosAbiertos] = useState(false);
 
   function actualizarCompromiso(indice: number, campo: keyof FilaCompromiso, valor: string) {
     setCompromisos((filas) =>
@@ -106,27 +96,10 @@ export default function DemostracionMotor() {
             : { montoObjetivo: pesosACentavos(metaMonto), fechaObjetivo: fechaIso(metaFecha) },
       });
       setPlan(resultado);
-      setAlcancia(
-        esCuadrePerfecto(resultado) ? crearAlcancia(resultado.asignaciones.length) : null,
-      );
       setError(null);
     } catch (fallo) {
       setPlan(null);
-      setAlcancia(null);
       setError(fallo instanceof Error ? fallo.message : "Error desconocido");
-    }
-  }
-
-  function depositar(numeroSemana: number) {
-    if (alcancia === null) {
-      return;
-    }
-    const { estado, resultado } = depositarMoneda(alcancia, numeroSemana);
-    if (resultado === "completa") {
-      setAlcancia(crearAlcancia(estado.totalSemanas));
-      setCreditosAbiertos(true);
-    } else {
-      setAlcancia(estado);
     }
   }
 
@@ -341,25 +314,7 @@ export default function DemostracionMotor() {
                         : formatearPesos(asignacion.montoVencimientos)}
                     </td>
                     <td className="py-2 pr-3 text-right">
-                      {alcancia === null ? (
-                        formatearPesos(asignacion.remanente)
-                      ) : (
-                        <button
-                          type="button"
-                          aria-pressed={asignacion.numeroSemana <= alcancia.depositadas}
-                          onClick={() => depositar(asignacion.numeroSemana)}
-                          className="rounded px-1 tabular-nums hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-amber-500 dark:hover:bg-amber-900/40"
-                        >
-                          {asignacion.numeroSemana <= alcancia.depositadas ? (
-                            <>
-                              <span aria-hidden="true">🪙</span>
-                              <span className="sr-only">{formatearPesos(asignacion.remanente)}</span>
-                            </>
-                          ) : (
-                            formatearPesos(asignacion.remanente)
-                          )}
-                        </button>
-                      )}
+                      {formatearPesos(asignacion.remanente)}
                     </td>
                     <td className="py-2 pr-3 text-right">
                       {asignacion.aporteMeta === 0 ? "—" : formatearPesos(asignacion.aporteMeta)}
@@ -407,7 +362,6 @@ export default function DemostracionMotor() {
         profesional (RF-11).
       </p>
 
-      <DialogoCreditos abierto={creditosAbiertos} onCerrar={() => setCreditosAbiertos(false)} />
     </main>
   );
 }
