@@ -3,13 +3,20 @@ import Link from "next/link";
 import {
   actualizarCompromiso,
   agregarCompromiso,
+  agregarIngreso,
   eliminarCompromiso,
+  eliminarIngreso,
+  eliminarMeta,
+  guardarMeta,
   guardarPresupuesto,
 } from "../acciones";
 import { FormularioCompromiso } from "@/components/captura/formulario-compromiso";
 import { FormularioPresupuesto } from "@/components/captura/formulario-presupuesto";
+import { FormularioMeta } from "@/components/captura/formulario-meta";
 import { ListaCompromisos } from "@/components/captura/lista-compromisos";
-import { centavosATextoPlano } from "@/lib/dinero";
+import { SeccionIngresos } from "@/components/captura/seccion-ingresos";
+import { fechaDeMananaEnMexico } from "@/lib/fecha";
+import { centavosATextoPlano, formatearPesos } from "@/lib/dinero";
 import { repositorioDeLaSesion } from "@/lib/supabase/repositorio";
 import { obtenerUsuarioActual } from "@/lib/supabase/usuario";
 import { cerrarSesion } from "../../(auth)/acciones";
@@ -27,9 +34,11 @@ export const metadata: Metadata = {
  */
 export default async function Panel() {
   const [usuario, repositorio] = await Promise.all([obtenerUsuarioActual(), repositorioDeLaSesion()]);
-  const [presupuesto, compromisos] = await Promise.all([
+  const [presupuesto, compromisos, ingresos, meta] = await Promise.all([
     repositorio.obtenerPresupuesto(),
     repositorio.listarCompromisos(),
+    repositorio.listarIngresos(),
+    repositorio.obtenerMeta(),
   ]);
 
   return (
@@ -96,9 +105,52 @@ export default async function Panel() {
         </details>
       </section>
 
+      <section aria-labelledby="titulo-opcionales" className="mt-12">
+        <h2 id="titulo-opcionales" className="text-xl font-semibold">
+          3. Opcional: ingresos extra y meta de ahorro
+        </h2>
+        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+          Nada de esto es obligatorio para generar tu plan. Complétalo cuando quieras afinarlo.
+        </p>
+
+        <details className="mt-4 rounded border border-zinc-300 p-4 dark:border-zinc-700" open={ingresos.length > 0}>
+          <summary className="cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+            Ingresos extraordinarios
+            {ingresos.length > 0 && (
+              <span className="text-zinc-600 dark:text-zinc-400"> · {ingresos.length} registrados</span>
+            )}
+          </summary>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Dinero que recibirás una sola vez, como una beca o un aguinaldo.
+          </p>
+          <SeccionIngresos ingresos={ingresos} agregar={agregarIngreso} eliminar={eliminarIngreso} />
+        </details>
+
+        <details className="mt-4 rounded border border-zinc-300 p-4 dark:border-zinc-700" open={meta !== null}>
+          <summary className="cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+            Meta de ahorro
+            {meta !== null && (
+              <span className="text-zinc-600 dark:text-zinc-400">
+                {" · "}
+                {formatearPesos(meta.montoObjetivo)} para el {meta.fechaObjetivo}
+              </span>
+            )}
+          </summary>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Ahorrito te dirá si es alcanzable con lo que te sobra cada semana.
+          </p>
+          <FormularioMeta
+            accion={guardarMeta}
+            quitar={eliminarMeta}
+            montoObjetivo={meta === null ? "" : centavosATextoPlano(meta.montoObjetivo)}
+            fechaObjetivo={meta?.fechaObjetivo ?? ""}
+            fechaMinima={fechaDeMananaEnMexico()}
+          />
+        </details>
+      </section>
+
       <p className="mt-12 text-sm text-zinc-600 dark:text-zinc-400">
-        La meta de ahorro y la vista del plan se incorporan en los siguientes pasos de esta
-        fase. Mientras tanto, puedes usar la{" "}
+        La vista del plan se incorpora en el siguiente paso de esta fase. Mientras tanto, puedes usar la{" "}
         <Link href="/demo" className="font-medium underline underline-offset-2">
           demostración del motor
         </Link>
