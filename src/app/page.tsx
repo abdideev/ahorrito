@@ -55,7 +55,7 @@ const beneficios = [
 
 export default function Home() {
   return (
-    <div className="flex min-h-dvh flex-1 flex-col overflow-hidden">
+    <div className="flex min-h-dvh flex-1 flex-col">
       <a href="#contenido" className="salto-contenido">
         Saltar al contenido
       </a>
@@ -69,17 +69,17 @@ export default function Home() {
           <Image
             src="/ahorrito-logo.svg"
             alt="Ahorrito"
-            width={280}
-            height={96}
+            width={160}
+            height={47}
             priority
-            className="h-12 w-36 object-contain sm:h-14 sm:w-44"
+            className="h-auto w-36 sm:w-40"
           />
         </Link>
 
         <nav aria-label="Acceso a la cuenta" className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/iniciar-sesion"
-            className="inline-flex min-h-11 items-center rounded-full px-3 font-bold text-verde-accesible underline-offset-4 hover:underline sm:px-4"
+            className="inline-flex min-h-11 items-center rounded-full px-3 font-bold text-texto underline-offset-4 hover:underline sm:px-4"
           >
             Iniciar sesión
           </Link>
@@ -89,22 +89,13 @@ export default function Home() {
         </nav>
       </header>
 
-      <main id="contenido" className="relative z-0 flex flex-1 items-center py-12 sm:py-16 lg:py-20">
-        <div
-          aria-hidden="true"
-          className="absolute -left-24 top-2 size-64 rounded-full border-[2.5rem] border-verde-marca/10 sm:size-80"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute -right-20 bottom-0 size-60 rounded-full bg-verde-marca/10 blur-3xl sm:size-96"
-        />
-
-        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-12">
+      <main id="contenido" className="flex flex-1 items-center py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-12">
           <section aria-labelledby="titulo-portada" className="max-w-3xl">
-            <p className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-verde-accesible/40 bg-verde-marca/15 px-4 py-2 text-sm font-extrabold tracking-wide text-verde-accesible uppercase">
+            <p className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-borde bg-superficie px-4 py-2 text-sm font-extrabold tracking-wide text-texto-suave uppercase">
               <span
                 aria-hidden="true"
-                className="size-2.5 rounded-full bg-verde-marca ring-4 ring-verde-marca/20"
+                className="size-2.5 rounded-full bg-verde-marca"
               />
               Tu plan semanal de dinero
             </p>
@@ -139,7 +130,7 @@ export default function Home() {
             </div>
 
             <p className="mt-5 flex items-center gap-2 text-sm font-semibold text-texto-suave">
-              <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0 text-verde-accesible" fill="none">
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0 text-texto" fill="none">
                 <path
                   d="m5 12 4 4L19 6"
                   stroke="currentColor"
@@ -158,7 +149,7 @@ export default function Home() {
                 <p className="text-sm font-bold text-texto-suave">Tu próxima semana</p>
                 <p className="mt-1 text-xl font-black text-texto">Todo bajo control</p>
               </div>
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-verde-marca/25 text-verde-accesible">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-full border border-borde bg-fondo text-texto">
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="size-7" fill="none">
                   <path
                     d="M7 10V8a5 5 0 0 1 10 0v2m-11 0h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"
@@ -177,7 +168,7 @@ export default function Home() {
             <ul className="mt-5 space-y-4">
               {beneficios.map((beneficio) => (
                 <li key={beneficio.titulo} className="elevado flex gap-4 p-4 sm:p-5">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-verde-marca/20 text-verde-accesible">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-borde bg-fondo text-texto-suave">
                     {beneficio.icono}
                   </span>
                   <div>
