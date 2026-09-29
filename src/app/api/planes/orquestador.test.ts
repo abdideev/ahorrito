@@ -3,7 +3,7 @@ import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import { centavos, type EntradaPlan } from "@/core/tipos";
 import type { ServicioExplicacion } from "@/ports/explicacion";
-import type { RepositorioPlanes } from "@/ports/repositorio";
+import { crearRepositorioFalso } from "@/ports/dobles";
 import {
   fechaDeHoyEnMexico,
   generarPlan,
@@ -21,13 +21,7 @@ const ENTRADA: EntradaPlan = {
 };
 
 function repositorioFalso(entrada: EntradaPlan | null = ENTRADA) {
-  return {
-    obtenerDatosEntrada: vi.fn(async () => entrada),
-    guardarPlan: vi.fn(async () => ID_PLAN),
-    guardarExplicacion: vi.fn(async () => true),
-    listarPlanes: vi.fn(async () => []),
-    obtenerPlan: vi.fn(async () => null),
-  } satisfies RepositorioPlanes;
+  return crearRepositorioFalso(entrada, ID_PLAN);
 }
 
 /** Explicación que no resuelve hasta que la prueba lo decide. */
