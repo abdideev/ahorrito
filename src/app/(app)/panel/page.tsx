@@ -52,27 +52,27 @@ export default async function Panel() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-6 py-12">
-      <header className="flex items-baseline justify-between gap-4">
-        <h1 className="text-3xl font-semibold">Tu plan</h1>
+    <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-black tracking-tight text-texto sm:text-4xl">Tu plan</h1>
         <form action={cerrarSesion}>
           <button
             type="submit"
-            className="rounded border border-zinc-400 px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:border-zinc-600"
+            className="boton-secundario px-4 py-2 text-sm"
           >
             Cerrar sesión
           </button>
         </form>
       </header>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        Sesión iniciada como <strong>{usuario?.correo}</strong>.
+      <p className="mt-2 text-sm text-texto-suave">
+        Sesión iniciada como <strong className="text-texto">{usuario?.correo}</strong>.
       </p>
 
-      <section aria-labelledby="titulo-presupuesto" className="mt-10">
-        <h2 id="titulo-presupuesto" className="text-xl font-semibold">
+      <section aria-labelledby="titulo-presupuesto" className="superficie mt-10 p-5 sm:p-8">
+        <h2 id="titulo-presupuesto" className="text-2xl font-black tracking-tight text-texto">
           1. Tu presupuesto
         </h2>
-        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+        <p className="mt-2 leading-7 text-texto-suave">
           {presupuesto === null
             ? "Empieza por aquí: es el dinero con el que cuentas cada semana."
             : "Puedes cambiarlo cuando quieras; el plan se recalcula con el nuevo monto."}
@@ -84,11 +84,11 @@ export default async function Panel() {
         />
       </section>
 
-      <section aria-labelledby="titulo-compromisos" className="mt-12">
-        <h2 id="titulo-compromisos" className="text-xl font-semibold">
+      <section aria-labelledby="titulo-compromisos" className="superficie mt-8 p-5 sm:p-8">
+        <h2 id="titulo-compromisos" className="text-2xl font-black tracking-tight text-texto">
           2. Tus pagos con fecha límite
         </h2>
-        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+        <p className="mt-2 leading-7 text-texto-suave">
           Registra cada pago una sola vez. Si se repite cada mes, indica cuántos meses seguidos.
         </p>
 
@@ -99,10 +99,10 @@ export default async function Panel() {
         />
 
         <details
-          className="mt-6 rounded border border-zinc-300 p-4 dark:border-zinc-700"
+          className="mt-6 rounded-2xl border border-borde bg-fondo p-4 sm:p-5"
           open={compromisos.length === 0}
         >
-          <summary className="cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+          <summary className="flex min-h-11 cursor-pointer items-center rounded-xl px-2 py-2 font-bold text-texto">
             Agregar un pago
           </summary>
           <div className="mt-4">
@@ -115,11 +115,11 @@ export default async function Panel() {
         </details>
       </section>
 
-      <section aria-labelledby="titulo-plan" className="mt-12">
-        <h2 id="titulo-plan" className="text-xl font-semibold">
+      <section aria-labelledby="titulo-plan" className="superficie mt-8 p-5 sm:p-8">
+        <h2 id="titulo-plan" className="text-2xl font-black tracking-tight text-texto">
           3. Tu plan semanal
         </h2>
-        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+        <p className="mt-2 leading-7 text-texto-suave">
           Ahorrito reparte tu presupuesto para que cada pago llegue a tiempo.
         </p>
         <GeneradorPlan denominaciones={denominaciones} faltanDatos={faltanDatos} />
@@ -133,38 +133,38 @@ export default async function Panel() {
       </section>
 
       {mostrarOpcionales && (
-      <section aria-labelledby="titulo-opcionales" className="mt-12">
-        <h2 id="titulo-opcionales" className="text-xl font-semibold">
+      <section aria-labelledby="titulo-opcionales" className="superficie mt-8 p-5 sm:p-8">
+        <h2 id="titulo-opcionales" className="text-2xl font-black tracking-tight text-texto">
           4. Opcional: ingresos extra y meta de ahorro
         </h2>
-        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+        <p className="mt-2 leading-7 text-texto-suave">
           Nada de esto es obligatorio para generar tu plan. Complétalo cuando quieras afinarlo.
         </p>
 
-        <details className="mt-4 rounded border border-zinc-300 p-4 dark:border-zinc-700" open={ingresos.length > 0}>
-          <summary className="cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+        <details className="mt-6 rounded-2xl border border-borde bg-fondo p-4 sm:p-5" open={ingresos.length > 0}>
+          <summary className="flex min-h-11 cursor-pointer items-center rounded-xl px-2 py-2 font-bold text-texto">
             Ingresos extraordinarios
             {ingresos.length > 0 && (
-              <span className="text-zinc-600 dark:text-zinc-400"> · {ingresos.length} registrados</span>
+              <span className="font-normal text-texto-suave"> · {ingresos.length} registrados</span>
             )}
           </summary>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-3 text-sm leading-6 text-texto-suave">
             Dinero que recibirás una sola vez, como una beca o un aguinaldo.
           </p>
           <SeccionIngresos ingresos={ingresos} agregar={agregarIngreso} eliminar={eliminarIngreso} />
         </details>
 
-        <details className="mt-4 rounded border border-zinc-300 p-4 dark:border-zinc-700" open={meta !== null}>
-          <summary className="cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+        <details className="mt-4 rounded-2xl border border-borde bg-fondo p-4 sm:p-5" open={meta !== null}>
+          <summary className="flex min-h-11 cursor-pointer items-center rounded-xl px-2 py-2 font-bold text-texto">
             Meta de ahorro
             {meta !== null && (
-              <span className="text-zinc-600 dark:text-zinc-400">
+              <span className="font-normal text-texto-suave">
                 {" · "}
                 {formatearPesos(meta.montoObjetivo)} para el {meta.fechaObjetivo}
               </span>
             )}
           </summary>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-3 text-sm leading-6 text-texto-suave">
             Ahorrito te dirá si es alcanzable con lo que te sobra cada semana.
           </p>
           <FormularioMeta
@@ -178,7 +178,7 @@ export default async function Panel() {
       </section>
       )}
 
-      <p className="mt-12 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="mt-10 text-sm leading-6 text-texto-suave">
         ¿Quieres ver cómo funciona el motor de cálculo por dentro? Visita la{" "}
         <Link href="/demo" className="font-medium underline underline-offset-2">
           demostración del motor
