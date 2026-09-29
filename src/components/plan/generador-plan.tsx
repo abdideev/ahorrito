@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { DialogoCreditos } from "@/components/creditos/dialogo-creditos";
 import { Descargo } from "@/components/plan/descargo";
 import { TablaSemanas } from "@/components/plan/tabla-semanas";
 import type { Plan } from "@/core/tipos";
@@ -9,6 +10,12 @@ import { describirAdvertencias, type Denominaciones } from "@/lib/plan/advertenc
 import { conDenominaciones } from "@/lib/plan/etiquetas";
 import { leerFlujo, mensajeDeError } from "@/lib/plan/flujo";
 import { formatearPesos } from "@/lib/dinero";
+import {
+  crearAlcancia,
+  depositarMoneda,
+  esCuadrePerfecto,
+  type EstadoAlcancia,
+} from "@/lib/huevo/secuencia";
 
 interface Props {
   denominaciones: Denominaciones;
@@ -33,6 +40,9 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
   const [estadoExplicacion, setEstadoExplicacion] = useState<EstadoExplicacion>("sin-pedir");
   const [generando, setGenerando] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // SC-02 (RF-14): la alcancía solo existe mientras el plan mostrado cuadra al centavo.
+  const [alcancia, setAlcancia] = useState<EstadoAlcancia | null>(null);
+  const [creditosAbiertos, setCreditosAbiertos] = useState(false);
 
   // CA-07 exige que el descargo se vea sin desplazamiento en la pantalla del plan. Como
   // el panel reúne captura y resultado, al llegar un plan nuevo se lleva el foco a su
@@ -51,6 +61,20 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
    * sección 2.9: explicar cada recálculo multiplicaría las llamadas al modelo y
    * agotaría antes la cuota gratuita (RSG-01).
    */
+  /** SC-02: deposita la moneda de una semana; fuera de orden, la alcancía se reinicia. */
+  function depositar(numeroSemana: number) {
+    if (alcancia === null) {
+      return;
+    }
+    const { estado, resultado } = depositarMoneda(alcancia, numeroSemana);
+    if (resultado === "completa") {
+      setAlcancia(crearAlcancia(estado.totalSemanas));
+      setCreditosAbiertos(true);
+    } else {
+      setAlcancia(estado);
+    }
+  }
+
   async function generar(explicar: boolean) {
     setGenerando(true);
     setError(null);
@@ -74,6 +98,9 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
         if (linea.tipo === "plan") {
           planRecibido = linea.plan;
           setPlan(linea.plan);
+          setAlcancia(
+            esCuadrePerfecto(linea.plan) ? crearAlcancia(linea.plan.asignaciones.length) : null,
+          );
           // El plan ya está en pantalla; la explicación sigue en camino (RNF-01).
           setGenerando(false);
           // Ya existe un plan: el servidor puede revelar la captura opcional, que la
@@ -186,7 +213,12 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
             </ul>
           )}
 
-          <TablaSemanas plan={plan} denominaciones={denominaciones} />
+          <TablaSemanas
+            plan={plan}
+            denominaciones={denominaciones}
+            alcancia={alcancia}
+            alDepositar={depositar}
+          />
 
           <section aria-labelledby="titulo-explicacion">
             <h3 id="titulo-explicacion" className="font-semibold">
@@ -218,6 +250,8 @@ export function GeneradorPlan({ denominaciones, faltanDatos }: Props) {
           </section>
         </section>
       )}
+
+      <DialogoCreditos abierto={creditosAbiertos} onCerrar={() => setCreditosAbiertos(false)} />
     </div>
   );
 }

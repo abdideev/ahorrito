@@ -1,10 +1,16 @@
+"use client";
+
 import type { AsignacionSemanal, Plan } from "@/core/tipos";
 import type { Denominaciones } from "@/lib/plan/advertencias";
 import { formatearPesos } from "@/lib/dinero";
+import type { EstadoAlcancia } from "@/lib/huevo/secuencia";
 
 interface Props {
   plan: Plan;
   denominaciones: Denominaciones;
+  /** SC-02: presente solo cuando el plan cuadra al centavo (RF-14). */
+  alcancia?: EstadoAlcancia | null;
+  alDepositar?: (numeroSemana: number) => void;
 }
 
 /**
@@ -17,7 +23,7 @@ interface Props {
  * Las semanas marcadas no se distinguen solo por color: llevan una palabra en su celda
  * de estado, porque el color por sí solo no es perceptible para todos.
  */
-export function TablaSemanas({ plan, denominaciones }: Props) {
+export function TablaSemanas({ plan, denominaciones, alcancia = null, alDepositar }: Props) {
   return (
     <div className="mt-4 overflow-x-auto">
       <table className="w-full border-collapse text-sm">
@@ -49,7 +55,13 @@ export function TablaSemanas({ plan, denominaciones }: Props) {
         </thead>
         <tbody>
           {plan.asignaciones.map((semana) => (
-            <FilaSemana key={semana.numeroSemana} semana={semana} denominaciones={denominaciones} />
+            <FilaSemana
+              key={semana.numeroSemana}
+              semana={semana}
+              denominaciones={denominaciones}
+              alcancia={alcancia}
+              alDepositar={alDepositar}
+            />
           ))}
         </tbody>
       </table>
@@ -60,14 +72,19 @@ export function TablaSemanas({ plan, denominaciones }: Props) {
 function FilaSemana({
   semana,
   denominaciones,
+  alcancia,
+  alDepositar,
 }: {
   semana: AsignacionSemanal;
   denominaciones: Denominaciones;
+  alcancia: EstadoAlcancia | null;
+  alDepositar?: (numeroSemana: number) => void;
 }) {
   const vencimientos = semana.vencimientos.map(
     (vencimiento) =>
       `${denominaciones[vencimiento.compromisoId] ?? "Pago"} ${formatearPesos(vencimiento.monto)}`,
   );
+  const depositada = alcancia !== null && semana.numeroSemana <= alcancia.depositadas;
 
   return (
     <tr className="border-b border-zinc-200 align-top dark:border-zinc-800">
@@ -87,7 +104,29 @@ function FilaSemana({
         )}
       </td>
       <td className="py-2 pr-3">{semana.aporteMeta > 0 ? formatearPesos(semana.aporteMeta) : "—"}</td>
-      <td className="py-2 pr-3">{formatearPesos(semana.remanente)}</td>
+      <td className="py-2 pr-3">
+        {alcancia === null || alDepositar === undefined ? (
+          formatearPesos(semana.remanente)
+        ) : (
+          // SC-02: con el plan cuadrado al centavo, cada "queda" se vuelve una moneda.
+          // Es un botón real, así que la secuencia se completa también con teclado (CA-13).
+          <button
+            type="button"
+            aria-pressed={depositada}
+            onClick={() => alDepositar(semana.numeroSemana)}
+            className="rounded px-1 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:bg-amber-900/40"
+          >
+            {depositada ? (
+              <>
+                <span aria-hidden="true">🪙</span>
+                <span className="sr-only">{formatearPesos(semana.remanente)}, depositada</span>
+              </>
+            ) : (
+              formatearPesos(semana.remanente)
+            )}
+          </button>
+        )}
+      </td>
       <td className="py-2">
         {semana.enDeficit ? (
           <span className="rounded bg-red-100 px-2 py-0.5 font-medium text-red-900 dark:bg-red-950 dark:text-red-200">
