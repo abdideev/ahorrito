@@ -25,46 +25,57 @@ interface Props {
  */
 export function TablaSemanas({ plan, denominaciones, alcancia = null, alDepositar }: Props) {
   return (
-    <div className="mt-4 overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
-        <caption className="sr-only">
-          Plan semanal del {plan.inicioHorizonte} al {plan.finHorizonte}: cuánto apartar cada
-          semana y qué vence en ella.
-        </caption>
-        <thead>
-          <tr className="border-b border-zinc-400 text-left dark:border-zinc-600">
-            <th scope="col" className="py-2 pr-3">
-              Semana
-            </th>
-            <th scope="col" className="py-2 pr-3">
-              Disponible
-            </th>
-            <th scope="col" className="py-2 pr-3">
-              Apartar
-            </th>
-            <th scope="col" className="py-2 pr-3">
-              Para tu meta
-            </th>
-            <th scope="col" className="py-2 pr-3">
-              Te queda
-            </th>
-            <th scope="col" className="py-2">
-              Estado
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {plan.asignaciones.map((semana) => (
-            <FilaSemana
-              key={semana.numeroSemana}
-              semana={semana}
-              denominaciones={denominaciones}
-              alcancia={alcancia}
-              alDepositar={alDepositar}
-            />
-          ))}
-        </tbody>
-      </table>
+    <div className="mt-5">
+      <p className="mb-2 text-sm font-medium text-texto-suave sm:hidden">
+        Desliza horizontalmente para ver todas las columnas.
+      </p>
+      <div className="relative">
+        <div className="overflow-x-auto rounded-xl border border-borde">
+          <table className="min-w-184 w-full border-collapse bg-fondo text-sm">
+            <caption className="sr-only">
+              Plan semanal del {plan.inicioHorizonte} al {plan.finHorizonte}: cuánto apartar cada
+              semana y qué vence en ella.
+            </caption>
+            <thead className="bg-superficie-hundida">
+              <tr className="border-b border-borde text-left">
+                <th scope="col" className="px-4 py-3 font-bold">
+                  Semana
+                </th>
+                <th scope="col" className="px-4 py-3 font-bold">
+                  Disponible
+                </th>
+                <th scope="col" className="px-4 py-3 font-bold">
+                  Apartar
+                </th>
+                <th scope="col" className="px-4 py-3 font-bold">
+                  Para tu meta
+                </th>
+                <th scope="col" className="px-4 py-3 font-bold">
+                  Te queda
+                </th>
+                <th scope="col" className="px-4 py-3 font-bold">
+                  Estado
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {plan.asignaciones.map((semana) => (
+                <FilaSemana
+                  key={semana.numeroSemana}
+                  semana={semana}
+                  denominaciones={denominaciones}
+                  alcancia={alcancia}
+                  alDepositar={alDepositar}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-px right-px w-7 rounded-r-xl bg-linear-to-l from-superficie to-transparent sm:hidden"
+        />
+      </div>
     </div>
   );
 }
@@ -87,24 +98,22 @@ function FilaSemana({
   const depositada = alcancia !== null && semana.numeroSemana <= alcancia.depositadas;
 
   return (
-    <tr className="border-b border-zinc-200 align-top dark:border-zinc-800">
-      <th scope="row" className="py-2 pr-3 text-left font-medium">
+    <tr className="border-b border-borde align-top last:border-b-0">
+      <th scope="row" className="px-4 py-3 text-left font-bold">
         {semana.numeroSemana}
-        <span className="block font-normal text-zinc-600 dark:text-zinc-400">
-          {semana.fechaInicio}
-        </span>
+        <span className="block font-normal text-texto-suave">{semana.fechaInicio}</span>
       </th>
-      <td className="py-2 pr-3">{formatearPesos(semana.montoDisponible)}</td>
-      <td className="py-2 pr-3">
+      <td className="px-4 py-3 tabular-nums">{formatearPesos(semana.montoDisponible)}</td>
+      <td className="px-4 py-3 tabular-nums">
         {formatearPesos(semana.montoApartado)}
         {vencimientos.length > 0 && (
-          <span className="block text-zinc-600 dark:text-zinc-400">
-            Vence: {vencimientos.join(", ")}
-          </span>
+          <span className="block text-texto-suave">Vence: {vencimientos.join(", ")}</span>
         )}
       </td>
-      <td className="py-2 pr-3">{semana.aporteMeta > 0 ? formatearPesos(semana.aporteMeta) : "—"}</td>
-      <td className="py-2 pr-3">
+      <td className="px-4 py-3 tabular-nums">
+        {semana.aporteMeta > 0 ? formatearPesos(semana.aporteMeta) : "—"}
+      </td>
+      <td className="px-4 py-3 tabular-nums">
         {alcancia === null || alDepositar === undefined ? (
           formatearPesos(semana.remanente)
         ) : (
@@ -114,7 +123,7 @@ function FilaSemana({
             type="button"
             aria-pressed={depositada}
             onClick={() => alDepositar(semana.numeroSemana)}
-            className="rounded px-1 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:bg-amber-900/40"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-borde bg-superficie px-3 py-2 font-bold hover:bg-superficie-hundida"
           >
             {depositada ? (
               <>
@@ -127,17 +136,19 @@ function FilaSemana({
           </button>
         )}
       </td>
-      <td className="py-2">
+      <td className="px-4 py-3">
         {semana.enDeficit ? (
-          <span className="rounded bg-red-100 px-2 py-0.5 font-medium text-red-900 dark:bg-red-950 dark:text-red-200">
+          <span className="inline-flex rounded-full bg-red-100 px-2.5 py-1 font-bold text-red-900 dark:bg-red-950 dark:text-red-200">
             No alcanza
           </span>
         ) : semana.sobrecargada ? (
-          <span className="rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-100">
+          <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 font-bold text-amber-900 dark:bg-amber-950 dark:text-amber-100">
             Carga alta
           </span>
         ) : (
-          <span className="text-zinc-600 dark:text-zinc-400">Al día</span>
+          <span className="inline-flex rounded-full border border-borde bg-superficie-hundida px-2.5 py-1 font-medium text-texto">
+            Al día
+          </span>
         )}
       </td>
     </tr>
