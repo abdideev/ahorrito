@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { guardarPresupuesto } from "../acciones";
+import {
+  actualizarCompromiso,
+  agregarCompromiso,
+  eliminarCompromiso,
+  guardarPresupuesto,
+} from "../acciones";
+import { FormularioCompromiso } from "@/components/captura/formulario-compromiso";
 import { FormularioPresupuesto } from "@/components/captura/formulario-presupuesto";
+import { ListaCompromisos } from "@/components/captura/lista-compromisos";
 import { centavosATextoPlano } from "@/lib/dinero";
 import { repositorioDeLaSesion } from "@/lib/supabase/repositorio";
 import { obtenerUsuarioActual } from "@/lib/supabase/usuario";
@@ -20,7 +27,10 @@ export const metadata: Metadata = {
  */
 export default async function Panel() {
   const [usuario, repositorio] = await Promise.all([obtenerUsuarioActual(), repositorioDeLaSesion()]);
-  const presupuesto = await repositorio.obtenerPresupuesto();
+  const [presupuesto, compromisos] = await Promise.all([
+    repositorio.obtenerPresupuesto(),
+    repositorio.listarCompromisos(),
+  ]);
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-12">
@@ -55,9 +65,40 @@ export default async function Panel() {
         />
       </section>
 
-      <p className="mt-10 text-sm text-zinc-600 dark:text-zinc-400">
-        Los compromisos de pago, la meta de ahorro y la vista del plan se incorporan en los
-        siguientes pasos de esta fase. Mientras tanto, puedes usar la{" "}
+      <section aria-labelledby="titulo-compromisos" className="mt-12">
+        <h2 id="titulo-compromisos" className="text-xl font-semibold">
+          2. Tus pagos con fecha límite
+        </h2>
+        <p className="mt-1 text-zinc-700 dark:text-zinc-300">
+          Registra cada pago una sola vez. Si se repite cada mes, indica cuántos meses seguidos.
+        </p>
+
+        <ListaCompromisos
+          compromisos={compromisos}
+          actualizar={actualizarCompromiso}
+          eliminar={eliminarCompromiso}
+        />
+
+        <details
+          className="mt-6 rounded border border-zinc-300 p-4 dark:border-zinc-700"
+          open={compromisos.length === 0}
+        >
+          <summary className="cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+            Agregar un pago
+          </summary>
+          <div className="mt-4">
+            <FormularioCompromiso
+              accion={agregarCompromiso}
+              iniciales={{ denominacion: "", monto: "", fechaLimite: "", ocurrencias: "1" }}
+              textoBoton="Agregar pago"
+            />
+          </div>
+        </details>
+      </section>
+
+      <p className="mt-12 text-sm text-zinc-600 dark:text-zinc-400">
+        La meta de ahorro y la vista del plan se incorporan en los siguientes pasos de esta
+        fase. Mientras tanto, puedes usar la{" "}
         <Link href="/demo" className="font-medium underline underline-offset-2">
           demostración del motor
         </Link>
