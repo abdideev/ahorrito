@@ -8,6 +8,7 @@ import { iniciarSesion } from "../acciones";
 
 export const metadata: Metadata = {
   title: "Iniciar sesión · Ahorrito",
+  description: "Accede a Ahorrito para organizar tus pagos y revisar tus planes guardados.",
 };
 
 interface Props {

@@ -24,6 +24,7 @@ import { cerrarSesion } from "../../(auth)/acciones";
 
 export const metadata: Metadata = {
   title: "Panel · Ahorrito",
+  description: "Captura tu presupuesto y tus pagos para generar un plan semanal personalizado.",
 };
 
 /**

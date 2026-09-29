@@ -5,6 +5,7 @@ import { repositorioDeLaSesion } from "@/lib/supabase/repositorio";
 
 export const metadata: Metadata = {
   title: "Planes guardados · Ahorrito",
+  description: "Consulta el historial y el detalle de tus planes semanales guardados en Ahorrito.",
 };
 
 /**

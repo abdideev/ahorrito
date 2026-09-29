@@ -7,6 +7,7 @@ import { registrarse } from "../acciones";
 
 export const metadata: Metadata = {
   title: "Crear cuenta · Ahorrito",
+  description: "Crea tu cuenta para guardar y consultar tus planes semanales de dinero.",
 };
 
 export default function PaginaRegistro() {
