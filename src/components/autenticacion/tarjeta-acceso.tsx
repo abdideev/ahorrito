@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Aparecer } from "@/components/ui/movimiento";
 import { RUTA_INICIO_SESION } from "@/lib/autenticacion/rutas";
 import { TransicionRuta } from "@/components/ui/transicion-ruta";
 
@@ -29,7 +30,7 @@ export function TarjetaAcceso({ pantalla, idTitulo, titulo, descripcion, childre
   return (
     <TransicionRuta>
       <main className="flex min-h-dvh w-full items-center justify-center px-4 py-10 sm:py-16">
-        <section aria-labelledby={idTitulo} className="tarjeta relative w-full max-w-md p-6 sm:p-8">
+        <Aparecer como="section" aria-labelledby={idTitulo} className="tarjeta relative w-full max-w-md p-6 sm:p-8">
           <AnimatedThemeToggler className="absolute top-4 right-4" />
           <div className="flex justify-center">
             <Link
@@ -70,7 +71,7 @@ export function TarjetaAcceso({ pantalla, idTitulo, titulo, descripcion, childre
           <p className="mt-2 text-center leading-7 text-texto-suave">{descripcion}</p>
 
           {children}
-        </section>
+        </Aparecer>
       </main>
     </TransicionRuta>
   );

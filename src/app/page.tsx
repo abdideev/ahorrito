@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Aparecer } from "@/components/ui/movimiento";
 import { IconoCalendario, IconoEscudo, IconoInfo, IconoTendencia } from "@/components/ui/iconos";
 import { InteractiveHoverLink } from "@/components/ui/interactive-hover-button";
 import { TransicionRuta } from "@/components/ui/transicion-ruta";
@@ -80,7 +81,9 @@ export default function Home() {
 
         <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-10 sm:px-6 sm:pt-8">
           <div className="bento">
-            <section
+            <Aparecer
+              como="section"
+              indice={0}
               aria-labelledby="titulo-portada"
               className="tarjeta flex flex-col justify-between gap-10 p-6 sm:p-10 md:col-span-4"
             >
@@ -109,9 +112,11 @@ export default function Home() {
                   Ya tengo una cuenta
                 </Link>
               </div>
-            </section>
+            </Aparecer>
 
-            <section
+            <Aparecer
+              como="section"
+              indice={1}
               aria-labelledby="titulo-ejemplo"
               className="tarjeta-invertida flex flex-col gap-6 p-6 sm:p-8 md:col-span-2"
             >
@@ -152,10 +157,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </section>
+            </Aparecer>
 
             {beneficios.map((beneficio, indice) => (
-              <section
+              <Aparecer
+                como="section"
+                indice={indice + 2}
+                interactiva
                 key={beneficio.titulo}
                 aria-labelledby={`beneficio-${indice}`}
                 className="tarjeta tarjeta-interactiva flex flex-col gap-5 p-6 md:col-span-2"
@@ -167,13 +175,17 @@ export default function Home() {
                   </h2>
                   <p className="mt-2 leading-7 text-texto-suave">{beneficio.descripcion}</p>
                 </div>
-              </section>
+              </Aparecer>
             ))}
 
-            <footer className="elevado flex items-start gap-3 p-5 text-sm leading-6 text-texto-suave md:col-span-6 md:items-center">
+            <Aparecer
+              como="footer"
+              indice={5}
+              className="elevado flex items-start gap-3 p-5 text-sm leading-6 text-texto-suave md:col-span-6 md:items-center"
+            >
               <IconoInfo className="size-5 shrink-0 text-texto" />
               <p>Ahorrito organiza tu información; no sustituye asesoría financiera profesional.</p>
-            </footer>
+            </Aparecer>
           </div>
         </main>
       </div>

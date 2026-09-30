@@ -3,6 +3,7 @@
 import { useId, type ReactNode } from "react";
 import { Descargo } from "@/components/plan/descargo";
 import { TablaSemanas } from "@/components/plan/tabla-semanas";
+import { Aparecer } from "@/components/ui/movimiento";
 import {
   IconoAlcancia,
   IconoAviso,
@@ -66,11 +67,11 @@ export function VistaPlan({
 
   return (
     <>
-      <div className="md:col-span-6">
+      <Aparecer indice={0} className="md:col-span-6">
         <Descargo />
-      </div>
+      </Aparecer>
 
-      <div className="tarjeta flex flex-col justify-between gap-6 p-6 sm:p-7 md:col-span-4">
+      <Aparecer indice={1} className="tarjeta flex flex-col justify-between gap-6 p-6 sm:p-7 md:col-span-4">
         <div>
           <p className="rotulo flex items-center gap-2">
             <IconoCalendario className="size-4" />
@@ -104,10 +105,10 @@ export function VistaPlan({
           </ul>
           <RitmoSemanas plan={plan} />
         </div>
-      </div>
+      </Aparecer>
 
       {primera !== null && (
-        <div className="tarjeta-invertida flex flex-col justify-between gap-6 p-6 sm:p-7 md:col-span-2">
+        <Aparecer indice={2} className="tarjeta-invertida flex flex-col justify-between gap-6 p-6 sm:p-7 md:col-span-2">
           <p className="text-sm font-semibold opacity-80">
             Primera semana · desde el {formatearFechaCorta(primera.fechaInicio)}
           </p>
@@ -127,10 +128,10 @@ export function VistaPlan({
               <dd className="mt-0.5 font-bold tabular-nums">{formatearPesos(primera.remanente)}</dd>
             </div>
           </dl>
-        </div>
+        </Aparecer>
       )}
 
-      <div
+      <Aparecer indice={3}
         className={`tarjeta flex flex-col gap-3 p-6 ${meta === null ? "md:col-span-6" : "md:col-span-3"}`}
       >
         <p className="rotulo">Apartas en todo el plan</p>
@@ -141,10 +142,10 @@ export function VistaPlan({
           Lo necesario para cubrir cada pago antes de su fecha límite.
           {resumen.totalMeta > 0 && <> Además, {formatearPesos(resumen.totalMeta)} van a tu meta.</>}
         </p>
-      </div>
+      </Aparecer>
 
       {meta !== null && (
-        <div className="tarjeta flex flex-col gap-3 p-6 md:col-span-3">
+        <Aparecer indice={4} className="tarjeta flex flex-col gap-3 p-6 md:col-span-3">
           <div className="flex items-start justify-between gap-3">
             <p className="rotulo">Tu meta de ahorro</p>
             <span className="icono-tarjeta size-10">
@@ -173,11 +174,11 @@ export function VistaPlan({
               </>
             )}
           </p>
-        </div>
+        </Aparecer>
       )}
 
       {advertencias.length > 0 && (
-        <section aria-labelledby={idAdvertencias} className="md:col-span-6">
+        <Aparecer como="section" indice={5} aria-labelledby={idAdvertencias} className="md:col-span-6">
           <h3 id={idAdvertencias} className="mb-3 px-1 text-lg font-bold text-texto">
             Puntos de atención
           </h3>
@@ -204,10 +205,10 @@ export function VistaPlan({
               );
             })}
           </ul>
-        </section>
+        </Aparecer>
       )}
 
-      <section aria-labelledby={idTabla} className="tarjeta p-4 sm:p-6 md:col-span-6">
+      <Aparecer como="section" indice={6} aria-labelledby={idTabla} className="tarjeta p-4 sm:p-6 md:col-span-6">
         <h3 id={idTabla} className="px-1 text-lg font-bold text-texto">
           Semana a semana
         </h3>
@@ -218,9 +219,9 @@ export function VistaPlan({
           alDepositar={alDepositar}
         />
         {pista && <p className="mt-3 px-1 text-sm text-texto-suave italic">{pista}</p>}
-      </section>
+      </Aparecer>
 
-      <section aria-labelledby={idExplicacion} className="tarjeta p-6 sm:p-7 md:col-span-6">
+      <Aparecer como="section" indice={7} aria-labelledby={idExplicacion} className="tarjeta p-6 sm:p-7 md:col-span-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 id={idExplicacion} className="flex items-center gap-3 text-lg font-bold text-texto">
             <span className="icono-tarjeta size-10">
@@ -235,7 +236,7 @@ export function VistaPlan({
         <div aria-live="polite" className="mt-4 leading-7 text-texto">
           {explicacion}
         </div>
-      </section>
+      </Aparecer>
     </>
   );
 }

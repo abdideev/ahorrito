@@ -7,6 +7,7 @@ import { DialogoCreditos } from "@/components/creditos/dialogo-creditos";
 import { enfocarAlInicio } from "@/components/plan/enfocar";
 import { VistaPlan } from "@/components/plan/vista-plan";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
+import { Aparecer } from "@/components/ui/movimiento";
 import { IconoDestello, IconoHistorial } from "@/components/ui/iconos";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import type { Plan } from "@/core/tipos";
@@ -137,7 +138,7 @@ export function GeneradorPlan({ denominaciones, faltanDatos, cantidadPlanes }: P
 
   return (
     <>
-      <section aria-labelledby="titulo-plan" className="tarjeta p-6 sm:p-8 md:col-span-6">
+      <Aparecer como="section" indice={3} aria-labelledby="titulo-plan" className="tarjeta p-6 sm:p-8 md:col-span-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 id="titulo-plan" className="flex items-center gap-3 text-xl font-bold text-texto">
@@ -195,7 +196,7 @@ export function GeneradorPlan({ denominaciones, faltanDatos, cantidadPlanes }: P
             </Link>
           </p>
         )}
-      </section>
+      </Aparecer>
 
       {plan !== null && (
         <section

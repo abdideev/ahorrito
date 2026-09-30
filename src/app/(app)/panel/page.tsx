@@ -17,6 +17,7 @@ import { ListaCompromisos } from "@/components/captura/lista-compromisos";
 import { SeccionIngresos } from "@/components/captura/seccion-ingresos";
 import { GeneradorPlan } from "@/components/plan/generador-plan";
 import { TarjetaEditable } from "@/components/captura/tarjeta-editable";
+import { Aparecer } from "@/components/ui/movimiento";
 import { IconoAlcancia, IconoBillete, IconoCalendario } from "@/components/ui/iconos";
 import { DIAS_SEMANA } from "@/lib/captura/dias";
 import { fechaDeMananaEnMexico } from "@/lib/fecha";
@@ -75,6 +76,7 @@ export default async function Panel() {
           </header>
 
           <TarjetaEditable
+            indice={1}
             className="md:col-span-6 lg:col-span-2"
             abiertoInicial={presupuesto === null}
             textoAccion={presupuesto === null ? "Capturar" : "Editar"}
@@ -122,6 +124,7 @@ export default async function Panel() {
           />
 
           <TarjetaEditable
+            indice={2}
             className="md:col-span-6 lg:col-span-4"
             icono="agregar"
             abiertoInicial={compromisos.length === 0}
@@ -171,7 +174,7 @@ export default async function Panel() {
                 </p>
               </header>
 
-              <section aria-labelledby="titulo-ingresos" className="tarjeta p-6 sm:p-7 md:col-span-3">
+              <Aparecer como="section" indice={4} aria-labelledby="titulo-ingresos" className="tarjeta p-6 sm:p-7 md:col-span-3">
                 <div className="flex items-start gap-4">
                   <span className="icono-tarjeta">
                     <IconoBillete />
@@ -189,9 +192,9 @@ export default async function Panel() {
                   </div>
                 </div>
                 <SeccionIngresos ingresos={ingresos} agregar={agregarIngreso} eliminar={eliminarIngreso} />
-              </section>
+              </Aparecer>
 
-              <section aria-labelledby="titulo-meta" className="tarjeta p-6 sm:p-7 md:col-span-3">
+              <Aparecer como="section" indice={5} aria-labelledby="titulo-meta" className="tarjeta p-6 sm:p-7 md:col-span-3">
                 <div className="flex items-start gap-4">
                   <span className="icono-tarjeta">
                     <IconoAlcancia />
@@ -212,7 +215,7 @@ export default async function Panel() {
                   fechaObjetivo={meta?.fechaObjetivo ?? ""}
                   fechaMinima={fechaDeMananaEnMexico()}
                 />
-              </section>
+              </Aparecer>
             </>
           )}
 
