@@ -1,4 +1,5 @@
 import { FilaCompromiso } from "@/components/captura/fila-compromiso";
+import { ListaAnimada } from "@/components/ui/movimiento";
 import type { CompromisoGuardado } from "@/ports/repositorio";
 import { centavos } from "@/core/tipos";
 import { formatearPesos } from "@/lib/dinero";
@@ -33,7 +34,7 @@ export function ListaCompromisos({ compromisos, actualizar, eliminar }: Props) {
 
   return (
     <>
-      <ul className="mt-5 space-y-2">
+      <ListaAnimada className="mt-5 space-y-2">
         {compromisos.map((compromiso) => (
           <FilaCompromiso
             key={compromiso.id}
@@ -42,7 +43,7 @@ export function ListaCompromisos({ compromisos, actualizar, eliminar }: Props) {
             eliminar={eliminar}
           />
         ))}
-      </ul>
+      </ListaAnimada>
       <p className="mt-4 flex flex-wrap items-baseline justify-between gap-2 border-t border-borde pt-4 text-sm text-texto-suave">
         <span>
           {compromisos.length} {compromisos.length === 1 ? "pago registrado" : "pagos registrados"}

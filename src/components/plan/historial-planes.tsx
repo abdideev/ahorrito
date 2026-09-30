@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 import { enfocarAlInicio } from "@/components/plan/enfocar";
 import { VistaPlan } from "@/components/plan/vista-plan";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
+import { FILA, ListaAnimada, RegionDesplegable } from "@/components/ui/movimiento";
 import {
   IconoCalendario,
   IconoCirculoCheck,
@@ -229,11 +231,11 @@ export function HistorialPlanes({ denominaciones }: Props) {
         <p role="status" className="sr-only">
           {aviso}
         </p>
-        <ul className="space-y-1">
+        <ListaAnimada className="space-y-1">
           {visibles.map((resumen, indice) => {
             const seleccionado = abierto?.id === resumen.id;
             return (
-              <li key={resumen.id} className="rounded-xl">
+              <motion.li key={resumen.id} layout {...FILA} className="rounded-xl">
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
@@ -280,7 +282,7 @@ export function HistorialPlanes({ denominaciones }: Props) {
                     </span>
                   </button>
                 </div>
-                {confirmando === resumen.id && (
+                <RegionDesplegable abierto={confirmando === resumen.id}>
                   <div className="mt-1 flex flex-wrap items-center gap-2 rounded-xl border border-error/30 bg-error-suave px-3 py-2">
                     <p className="flex-1 text-sm font-semibold text-error">¿Eliminar este plan? No se puede deshacer.</p>
                     <button
@@ -299,11 +301,11 @@ export function HistorialPlanes({ denominaciones }: Props) {
                       Cancelar
                     </button>
                   </div>
-                )}
-              </li>
+                </RegionDesplegable>
+              </motion.li>
             );
           })}
-        </ul>
+        </ListaAnimada>
 
         {paginas > 1 && (
           <div className="mt-3 flex items-center justify-between gap-2 border-t border-borde pt-3">

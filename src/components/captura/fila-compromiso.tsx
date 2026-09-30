@@ -1,9 +1,11 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useId, useState } from "react";
 import { BotonEliminar } from "@/components/captura/boton-eliminar";
 import { FormularioCompromiso } from "@/components/captura/formulario-compromiso";
 import { IconoLapiz, IconoRepetir } from "@/components/ui/iconos";
+import { FILA, RegionDesplegable } from "@/components/ui/movimiento";
 import type { EstadoCaptura } from "@/lib/captura/estado";
 import { centavosATextoPlano, formatearPesos } from "@/lib/dinero";
 import { formatearFechaCorta, formatearFechaLarga } from "@/lib/fecha";
@@ -29,7 +31,7 @@ export function FilaCompromiso({ compromiso, actualizar, eliminar }: Props) {
   const idEdicion = useId();
 
   return (
-    <li className="rounded-2xl border border-borde bg-tarjeta p-3 sm:p-4">
+    <motion.li layout {...FILA} className="rounded-2xl border border-borde bg-tarjeta p-3 sm:p-4">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-primario" />
         <div className="min-w-0 flex-1 basis-40">
@@ -69,19 +71,21 @@ export function FilaCompromiso({ compromiso, actualizar, eliminar }: Props) {
         </div>
       </div>
 
-      <div id={idEdicion} hidden={!editando} className="mt-3 border-t border-borde pt-4">
-        <FormularioCompromiso
-          accion={actualizar}
-          id={compromiso.id}
-          iniciales={{
-            denominacion: compromiso.denominacion,
-            monto: centavosATextoPlano(compromiso.monto),
-            fechaLimite: compromiso.fechaLimite,
-            ocurrencias: String(compromiso.ocurrencias),
-          }}
-          textoBoton="Guardar cambios"
-        />
-      </div>
-    </li>
+      <RegionDesplegable id={idEdicion} abierto={editando}>
+        <div className="mt-3 border-t border-borde pt-4">
+          <FormularioCompromiso
+            accion={actualizar}
+            id={compromiso.id}
+            iniciales={{
+              denominacion: compromiso.denominacion,
+              monto: centavosATextoPlano(compromiso.monto),
+              fechaLimite: compromiso.fechaLimite,
+              ocurrencias: String(compromiso.ocurrencias),
+            }}
+            textoBoton="Guardar cambios"
+          />
+        </div>
+      </RegionDesplegable>
+    </motion.li>
   );
 }
