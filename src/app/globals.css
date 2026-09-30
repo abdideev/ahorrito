@@ -476,17 +476,31 @@ input[type="date"]:focus-within {
         transform 160ms ease;
     }
 
+    /* Entrada de las celdas (Aparecer): CSS y no Motion, para que el contenido se vea
+       aunque JavaScript no haya hidratado. Cada celda espera 50 ms por su --orden. */
+    .aparecer {
+      animation: celda-aparece 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-delay: calc(var(--orden, 0) * 50ms);
+    }
+
+    @keyframes celda-aparece {
+      from {
+        opacity: 0;
+        translate: 0 12px;
+      }
+    }
+
     .tarjeta-interactiva {
       transition:
         border-color 200ms ease,
-        box-shadow 200ms ease,
-        transform 200ms ease;
+        box-shadow 200ms ease;
     }
 
+    /* La elevación y la escala las aplica Motion (SC-08); dos transformaciones sobre el
+       mismo elemento competirían entre sí. */
     .tarjeta-interactiva:hover {
       border-color: var(--borde-fuerte);
       box-shadow: var(--sombra-elevada);
-      transform: translateY(-2px);
     }
 
     .boton-interactivo-punto,

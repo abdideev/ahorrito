@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { cookies } from "next/headers";
+import { ProveedorMovimiento } from "@/components/ui/movimiento";
 import { COOKIE_TEMA } from "@/lib/tema";
 import "./globals.css";
 
@@ -28,7 +29,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className={`${jakarta.variable} h-full antialiased${oscuro ? " dark" : ""}`}>
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
-        {children}
+        <ProveedorMovimiento>{children}</ProveedorMovimiento>
       </body>
     </html>
   );
