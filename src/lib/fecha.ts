@@ -36,3 +36,32 @@ export function fechaDeMananaEnMexico(ahora: Date = new Date()): string {
   const hoy = fechaDeHoyEnMexico(ahora);
   return new Date(new Date(`${hoy}T00:00:00Z`).getTime() + UN_DIA_EN_MS).toISOString().slice(0, 10);
 }
+
+const FORMATO_LARGO = new Intl.DateTimeFormat("es-MX", {
+  timeZone: "UTC",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const FORMATO_CORTO = new Intl.DateTimeFormat("es-MX", {
+  timeZone: "UTC",
+  day: "numeric",
+  month: "short",
+});
+
+/**
+ * Fecha AAAA-MM-DD para leerla en pantalla: "28 de septiembre de 2026".
+ *
+ * Se interpreta a medianoche UTC y se formatea en UTC porque la cadena ya es una fecha
+ * de calendario, sin hora ni zona: convertirla a la zona del navegador podría mostrar el
+ * día anterior.
+ */
+export function formatearFechaLarga(fecha: string): string {
+  return FORMATO_LARGO.format(new Date(`${fecha}T00:00:00Z`));
+}
+
+/** Fecha AAAA-MM-DD en forma compacta para tablas y tarjetas: "28 sep". */
+export function formatearFechaCorta(fecha: string): string {
+  return FORMATO_CORTO.format(new Date(`${fecha}T00:00:00Z`)).replace(".", "");
+}
