@@ -208,8 +208,8 @@ medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7
 | SC-04 | #13 | El repositorio de planes no recibe el identificador de usuario | Implementado |
 | SC-05 | #17 | El orquestador toma la entrada del repositorio y responde en dos tiempos; `guardarExplicacion` en I-04 | Implementado |
 | SC-06 | #21 | I-04 incorpora las operaciones de captura de RF-02 a RF-06 | Implementado |
-| SC-07 | #25 | RF-12 incluye eliminar planes: `DELETE /api/planes/{id}` en I-01 y `eliminarPlan` en I-04 | En implementación |
-| SC-08 | #26 | La interfaz incorpora Motion y react-icons (sección 3.5) | Autorizado |
+| SC-07 | #25 | RF-12 incluye eliminar planes: `DELETE /api/planes/{id}` en I-01 y `eliminarPlan` en I-04 | Implementado |
+| SC-08 | #26 | La interfaz incorpora Motion y react-icons (sección 3.5) | Implementado |
 
 ---
 

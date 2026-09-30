@@ -10,7 +10,7 @@ que el código implementa.
 | Interfaces | I-01 (`/api/planes`), I-04 (captura y planes), I-07 (sesión) |
 | Componente | C-01, `src/app` y `src/components` |
 | Fase | 4, pasos 4.1 a 4.7 |
-| Cambios de alcance aplicados | SC-02 (#8) huevo de Pascua · SC-06 (#21) operaciones de captura en I-04 · SC-07 (#25) eliminar planes |
+| Cambios de alcance aplicados | SC-02 (#8) huevo de Pascua · SC-06 (#21) operaciones de captura en I-04 · SC-07 (#25) eliminar planes · SC-08 (#26) Motion y react-icons |
 
 ---
 
@@ -77,16 +77,30 @@ Rediseño aprobado el 30 de septiembre de 2026 en la rama `feature/rediseno-ui`.
 | Paleta | Primario `#10B981` · Secundario `#09090B` · Terciario `#15803D` · Neutro `#F8FAFC` |
 | Botón principal | `#047857` con texto blanco (5.48:1). El primario `#10B981` con texto blanco da 2.54:1: solo se usa como acento o con texto `#09090B` (7.84:1) |
 | Temas | Claro predeterminado; oscuro con la clase `dark` en `<html>` |
-| Iconos | SVG en línea en `src/components/ui/iconos.tsx`, todos con `aria-hidden` |
+| Iconos | Conjunto Lucide de react-icons 5.7 (SC-08, #26). `src/components/ui/iconos.tsx` es un adaptador con nombres propios (`IconoCalendario`) y `aria-hidden` en todos |
+| Movimiento | Motion 13.4 (SC-08, #26) con `MotionConfig reducedMotion="user"` |
 
-Componentes de Magic UI (MIT), copiados sin dependencias nuevas y adaptados:
+Componentes de Magic UI (MIT), adaptados sin sus dependencias originales (`lucide-react`, `cn`):
 
 | Componente | Uso |
 |---|---|
-| Interactive Hover Button | "Crear mi plan", envío de los formularios de acceso, "Generar mi plan" |
+| Interactive Hover Button | "Crear mi plan", envío de los formularios de acceso, "Generar mi plan". Al pasar el cursor solo se desvanece el texto y el círculo expandido queda como fondo (`--punto-interactivo`: `#10B981` en claro, `#FAFAFA` en oscuro, texto `#09090B`) |
 | Animated Shiny Text | Rótulos al aparecer y esperas (explicación, historial) |
 | Animated Theme Toggler | Selector de tema en la portada, el acceso y la barra autenticada. Omite la transición con "reducir movimiento" y la salta si el navegador no pinta en un segundo |
 | Confetti | Diálogo de créditos (SC-02) |
+
+Reparto del movimiento (SC-08):
+
+| Efecto | Dónde | Con qué | Motivo |
+|---|---|---|---|
+| Entrada escalonada de celdas | Portada, acceso, panel, resultado del plan | CSS (`.aparecer`, 50 ms por `--orden`) | Motion dibuja la celda con `opacity: 0` en el servidor y la revela desde JavaScript; mientras hidrata, o si falla, el panel se vería en blanco. Se detectó en la verificación |
+| Elevación al señalar y hundimiento al pulsar | Tarjetas de beneficios, botones animados | Motion (`whileHover`, `whileTap`) | CSS no coordina la escala con la entrada; la entrada usa `translate` y Motion `transform`, así no compiten |
+| Despliegue en altura | Formularios de las tarjetas editables, edición de cada pago, confirmación de borrado | Motion (`RegionDesplegable`) | Anima hasta `height: auto`; al plegarse recibe `hidden` y sale del orden de tabulación |
+| Salida y reacomodo de filas | Lista de pagos, historial | Motion (`AnimatePresence`, `layout`) | CSS no puede animar un elemento que React ya desmontó |
+| Cambio de ruta | Todas las páginas | `<ViewTransition>` de React | El App Router desmonta la página sin avisar a `AnimatePresence` |
+
+Motion agrega un fragmento de **46.4 kB comprimidos** (cota superior, medida sobre la
+compilación del 01/10/2026), de 273.8 kB de JavaScript del cliente.
 
 ## 4. El plan en pantalla
 
