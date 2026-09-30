@@ -1,192 +1,182 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { IconoCalendario, IconoEscudo, IconoInfo, IconoTendencia } from "@/components/ui/iconos";
+import { InteractiveHoverLink } from "@/components/ui/interactive-hover-button";
+import { TransicionRuta } from "@/components/ui/transicion-ruta";
 
-const beneficios = [
+const beneficios: { titulo: string; descripcion: string; icono: ReactNode }[] = [
   {
     titulo: "Aparta con tiempo",
-    descripcion: "Distribuye cada pago entre las semanas disponibles.",
-    icono: (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6" fill="none">
-        <path
-          d="M6 3v3m12-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    descripcion: "Cada pago se reparte entre las semanas que tienes antes de su fecha límite.",
+    icono: <IconoCalendario className="size-6" />,
   },
   {
     titulo: "Cuida tu semana",
-    descripcion: "Conoce cuánto puedes usar sin descuidar tus compromisos.",
-    icono: (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6" fill="none">
-        <path
-          d="M12 21s8-4 8-10V5l-8-3-8 3v6c0 6 8 10 8 10Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path
-          d="m9 12 2 2 4-5"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
+    descripcion: "Sabes cuánto te queda sin descuidar tus compromisos, y qué semanas vienen cargadas.",
+    icono: <IconoEscudo className="size-6" />,
   },
   {
     titulo: "Avanza hacia tu meta",
-    descripcion: "Integra tu ahorro al plan en lugar de dejarlo para el final.",
-    icono: (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6" fill="none">
-        <path
-          d="M4 20V10m6 10V4m6 16v-7m4 7H2"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    descripcion: "Tu ahorro entra al plan desde el principio, en lugar de esperar a lo que sobre.",
+    icono: <IconoTendencia className="size-6" />,
   },
 ];
 
+/**
+ * Semana ilustrativa de la tarjeta lateral. Son cifras de ejemplo, rotuladas así en
+ * pantalla: la portada no tiene sesión y no conoce datos del usuario.
+ */
+const SEMANA_EJEMPLO = {
+  disponible: "$1,200.00",
+  apartar: "$850.00",
+  queda: "$350.00",
+  proporcionApartada: 850 / 1200,
+  pagos: [
+    { nombre: "Renta", monto: "$600.00" },
+    { nombre: "Internet", monto: "$250.00" },
+  ],
+};
+
 export default function Home() {
   return (
-    <div className="flex min-h-dvh flex-1 flex-col">
-      <a href="#contenido" className="salto-contenido">
-        Saltar al contenido
-      </a>
+    <TransicionRuta>
+      <div className="flex min-h-dvh flex-1 flex-col">
+        <a href="#contenido" className="salto-contenido">
+          Saltar al contenido
+        </a>
 
-      <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-5 sm:px-8 lg:px-12">
-        <Link
-          href="/"
-          aria-label="Ahorrito, ir al inicio"
-          className="inline-flex min-h-11 items-center rounded-2xl px-2"
-        >
-          <Image
-            src="/ahorrito-logo.svg"
-            alt="Ahorrito"
-            width={160}
-            height={47}
-            priority
-            className="h-auto w-36 sm:w-40"
-          />
-        </Link>
-
-        <nav aria-label="Acceso a la cuenta" className="flex items-center gap-2 sm:gap-3">
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <Link
-            href="/iniciar-sesion"
-            className="inline-flex min-h-11 items-center rounded-full px-3 font-bold text-texto underline-offset-4 hover:underline sm:px-4"
+            href="/"
+            aria-label="Ahorrito, ir al inicio"
+            className="inline-flex min-h-11 items-center rounded-xl px-1"
           >
-            Iniciar sesión
+            <Image
+              src="/ahorrito-logo.svg"
+              alt="Ahorrito"
+              width={160}
+              height={47}
+              priority
+              className="h-auto w-32 sm:w-36 dark:brightness-[2.6]"
+            />
           </Link>
-          <Link href="/registro" className="boton-secundario hidden sm:inline-flex">
-            Crear cuenta
-          </Link>
-        </nav>
-      </header>
 
-      <main id="contenido" className="flex flex-1 items-center py-12 sm:py-16 lg:py-20">
-        <div className="mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-12">
-          <section aria-labelledby="titulo-portada" className="max-w-3xl">
-            <p className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-borde bg-superficie px-4 py-2 text-sm font-extrabold tracking-wide text-texto-suave uppercase">
-              <span
-                aria-hidden="true"
-                className="size-2.5 rounded-full bg-verde-marca"
-              />
-              Tu plan semanal de dinero
-            </p>
-
-            <h1
-              id="titulo-portada"
-              className="max-w-3xl text-4xl leading-[1.08] font-black tracking-[-0.04em] text-texto sm:text-6xl lg:text-7xl"
+          <nav aria-label="Acceso a la cuenta" className="flex items-center gap-2">
+            <Link
+              href="/iniciar-sesion"
+              className="inline-flex min-h-11 items-center rounded-xl px-3 text-sm font-semibold text-texto underline-offset-4 hover:underline"
             >
-              Llega a cada pago con dinero apartado.
-            </h1>
+              Iniciar sesión
+            </Link>
+            <Link href="/registro" className="boton-invertido hidden text-sm sm:inline-flex">
+              Crear cuenta
+            </Link>
+            <AnimatedThemeToggler />
+          </nav>
+        </header>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 font-medium text-texto-suave sm:text-xl sm:leading-9">
-              Convierte tu presupuesto, tus fechas límite y tu meta de ahorro en un plan claro para cada semana.
-            </p>
-
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <Link href="/registro" className="boton-primario w-full sm:w-auto">
-                Crear mi plan
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none">
-                  <path
-                    d="M5 12h14m-5-5 5 5-5 5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Link>
-              <Link href="/iniciar-sesion" className="boton-secundario w-full sm:w-auto">
-                Ya tengo una cuenta
-              </Link>
-            </div>
-
-            <p className="mt-5 flex items-center gap-2 text-sm font-semibold text-texto-suave">
-              <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0 text-texto" fill="none">
-                <path
-                  d="m5 12 4 4L19 6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Sin fórmulas complicadas: tú das los datos y Ahorrito ordena las semanas.
-            </p>
-          </section>
-
-          <section aria-labelledby="titulo-beneficios" className="superficie relative p-5 sm:p-7">
-            <div className="hundido mb-7 flex items-center justify-between gap-4 px-5 py-4">
+        <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-10 sm:px-6 sm:pt-8">
+          <div className="bento">
+            <section
+              aria-labelledby="titulo-portada"
+              className="tarjeta flex flex-col justify-between gap-10 p-6 sm:p-10 md:col-span-4"
+            >
               <div>
-                <p className="text-sm font-bold text-texto-suave">Tu próxima semana</p>
-                <p className="mt-1 text-xl font-black text-texto">Todo bajo control</p>
+                <p className="chip chip-neutro">
+                  <span aria-hidden="true" className="size-2 rounded-full bg-primario" />
+                  <AnimatedShinyText unaVez>Tu plan semanal de dinero</AnimatedShinyText>
+                </p>
+                <h1
+                  id="titulo-portada"
+                  className="mt-6 max-w-2xl text-4xl leading-[1.05] font-extrabold tracking-tight text-texto sm:text-5xl lg:text-6xl"
+                >
+                  Llega a cada pago con dinero apartado.
+                </h1>
+                <p className="mt-5 max-w-xl text-lg leading-8 text-texto-suave">
+                  Convierte tu presupuesto, tus fechas límite y tu meta de ahorro en un plan claro
+                  para cada semana.
+                </p>
               </div>
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full border border-borde bg-fondo text-texto">
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="size-7" fill="none">
-                  <path
-                    d="M7 10V8a5 5 0 0 1 10 0v2m-11 0h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinejoin="round"
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <InteractiveHoverLink href="/registro" className="w-full sm:w-auto">
+                  Crear mi plan
+                </InteractiveHoverLink>
+                <Link href="/iniciar-sesion" className="boton-secundario w-full sm:w-auto">
+                  Ya tengo una cuenta
+                </Link>
+              </div>
+            </section>
+
+            <section
+              aria-labelledby="titulo-ejemplo"
+              className="tarjeta-invertida flex flex-col gap-6 p-6 sm:p-8 md:col-span-2"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <h2 id="titulo-ejemplo" className="text-sm font-semibold opacity-80">
+                  Así se ve una semana
+                </h2>
+                <span className="chip bg-primario text-[#09090b]">Ejemplo</span>
+              </div>
+
+              <div>
+                <p className="text-sm opacity-80">Te queda esta semana</p>
+                <p className="mt-1 text-4xl font-extrabold tracking-tight tabular-nums">
+                  {SEMANA_EJEMPLO.queda}
+                </p>
+                <div
+                  aria-hidden="true"
+                  className="mt-4 h-2 overflow-hidden rounded-full bg-current/15"
+                >
+                  <div
+                    className="h-full rounded-full bg-primario"
+                    style={{ width: `${SEMANA_EJEMPLO.proporcionApartada * 100}%` }}
                   />
-                  <path d="M12 14v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-              </span>
-            </div>
+                </div>
+                <p className="mt-2 text-sm opacity-80">
+                  Apartas {SEMANA_EJEMPLO.apartar} de {SEMANA_EJEMPLO.disponible}
+                </p>
+              </div>
 
-            <h2 id="titulo-beneficios" className="px-1 text-2xl font-black tracking-tight text-texto">
-              Un paso claro cada semana
-            </h2>
-            <ul className="mt-5 space-y-4">
-              {beneficios.map((beneficio) => (
-                <li key={beneficio.titulo} className="elevado flex gap-4 p-4 sm:p-5">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-borde bg-fondo text-texto-suave">
-                    {beneficio.icono}
-                  </span>
-                  <div>
-                    <h3 className="font-extrabold text-texto">{beneficio.titulo}</h3>
-                    <p className="mt-1 text-sm leading-6 font-medium text-texto-suave">
-                      {beneficio.descripcion}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-      </main>
+              <ul className="mt-auto space-y-2 text-sm">
+                {SEMANA_EJEMPLO.pagos.map((pago) => (
+                  <li
+                    key={pago.nombre}
+                    className="flex items-center justify-between rounded-xl bg-current/10 px-3 py-2.5"
+                  >
+                    <span>{pago.nombre}</span>
+                    <span className="font-bold tabular-nums">{pago.monto}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-      <footer className="relative z-10 mx-auto w-full max-w-7xl px-5 py-6 text-center text-sm font-medium text-texto-suave sm:px-8 lg:px-12">
-        Ahorrito organiza tu información; no sustituye asesoría financiera profesional.
-      </footer>
-    </div>
+            {beneficios.map((beneficio, indice) => (
+              <section
+                key={beneficio.titulo}
+                aria-labelledby={`beneficio-${indice}`}
+                className="tarjeta tarjeta-interactiva flex flex-col gap-5 p-6 md:col-span-2"
+              >
+                <span className="icono-tarjeta">{beneficio.icono}</span>
+                <div>
+                  <h2 id={`beneficio-${indice}`} className="text-lg font-bold text-texto">
+                    {beneficio.titulo}
+                  </h2>
+                  <p className="mt-2 leading-7 text-texto-suave">{beneficio.descripcion}</p>
+                </div>
+              </section>
+            ))}
+
+            <footer className="elevado flex items-start gap-3 p-5 text-sm leading-6 text-texto-suave md:col-span-6 md:items-center">
+              <IconoInfo className="size-5 shrink-0 text-texto" />
+              <p>Ahorrito organiza tu información; no sustituye asesoría financiera profesional.</p>
+            </footer>
+          </div>
+        </main>
+      </div>
+    </TransicionRuta>
   );
 }
