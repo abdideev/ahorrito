@@ -69,6 +69,11 @@ Ejemplo verificado el 29 de septiembre de 2026: semana 1 desde el 2026-09-28, fe
 
 **Decisiones:**
 
+- **Pista discreta (30 de septiembre de 2026).** Si alguna semana del plan cierra en $0.00
+  pero no todas (`hayCuadreParcial`), bajo la tabla aparece: "Algunas semanas cierran justo
+  en $0.00. ¿Qué pasaría si todas lo hicieran?". Sugiere que hay algo por descubrir sin
+  revelar la secuencia; un plan sin ninguna semana en cero no muestra pista. La condición de
+  activación de SC-02 no cambia.
 - **La lógica no vive en `src/core`.** Revelar créditos no es una regla del dominio financiero;
   mezclarla con el motor contaminaría el componente que exige RNF-08.
 - **Solo se incorpora `Confetti`.** Instalar el componente con la CLI de shadcn habría creado

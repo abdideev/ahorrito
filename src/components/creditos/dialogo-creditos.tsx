@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { Confetti, type ConfettiRef } from "@/components/ui/confetti";
 import { CREDITOS, HORAS_ESTIMADAS, ROLES, totalHoras } from "@/lib/huevo/creditos";
 
@@ -43,14 +44,15 @@ export function DialogoCreditos({ abierto, onCerrar }: Props) {
     }
   }, [abierto]);
 
-  const celda = "py-2 pr-3";
+  const celda = "px-3 py-2.5";
+  const horas = totalHoras(ROLES);
 
   return (
     <dialog
       ref={dialogoRef}
       onClose={onCerrar}
       aria-labelledby="titulo-creditos"
-      className="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-lg bg-white p-6 text-zinc-900 shadow-xl backdrop:bg-black/60 dark:bg-zinc-900 dark:text-zinc-100"
+      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-3xl border border-borde bg-fondo p-4 text-texto shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm sm:p-6"
     >
       <Confetti
         ref={confetiRef}
@@ -60,82 +62,87 @@ export function DialogoCreditos({ abierto, onCerrar }: Props) {
         aria-hidden="true"
       />
 
-      <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
-        Cuadre perfecto: cada centavo encontró su lugar.
-      </p>
-      <h2 id="titulo-creditos" className="mt-1 text-2xl font-semibold">
-        Plan de créditos · {CREDITOS.proyecto}
-      </h2>
+      <div className="grid gap-3 sm:grid-cols-6">
+        <header className="tarjeta p-5 sm:col-span-6">
+          <p className="chip chip-exito">
+            <AnimatedShinyText unaVez>Cuadre perfecto: cada centavo encontró su lugar.</AnimatedShinyText>
+          </p>
+          <h2 id="titulo-creditos" className="mt-3 text-2xl font-extrabold tracking-tight">
+            Plan de créditos · {CREDITOS.proyecto}
+          </h2>
+        </header>
 
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-zinc-400 text-left dark:border-zinc-600">
-              <th className={celda}>Semana</th>
-              <th className={celda}>Rol</th>
-              <th className={celda}>Aportación</th>
-              <th className={`${celda} text-right`}>Horas</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ROLES.map((rol, indice) => (
-              <tr key={rol.rol} className="border-b border-zinc-200 dark:border-zinc-800">
-                <td className={celda}>{indice + 1}</td>
-                <td className={celda}>
-                  <span className="font-medium">{rol.rol}</span>
-                  <span className="block text-zinc-600 dark:text-zinc-400">{rol.responsable}</span>
-                </td>
-                <td className={celda}>{rol.aportacion}</td>
-                <td className={`${celda} text-right tabular-nums`}>{rol.horas}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr className="font-semibold">
-              <td className={celda} colSpan={3}>
-                Total apartado
-              </td>
-              <td className={`${celda} text-right tabular-nums`}>{totalHoras(ROLES)} h</td>
-            </tr>
-          </tfoot>
-        </table>
+        <div className="tarjeta overflow-hidden sm:col-span-6">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-xl border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-borde bg-superficie-hundida text-left text-xs tracking-wide text-texto-suave uppercase">
+                  <th className={celda}>Semana</th>
+                  <th className={celda}>Rol</th>
+                  <th className={celda}>Aportación</th>
+                  <th className={`${celda} text-right`}>Horas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ROLES.map((rol, indice) => (
+                  <tr key={rol.rol} className="border-b border-borde">
+                    <td className={celda}>{indice + 1}</td>
+                    <td className={celda}>
+                      <span className="font-semibold">{rol.rol}</span>
+                      <span className="block text-texto-suave">{rol.responsable}</span>
+                    </td>
+                    <td className={celda}>{rol.aportacion}</td>
+                    <td className={`${celda} text-right tabular-nums`}>{rol.horas}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="font-bold">
+                  <td className={celda} colSpan={3}>
+                    Total apartado
+                  </td>
+                  <td className={`${celda} text-right tabular-nums`}>{horas} h</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div className="tarjeta-invertida p-5 sm:col-span-3">
+          <p className="text-sm opacity-80">Meta de ahorro</p>
+          <p className="mt-1 text-2xl font-extrabold">
+            {horas === HORAS_ESTIMADAS ? "Alcanzable" : "En revisión"}
+          </p>
+          <p className="mt-1 text-sm opacity-80">Entrega el {CREDITOS.entrega}.</p>
+        </div>
+
+        <div className="tarjeta p-5 sm:col-span-3">
+          <p className="rotulo">Asignatura</p>
+          <p className="mt-1 font-semibold">
+            {CREDITOS.asignatura} · grupo {CREDITOS.grupo}
+          </p>
+          <p className="mt-1 text-sm text-texto-suave">{CREDITOS.norma}</p>
+        </div>
+
+        <dl className="tarjeta grid gap-x-4 gap-y-2 p-5 text-sm sm:col-span-6 sm:grid-cols-[auto_1fr]">
+          <dt className="font-semibold">Cliente</dt>
+          <dd className="text-texto-suave">{CREDITOS.cliente}</dd>
+          <dt className="font-semibold">Docente</dt>
+          <dd className="text-texto-suave">{CREDITOS.docente}</dd>
+          <dt className="font-semibold">Validación</dt>
+          <dd className="text-texto-suave">{CREDITOS.evaluadores}</dd>
+          <dt className="font-semibold">Institución</dt>
+          <dd className="text-texto-suave">{CREDITOS.institucion}</dd>
+          <dt className="font-semibold">Tecnologías</dt>
+          <dd className="text-texto-suave">{CREDITOS.tecnologias.join(" · ")}</dd>
+          <dt className="font-semibold">Asistencia de desarrollo</dt>
+          <dd className="text-texto-suave">{CREDITOS.asistencia}</dd>
+          <dt className="font-semibold">Componentes</dt>
+          <dd className="text-texto-suave">{CREDITOS.componentes}</dd>
+        </dl>
       </div>
 
-      <p className="mt-4">
-        <strong>Meta de ahorro:</strong>{" "}
-        {totalHoras(ROLES) === HORAS_ESTIMADAS ? "alcanzable" : "en revisión"}. Entrega el{" "}
-        {CREDITOS.entrega}.
-      </p>
-
-      <dl className="mt-4 grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
-        <dt className="font-medium">Cliente</dt>
-        <dd>{CREDITOS.cliente}</dd>
-        <dt className="font-medium">Docente</dt>
-        <dd>{CREDITOS.docente}</dd>
-        <dt className="font-medium">Validación</dt>
-        <dd>{CREDITOS.evaluadores}</dd>
-        <dt className="font-medium">Asignatura</dt>
-        <dd>
-          {CREDITOS.asignatura} · grupo {CREDITOS.grupo}
-        </dd>
-        <dt className="font-medium">Institución</dt>
-        <dd>{CREDITOS.institucion}</dd>
-        <dt className="font-medium">Norma</dt>
-        <dd>{CREDITOS.norma}</dd>
-        <dt className="font-medium">Tecnologías</dt>
-        <dd>{CREDITOS.tecnologias.join(" · ")}</dd>
-        <dt className="font-medium">Asistencia de desarrollo</dt>
-        <dd>{CREDITOS.asistencia}</dd>
-        <dt className="font-medium">Componentes</dt>
-        <dd>{CREDITOS.componentes}</dd>
-      </dl>
-
-      <button
-        type="button"
-        autoFocus
-        onClick={onCerrar}
-        className="mt-6 rounded bg-zinc-900 px-5 py-2.5 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:bg-zinc-100 dark:text-zinc-900"
-      >
+      <button type="button" autoFocus onClick={onCerrar} className="boton-invertido mt-4 w-full">
         Cerrar
       </button>
     </dialog>

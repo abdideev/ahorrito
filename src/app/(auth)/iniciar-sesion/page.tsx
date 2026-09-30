@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FormularioCredenciales } from "@/components/autenticacion/formulario-credenciales";
+import { TarjetaAcceso } from "@/components/autenticacion/tarjeta-acceso";
+import { mensaje as claseMensaje } from "@/components/captura/estilos";
 import { RUTA_PANEL, rutaInternaSegura } from "@/lib/autenticacion/rutas";
 import { iniciarSesion } from "../acciones";
 
 export const metadata: Metadata = {
   title: "Iniciar sesión · Ahorrito",
+  description: "Accede a Ahorrito para organizar tus pagos y revisar tus planes guardados.",
 };
 
 interface Props {
@@ -18,11 +21,14 @@ export default async function PaginaInicioSesion({ searchParams }: Props) {
   const falloConfirmacion = error === "confirmacion";
 
   return (
-    <main className="mx-auto w-full max-w-md px-6 py-16">
-      <h1 className="text-3xl font-semibold">Iniciar sesión</h1>
-
+    <TarjetaAcceso
+      pantalla="inicio-sesion"
+      idTitulo="titulo-inicio-sesion"
+      titulo="Iniciar sesión"
+      descripcion="Retoma tu plan donde lo dejaste."
+    >
       {falloConfirmacion && (
-        <p role="alert" className="mt-4 rounded border border-red-600 p-3 text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className={`${claseMensaje("error")} mt-5`}>
           No pudimos abrir tu sesión desde el enlace. Si lo abriste en otro navegador, tu correo pudo quedar confirmado: inicia sesión con tu contraseña. Si el enlace expiró, vuelve a registrarte.
         </p>
       )}
@@ -34,12 +40,15 @@ export default async function PaginaInicioSesion({ searchParams }: Props) {
         siguiente={destino}
       />
 
-      <p className="mt-6 text-sm">
+      <p className="mt-6 border-t border-borde pt-5 text-center text-sm text-texto-suave">
         ¿No tienes cuenta?{" "}
-        <Link href="/registro" className="font-medium underline underline-offset-2">
+        <Link
+          href="/registro"
+          className="inline-flex min-h-11 items-center font-bold text-texto underline decoration-2 underline-offset-4"
+        >
           Crea una
         </Link>
       </p>
-    </main>
+    </TarjetaAcceso>
   );
 }

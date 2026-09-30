@@ -60,7 +60,8 @@ export const CREDITOS = {
   norma: "ISO/IEC/IEEE 12207:2026",
   tecnologias: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "API de Gemini", "Vitest"],
   asistencia: "Claude (Anthropic)",
-  componentes: "Confeti: Magic UI (MIT) sobre canvas-confetti (ISC)",
+  componentes:
+    "Magic UI (MIT): Confetti, Interactive Hover Button, Animated Shiny Text y Animated Theme Toggler · canvas-confetti (ISC)",
   entrega: "13 de noviembre de 2026",
 } as const;
 

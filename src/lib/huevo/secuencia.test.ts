@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { fechaIso } from "@/core/calendario";
 import { calcularPlan } from "@/core/plan";
 import { centavos, type EntradaPlan } from "@/core/tipos";
-import { crearAlcancia, depositarMoneda, esCuadrePerfecto } from "./secuencia";
+import { crearAlcancia, depositarMoneda, esCuadrePerfecto, hayCuadreParcial } from "./secuencia";
 
 function entrada(presupuestoPesos: number): EntradaPlan {
   return {
@@ -61,5 +61,30 @@ describe("alcancia", () => {
   it("rechaza un numero de semanas invalido", () => {
     expect(() => crearAlcancia(0)).toThrow(RangeError);
     expect(() => crearAlcancia(2.5)).toThrow(RangeError);
+  });
+});
+
+describe("hayCuadreParcial", () => {
+  it("se activa cuando alguna semana cierra en cero pero no todas", () => {
+    const perfecto = calcularPlan(entrada(200));
+    const parcial = {
+      ...perfecto,
+      asignaciones: perfecto.asignaciones.map((semana, indice) =>
+        indice === 0 ? { ...semana, remanente: centavos(500) } : semana,
+      ),
+    };
+
+    expect(hayCuadreParcial(parcial)).toBe(true);
+  });
+
+  it("no da pista en el cuadre perfecto, porque ahi ya aparecen las monedas", () => {
+    expect(hayCuadreParcial(calcularPlan(entrada(200)))).toBe(false);
+  });
+
+  it("no da pista si ninguna semana cierra en cero", () => {
+    const plan = calcularPlan(entrada(201));
+
+    expect(plan.asignaciones.some((semana) => semana.remanente === 0)).toBe(false);
+    expect(hayCuadreParcial(plan)).toBe(false);
   });
 });

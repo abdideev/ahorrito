@@ -2,7 +2,7 @@
 
 import { useActionState, useId } from "react";
 import { CampoCaptura, describedBy } from "@/components/captura/campo-captura";
-import { campo, mensaje as claseMensaje } from "@/components/captura/estilos";
+import { botonGuardar, botonSecundario, campo, mensaje as claseMensaje, campoPesos, prefijoPesos } from "@/components/captura/estilos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 
 interface Props {
@@ -27,26 +27,32 @@ export function FormularioMeta({ accion, quitar, montoObjetivo, fechaObjetivo, f
   const hayMeta = montoObjetivo !== "";
 
   return (
-    <div className="mt-4 space-y-3">
-      <form action={enviar} noValidate className="space-y-3">
-        <div className="grid gap-3 sm:grid-cols-2">
+    <div className="mt-6 space-y-4">
+      <form action={enviar} noValidate className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
           <CampoCaptura
             idCampo={idMonto}
             etiqueta="¿Cuánto quieres ahorrar?"
             mensajeError={estado.errores.montoObjetivo}
           >
-            <input
-              id={idMonto}
-              name="montoObjetivo"
-              type="text"
-              inputMode="decimal"
-              autoComplete="off"
-              required
-              defaultValue={estado.valores.montoObjetivo ?? montoObjetivo}
-              aria-invalid={Boolean(estado.errores.montoObjetivo)}
-              aria-describedby={describedBy(idMonto, { error: Boolean(estado.errores.montoObjetivo) })}
-              className={campo}
-            />
+            <div className="relative">
+              <span aria-hidden="true" className={prefijoPesos}>
+                $
+              </span>
+              <input
+                id={idMonto}
+                name="montoObjetivo"
+                type="text"
+                inputMode="decimal"
+                autoComplete="off"
+                placeholder="0.00"
+                required
+                defaultValue={estado.valores.montoObjetivo ?? montoObjetivo}
+                aria-invalid={Boolean(estado.errores.montoObjetivo)}
+                aria-describedby={describedBy(idMonto, { error: Boolean(estado.errores.montoObjetivo) })}
+                className={campoPesos}
+              />
+            </div>
           </CampoCaptura>
 
           <CampoCaptura
@@ -77,7 +83,7 @@ export function FormularioMeta({ accion, quitar, montoObjetivo, fechaObjetivo, f
         <button
           type="submit"
           disabled={pendiente}
-          className="rounded border border-zinc-400 px-4 py-2 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:border-zinc-600"
+          className={botonGuardar}
         >
           {pendiente ? "Guardando…" : hayMeta ? "Actualizar meta" : "Guardar meta"}
         </button>
@@ -87,7 +93,7 @@ export function FormularioMeta({ accion, quitar, montoObjetivo, fechaObjetivo, f
         <form action={quitar}>
           <button
             type="submit"
-            className="rounded px-2 py-1 text-sm underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+            className={`${botonSecundario} px-4 py-2 text-sm hover:border-error hover:text-error`}
           >
             Quitar la meta de ahorro
           </button>

@@ -113,12 +113,14 @@ ahorrito/
     │   └── persistencia/   ← C-05
     ├── components/         ← C-01
     │   ├── captura/            ← formularios de RF-02 a RF-06
-    │   ├── plan/               ← descargo, tabla, generador e historial
-    │   ├── ui/confetti.tsx     ← Magic UI (MIT)
+    │   ├── plan/               ← descargo, vista del plan, tabla, generador e historial
+    │   ├── navegacion/         ← barra de las pantallas autenticadas
+    │   ├── ui/                 ← componentes de Magic UI (MIT) e iconos compartidos
     │   └── creditos/           ← plan de créditos (SC-02)
     └── lib/                ← utilidades compartidas
         ├── dinero.ts           ← frontera pesos ↔ centavos
-        ├── fecha.ts            ← fecha del servidor en America/Mexico_City
+        ├── fecha.ts            ← fecha del servidor en America/Mexico_City y formato legible
+        ├── tema.ts             ← cookie del tema claro u oscuro
         ├── captura/            ← validación en el servidor (RF-02 a RF-06)
         ├── plan/               ← advertencias, etiquetas y lectura del flujo
         ├── autenticacion/      ← rutas, validación y mensajes (C-06)
@@ -143,7 +145,7 @@ ahorrito/
 | RF-09 | Evaluar la viabilidad de la meta de ahorro | Alta | **F1** |
 | RF-10 | Generar la explicación en lenguaje natural | Alta | F3 |
 | RF-11 | Mostrar el descargo de responsabilidad | Alta | F4 |
-| RF-12 | Almacenar y consultar los planes generados | Media | F2 |
+| RF-12 | Almacenar, consultar y eliminar los planes generados (SC-07) | Media | F2 |
 | RF-13 | Regenerar el plan ante cambios en los datos | Media | F4 |
 | RF-14 | Revelar los créditos mediante una secuencia oculta de interacción | Baja | SC-02 |
 
@@ -206,6 +208,8 @@ medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7
 | SC-04 | #13 | El repositorio de planes no recibe el identificador de usuario | Implementado |
 | SC-05 | #17 | El orquestador toma la entrada del repositorio y responde en dos tiempos; `guardarExplicacion` en I-04 | Implementado |
 | SC-06 | #21 | I-04 incorpora las operaciones de captura de RF-02 a RF-06 | Implementado |
+| SC-07 | #25 | RF-12 incluye eliminar planes: `DELETE /api/planes/{id}` en I-01 y `eliminarPlan` en I-04 | Implementado |
+| SC-08 | #26 | La interfaz incorpora Motion y react-icons (sección 3.5) | Implementado |
 
 ---
 
@@ -583,7 +587,7 @@ trazabilidad del documento maestro (sección 2.7).
 | RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-01 | C-06 | `src/app/(auth)`, `src/lib/autenticacion` | `validacion.test.ts`, `rutas.test.ts`; CA-01 en F5 |
-| RF-12 | C-05 | `src/adapters/persistencia`, `supabase/migrations` | `filas.test.ts`, `aislamiento.integracion.test.ts` (CA-10) |
+| RF-12 | C-01, C-02, C-05 | `src/adapters/persistencia`, `supabase/migrations`, `src/app/api/planes/[id]/route.ts` | `filas.test.ts`, `route.test.ts`, `aislamiento.integracion.test.ts` (CA-10) |
 | RF-10 | C-02, C-04 | `src/adapters/ia`, `src/app/api/planes` | `carga.test.ts`, `gemini.test.ts`, `orquestador.test.ts`, `degradacion.test.ts`; CA-09, CA-11 |
 | RF-11 | C-01 | `src/components/plan/descargo.tsx` | CA-07 verificado en la Fase 4 |
 | RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos`, `src/components/plan/tabla-semanas.tsx` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 verificado en la Fase 4 |

@@ -120,6 +120,20 @@ describe.skipIf(!CONFIGURADO)("CA-10 · aislamiento entre usuarios", () => {
       expect(guardado?.plan).toEqual(planCalculado);
     });
 
+    it("elimina un plan propio junto con sus semanas (SC-07)", async () => {
+      const idTemporal = await repositorioA.guardarPlan(planCalculado);
+
+      await expect(repositorioA.eliminarPlan(idTemporal)).resolves.toBe(true);
+      await expect(repositorioA.obtenerPlan(idTemporal)).resolves.toBeNull();
+      // Borrado en cascada: no quedan semanas huérfanas del plan eliminado.
+      const { data: semanas } = await clienteA.from("asignaciones_semanales").select("id").eq("plan_id", idTemporal);
+      expect(semanas ?? []).toEqual([]);
+
+      // Repetir el borrado, o pedirlo con un identificador inválido, no es un error: es false.
+      await expect(repositorioA.eliminarPlan(idTemporal)).resolves.toBe(false);
+      await expect(repositorioA.eliminarPlan("no-es-uuid")).resolves.toBe(false);
+    });
+
     it("guardar un plan es atomico: no existe plan sin asignaciones", async () => {
       // La funcion guardar_plan rechaza una lista vacia antes de insertar el plan.
       const { error } = await clienteA.rpc("guardar_plan", {
@@ -194,9 +208,18 @@ describe.skipIf(!CONFIGURADO)("CA-10 · aislamiento entre usuarios", () => {
         "update de la explicacion del plan de A",
         clienteB.from("planes").update({ explicacion: "intrusion" }).eq("id", idPlanDeA).select(),
       );
+      // 12 y 13 (SC-07): intento de borrar el plan ajeno, por el puerto y directo.
+      const borrado = await repositorioB.eliminarPlan(idPlanDeA);
+      intentos.push({ descripcion: "eliminarPlan con el id de A", filas: borrado ? 1 : 0 });
+      await registrar(
+        "delete del plan de A",
+        clienteB.from("planes").delete().eq("id", idPlanDeA).select(),
+      );
 
       expect(intentos.length).toBeGreaterThanOrEqual(10);
       expect(intentos.filter((intento) => intento.filas > 0)).toEqual([]);
+      // El plan de A sobrevive a los intentos de borrado.
+      await expect(repositorioA.obtenerPlan(idPlanDeA)).resolves.not.toBeNull();
     });
 
     it("el usuario B no puede crear un plan a nombre del usuario A", async () => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { IconoPapelera } from "@/components/ui/iconos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
   id: string;
   /** Lo que se elimina, para que el botón lo diga y no solo "Eliminar". */
   descripcion: string;
+  /** En filas compactas solo se ve el icono; el texto sigue para lectores de pantalla. */
+  soloIcono?: boolean;
 }
 
 /**
@@ -18,26 +21,27 @@ interface Props {
  * lectores de pantalla y bloquea el hilo del navegador. El botón conserva el foco
  * entre ambos pasos, así que la secuencia también funciona solo con teclado (RNF-11).
  */
-export function BotonEliminar({ accion, id, descripcion }: Props) {
+export function BotonEliminar({ accion, id, descripcion, soloIcono = false }: Props) {
   const [estado, enviar, pendiente] = useActionState(accion, ESTADO_CAPTURA_INICIAL);
   const [confirmando, setConfirmando] = useState(false);
 
   return (
-    <form action={enviar} className="flex items-center gap-2">
+    <form action={enviar} className="flex flex-wrap items-center gap-2">
       <input type="hidden" name="id" value={id} />
       {confirmando ? (
         <>
           <button
             type="submit"
             disabled={pendiente}
-            className="rounded border border-red-600 px-3 py-1.5 text-sm font-medium text-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:text-red-400"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-error bg-error-suave px-4 py-2 text-sm font-bold text-error disabled:cursor-not-allowed disabled:opacity-60"
           >
+            <IconoPapelera className="size-4" />
             {pendiente ? "Eliminando…" : "Confirmar"}
           </button>
           <button
             type="button"
             onClick={() => setConfirmando(false)}
-            className="rounded px-3 py-1.5 text-sm underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+            className="boton-secundario px-4 py-2 text-sm"
           >
             Cancelar
           </button>
@@ -46,13 +50,18 @@ export function BotonEliminar({ accion, id, descripcion }: Props) {
         <button
           type="button"
           onClick={() => setConfirmando(true)}
-          className="rounded border border-zinc-400 px-3 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:border-zinc-600"
+          title={soloIcono ? `Eliminar ${descripcion}` : undefined}
+          className={`boton-secundario text-sm hover:border-error hover:text-error ${
+            soloIcono ? "min-w-11 px-0" : "px-4 py-2"
+          }`}
         >
-          Eliminar<span className="sr-only"> {descripcion}</span>
+          <IconoPapelera className="size-4" />
+          <span className={soloIcono ? "sr-only" : undefined}>Eliminar</span>
+          <span className="sr-only"> {descripcion}</span>
         </button>
       )}
       {estado.tipo === "error" && estado.mensaje && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm font-semibold text-error">
           {estado.mensaje}
         </p>
       )}

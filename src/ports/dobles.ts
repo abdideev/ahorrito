@@ -19,6 +19,7 @@ export function crearRepositorioFalso(entrada: EntradaPlan | null, idPlan: strin
     guardarExplicacion: vi.fn(async () => true),
     listarPlanes: vi.fn(async () => []),
     obtenerPlan: vi.fn(async () => null),
+    eliminarPlan: vi.fn(async () => true),
 
     // Captura (SC-06): presentes para cumplir el contrato; el orquestador no las usa.
     obtenerPresupuesto: vi.fn(async () => null),
