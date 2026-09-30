@@ -6,7 +6,7 @@
  * Registro: https://magicui.design/r/animated-theme-toggler.json
  * Licencia: MIT, Copyright (c) Magic UI.
  *
- * Adaptaciones para Ahorrito: se sustituyó `lucide-react` por SVG en línea y se eliminó
+ * Adaptaciones para Ahorrito: los iconos de `lucide-react` se toman de react-icons (SC-08) y se eliminó
  * la utilidad `cn`; se conserva solo la variante circular, que es la que se usa; el
  * botón anuncia en español el tema al que cambia; y si el sistema pide reducir el
  * movimiento, el tema cambia sin la transición de vista.
@@ -17,6 +17,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
 import { flushSync } from "react-dom";
+import { IconoLuna, IconoSol } from "@/components/ui/iconos";
 import { cookieDeTema } from "@/lib/tema";
 
 interface Props extends Omit<ComponentPropsWithoutRef<"button">, "onClick" | "children"> {
@@ -123,23 +124,8 @@ export function AnimatedThemeToggler({ className, duration = 400, ...props }: Pr
     >
       {/* El icono lo elige el CSS con la clase `dark`, que ya viene del servidor: así no
           aparece el icono equivocado mientras React hidrata. */}
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        focusable="false"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="size-5"
-      >
-        <g className="hidden dark:inline">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-        </g>
-        <path className="dark:hidden" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />
-      </svg>
+      <IconoSol className="hidden size-5 dark:inline" />
+      <IconoLuna className="size-5 dark:hidden" />
     </button>
   );
 }
