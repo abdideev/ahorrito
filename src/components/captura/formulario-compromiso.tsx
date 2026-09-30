@@ -2,7 +2,7 @@
 
 import { useActionState, useId } from "react";
 import { CampoCaptura, describedBy } from "@/components/captura/campo-captura";
-import { botonPrimario, campo, mensaje as claseMensaje } from "@/components/captura/estilos";
+import { botonGuardar, campo, mensaje as claseMensaje, campoPesos, prefijoPesos } from "@/components/captura/estilos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 import { LONGITUD_MAXIMA_DENOMINACION, OCURRENCIAS_MAXIMAS } from "@/lib/captura/validacion";
 
@@ -53,6 +53,7 @@ export function FormularioCompromiso({ accion, id, iniciales, textoBoton }: Prop
           type="text"
           maxLength={LONGITUD_MAXIMA_DENOMINACION}
           autoComplete="off"
+          placeholder="Ej. Renta, Internet, Colegiatura"
           required
           defaultValue={valor("denominacion")}
           aria-invalid={Boolean(errorDe("denominacion"))}
@@ -66,18 +67,24 @@ export function FormularioCompromiso({ accion, id, iniciales, textoBoton }: Prop
 
       <div className="grid gap-5 sm:grid-cols-3">
         <CampoCaptura idCampo={idDe("monto")} etiqueta="Monto de cada pago" mensajeError={errorDe("monto")}>
-          <input
-            id={idDe("monto")}
-            name="monto"
-            type="text"
-            inputMode="decimal"
-            autoComplete="off"
-            required
-            defaultValue={valor("monto")}
-            aria-invalid={Boolean(errorDe("monto"))}
-            aria-describedby={describedBy(idDe("monto"), { error: Boolean(errorDe("monto")) })}
-            className={campo}
-          />
+          <div className="relative">
+            <span aria-hidden="true" className={prefijoPesos}>
+              $
+            </span>
+            <input
+              id={idDe("monto")}
+              name="monto"
+              type="text"
+              inputMode="decimal"
+              autoComplete="off"
+              placeholder="0.00"
+              required
+              defaultValue={valor("monto")}
+              aria-invalid={Boolean(errorDe("monto"))}
+              aria-describedby={describedBy(idDe("monto"), { error: Boolean(errorDe("monto")) })}
+              className={campoPesos}
+            />
+          </div>
         </CampoCaptura>
 
         <CampoCaptura idCampo={idDe("fechaLimite")} etiqueta="Fecha límite" mensajeError={errorDe("fechaLimite")}>
@@ -120,7 +127,7 @@ export function FormularioCompromiso({ accion, id, iniciales, textoBoton }: Prop
       <button
         type="submit"
         disabled={pendiente}
-        className={botonPrimario}
+        className={botonGuardar}
       >
         {pendiente ? "Guardando…" : textoBoton}
       </button>

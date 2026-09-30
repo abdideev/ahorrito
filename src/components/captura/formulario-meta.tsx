@@ -2,7 +2,7 @@
 
 import { useActionState, useId } from "react";
 import { CampoCaptura, describedBy } from "@/components/captura/campo-captura";
-import { botonPrimario, botonSecundario, campo, mensaje as claseMensaje } from "@/components/captura/estilos";
+import { botonGuardar, botonSecundario, campo, mensaje as claseMensaje, campoPesos, prefijoPesos } from "@/components/captura/estilos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 
 interface Props {
@@ -35,18 +35,24 @@ export function FormularioMeta({ accion, quitar, montoObjetivo, fechaObjetivo, f
             etiqueta="¿Cuánto quieres ahorrar?"
             mensajeError={estado.errores.montoObjetivo}
           >
-            <input
-              id={idMonto}
-              name="montoObjetivo"
-              type="text"
-              inputMode="decimal"
-              autoComplete="off"
-              required
-              defaultValue={estado.valores.montoObjetivo ?? montoObjetivo}
-              aria-invalid={Boolean(estado.errores.montoObjetivo)}
-              aria-describedby={describedBy(idMonto, { error: Boolean(estado.errores.montoObjetivo) })}
-              className={campo}
-            />
+            <div className="relative">
+              <span aria-hidden="true" className={prefijoPesos}>
+                $
+              </span>
+              <input
+                id={idMonto}
+                name="montoObjetivo"
+                type="text"
+                inputMode="decimal"
+                autoComplete="off"
+                placeholder="0.00"
+                required
+                defaultValue={estado.valores.montoObjetivo ?? montoObjetivo}
+                aria-invalid={Boolean(estado.errores.montoObjetivo)}
+                aria-describedby={describedBy(idMonto, { error: Boolean(estado.errores.montoObjetivo) })}
+                className={campoPesos}
+              />
+            </div>
           </CampoCaptura>
 
           <CampoCaptura
@@ -77,7 +83,7 @@ export function FormularioMeta({ accion, quitar, montoObjetivo, fechaObjetivo, f
         <button
           type="submit"
           disabled={pendiente}
-          className={botonPrimario}
+          className={botonGuardar}
         >
           {pendiente ? "Guardando…" : hayMeta ? "Actualizar meta" : "Guardar meta"}
         </button>
@@ -87,7 +93,7 @@ export function FormularioMeta({ accion, quitar, montoObjetivo, fechaObjetivo, f
         <form action={quitar}>
           <button
             type="submit"
-            className={`${botonSecundario} px-4 py-2 text-sm`}
+            className={`${botonSecundario} px-4 py-2 text-sm hover:border-error hover:text-error`}
           >
             Quitar la meta de ahorro
           </button>

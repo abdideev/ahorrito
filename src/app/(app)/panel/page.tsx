@@ -16,11 +16,13 @@ import { FormularioMeta } from "@/components/captura/formulario-meta";
 import { ListaCompromisos } from "@/components/captura/lista-compromisos";
 import { SeccionIngresos } from "@/components/captura/seccion-ingresos";
 import { GeneradorPlan } from "@/components/plan/generador-plan";
+import { TarjetaEditable } from "@/components/captura/tarjeta-editable";
+import { IconoAlcancia, IconoBillete, IconoCalendario } from "@/components/ui/iconos";
+import { DIAS_SEMANA } from "@/lib/captura/dias";
 import { fechaDeMananaEnMexico } from "@/lib/fecha";
 import { centavosATextoPlano, formatearPesos } from "@/lib/dinero";
 import { repositorioDeLaSesion } from "@/lib/supabase/repositorio";
-import { obtenerUsuarioActual } from "@/lib/supabase/usuario";
-import { cerrarSesion } from "../../(auth)/acciones";
+import { TransicionRuta } from "@/components/ui/transicion-ruta";
 
 export const metadata: Metadata = {
   title: "Panel · Ahorrito",
@@ -28,14 +30,14 @@ export const metadata: Metadata = {
 };
 
 /**
- * Panel del usuario (C-01). Reúne la captura y, a partir del bloque 4, el plan.
+ * Panel del usuario (C-01). Reúne la captura y el plan en una cuadrícula Bento.
  *
  * Es un Server Component: lee los datos guardados con el repositorio de la sesión, de
  * modo que la pantalla siempre muestra lo que está en la base de datos y no una copia
  * en el navegador que pudiera divergir.
  */
 export default async function Panel() {
-  const [usuario, repositorio] = await Promise.all([obtenerUsuarioActual(), repositorioDeLaSesion()]);
+  const repositorio = await repositorioDeLaSesion();
   const [presupuesto, compromisos, ingresos, meta, planes] = await Promise.all([
     repositorio.obtenerPresupuesto(),
     repositorio.listarCompromisos(),
@@ -52,140 +54,181 @@ export default async function Panel() {
     compromisos.map((compromiso) => [compromiso.id, compromiso.denominacion]),
   );
 
-  return (
-    <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-3xl font-black tracking-tight text-texto sm:text-4xl">Tu plan</h1>
-        <form action={cerrarSesion}>
-          <button
-            type="submit"
-            className="boton-secundario px-4 py-2 text-sm"
-          >
-            Cerrar sesión
-          </button>
-        </form>
-      </header>
-      <p className="mt-2 text-sm text-texto-suave">
-        Sesión iniciada como <strong className="text-texto">{usuario?.correo}</strong>.
-      </p>
-
-      <section aria-labelledby="titulo-presupuesto" className="superficie mt-10 p-5 sm:p-8">
-        <h2 id="titulo-presupuesto" className="text-2xl font-black tracking-tight text-texto">
-          1. Tu presupuesto
-        </h2>
-        <p className="mt-2 leading-7 text-texto-suave">
-          {presupuesto === null
-            ? "Empieza por aquí: es el dinero con el que cuentas cada semana."
-            : "Puedes cambiarlo cuando quieras; el plan se recalcula con el nuevo monto."}
-        </p>
-        <FormularioPresupuesto
-          accion={guardarPresupuesto}
-          montoSemanal={presupuesto === null ? "" : centavosATextoPlano(presupuesto.montoSemanal)}
-          diaInicioSemana={presupuesto?.diaInicioSemana ?? 1}
-        />
-      </section>
-
-      <section aria-labelledby="titulo-compromisos" className="superficie mt-8 p-5 sm:p-8">
-        <h2 id="titulo-compromisos" className="text-2xl font-black tracking-tight text-texto">
-          2. Tus pagos con fecha límite
-        </h2>
-        <p className="mt-2 leading-7 text-texto-suave">
-          Registra cada pago una sola vez. Si se repite cada mes, indica cuántos meses seguidos.
-        </p>
-
-        <ListaCompromisos
-          compromisos={compromisos}
-          actualizar={actualizarCompromiso}
-          eliminar={eliminarCompromiso}
-        />
-
-        <details
-          className="mt-6 rounded-2xl border border-borde bg-fondo p-4 sm:p-5"
-          open={compromisos.length === 0}
-        >
-          <summary className="flex min-h-11 cursor-pointer items-center rounded-xl px-2 py-2 font-bold text-texto">
-            Agregar un pago
-          </summary>
-          <div className="mt-4">
-            <FormularioCompromiso
-              accion={agregarCompromiso}
-              iniciales={{ denominacion: "", monto: "", fechaLimite: "", ocurrencias: "1" }}
-              textoBoton="Agregar pago"
-            />
-          </div>
-        </details>
-      </section>
-
-      <section aria-labelledby="titulo-plan" className="superficie mt-8 p-5 sm:p-8">
-        <h2 id="titulo-plan" className="text-2xl font-black tracking-tight text-texto">
-          3. Tu plan semanal
-        </h2>
-        <p className="mt-2 leading-7 text-texto-suave">
-          Ahorrito reparte tu presupuesto para que cada pago llegue a tiempo.
-        </p>
-        <GeneradorPlan denominaciones={denominaciones} faltanDatos={faltanDatos} />
-        {planes.length > 0 && (
-          <p className="mt-4 text-sm">
-            <Link href="/planes" className="font-medium underline underline-offset-2">
-              Ver mis {planes.length === 1 ? "plan guardado" : `${planes.length} planes guardados`}
-            </Link>
-          </p>
-        )}
-      </section>
-
-      {mostrarOpcionales && (
-      <section aria-labelledby="titulo-opcionales" className="superficie mt-8 p-5 sm:p-8">
-        <h2 id="titulo-opcionales" className="text-2xl font-black tracking-tight text-texto">
-          4. Opcional: ingresos extra y meta de ahorro
-        </h2>
-        <p className="mt-2 leading-7 text-texto-suave">
-          Nada de esto es obligatorio para generar tu plan. Complétalo cuando quieras afinarlo.
-        </p>
-
-        <details className="mt-6 rounded-2xl border border-borde bg-fondo p-4 sm:p-5" open={ingresos.length > 0}>
-          <summary className="flex min-h-11 cursor-pointer items-center rounded-xl px-2 py-2 font-bold text-texto">
-            Ingresos extraordinarios
-            {ingresos.length > 0 && (
-              <span className="font-normal text-texto-suave"> · {ingresos.length} registrados</span>
-            )}
-          </summary>
-          <p className="mt-3 text-sm leading-6 text-texto-suave">
-            Dinero que recibirás una sola vez, como una beca o un aguinaldo.
-          </p>
-          <SeccionIngresos ingresos={ingresos} agregar={agregarIngreso} eliminar={eliminarIngreso} />
-        </details>
-
-        <details className="mt-4 rounded-2xl border border-borde bg-fondo p-4 sm:p-5" open={meta !== null}>
-          <summary className="flex min-h-11 cursor-pointer items-center rounded-xl px-2 py-2 font-bold text-texto">
-            Meta de ahorro
-            {meta !== null && (
-              <span className="font-normal text-texto-suave">
-                {" · "}
-                {formatearPesos(meta.montoObjetivo)} para el {meta.fechaObjetivo}
-              </span>
-            )}
-          </summary>
-          <p className="mt-3 text-sm leading-6 text-texto-suave">
-            Ahorrito te dirá si es alcanzable con lo que te sobra cada semana.
-          </p>
-          <FormularioMeta
-            accion={guardarMeta}
-            quitar={eliminarMeta}
-            montoObjetivo={meta === null ? "" : centavosATextoPlano(meta.montoObjetivo)}
-            fechaObjetivo={meta?.fechaObjetivo ?? ""}
-            fechaMinima={fechaDeMananaEnMexico()}
-          />
-        </details>
-      </section>
-      )}
-
-      <p className="mt-10 text-sm leading-6 text-texto-suave">
-        ¿Quieres ver cómo funciona el motor de cálculo por dentro? Visita la{" "}
-        <Link href="/demo" className="font-medium underline underline-offset-2">
-          demostración del motor
-        </Link>
-        .
-      </p>
-    </main>
+  const totalPagos = compromisos.reduce(
+    (suma, compromiso) => suma + compromiso.monto * compromiso.ocurrencias,
+    0,
   );
+  // Cuántas semanas de presupuesto cubren los pagos registrados: da escala al monto sin
+  // anticipar el plan, que además reparte según las fechas límite.
+  const semanasDePagos =
+    presupuesto === null || presupuesto.montoSemanal === 0 ? null : totalPagos / presupuesto.montoSemanal;
+
+  return (
+    <TransicionRuta>
+      <main id="contenido" className="mx-auto w-full max-w-6xl px-4 pt-6 pb-12 sm:px-6 sm:pt-8">
+        <div className="bento">
+          <header className="px-1 md:col-span-6">
+            <h1 className="text-3xl font-extrabold tracking-tight text-texto sm:text-4xl">Tu plan</h1>
+            <p className="mt-2 max-w-2xl leading-7 text-texto-suave">
+              Captura tu presupuesto y tus pagos; Ahorrito calcula cuánto apartar cada semana.
+            </p>
+          </header>
+
+          <TarjetaEditable
+            className="md:col-span-6 lg:col-span-2"
+            abiertoInicial={presupuesto === null}
+            textoAccion={presupuesto === null ? "Capturar" : "Editar"}
+            encabezado={
+              <h2 className="flex items-center gap-3 text-xl font-bold text-texto">
+                <span className="paso">1</span>
+                Tu presupuesto
+              </h2>
+            }
+            formulario={
+              <FormularioPresupuesto
+                accion={guardarPresupuesto}
+                montoSemanal={presupuesto === null ? "" : centavosATextoPlano(presupuesto.montoSemanal)}
+                diaInicioSemana={presupuesto?.diaInicioSemana ?? 1}
+              />
+            }
+            resumen={
+              presupuesto === null ? (
+                <p className="mt-4 leading-7 text-texto-suave">
+                  Empieza por aquí: es el dinero con el que cuentas cada semana.
+                </p>
+              ) : (
+                <div className="mt-5">
+                  <p className="text-4xl font-extrabold tracking-tight text-texto tabular-nums">
+                    {formatearPesos(presupuesto.montoSemanal)}
+                  </p>
+                  <p className="mt-1 text-texto-suave">por semana</p>
+                  <p className="chip chip-neutro mt-4">
+                    <IconoCalendario className="size-3.5" />
+                    Tu semana inicia en {nombreDelDia(presupuesto.diaInicioSemana)}
+                  </p>
+                  {semanasDePagos !== null && compromisos.length > 0 && (
+                    <p className="mt-4 border-t border-borde pt-4 text-sm leading-6 text-texto-suave">
+                      Tus pagos equivalen a{" "}
+                      <strong className="text-texto">
+                        {semanasDePagos.toLocaleString("es-MX", { maximumFractionDigits: 1 })}{" "}
+                        {semanasDePagos === 1 ? "semana" : "semanas"}
+                      </strong>{" "}
+                      de presupuesto.
+                    </p>
+                  )}
+                </div>
+              )
+            }
+          />
+
+          <TarjetaEditable
+            className="md:col-span-6 lg:col-span-4"
+            icono="agregar"
+            abiertoInicial={compromisos.length === 0}
+            textoAccion="Agregar pago"
+            encabezado={
+              <h2 className="flex items-center gap-3 text-xl font-bold text-texto">
+                <span className="paso">2</span>
+                Tus pagos con fecha límite
+              </h2>
+            }
+            formulario={
+              <>
+                <p className="mb-4 text-sm leading-6 text-texto-suave">
+                  Registra cada pago una sola vez. Si se repite cada mes, indica cuántos meses seguidos.
+                </p>
+                <FormularioCompromiso
+                  accion={agregarCompromiso}
+                  iniciales={{ denominacion: "", monto: "", fechaLimite: "", ocurrencias: "1" }}
+                  textoBoton="Agregar pago"
+                />
+              </>
+            }
+            resumen={
+              <ListaCompromisos
+                compromisos={compromisos}
+                actualizar={actualizarCompromiso}
+                eliminar={eliminarCompromiso}
+              />
+            }
+          />
+
+          <GeneradorPlan
+            denominaciones={denominaciones}
+            faltanDatos={faltanDatos}
+            cantidadPlanes={planes.length}
+          />
+
+          {mostrarOpcionales && (
+            <>
+              <header className="mt-4 px-1 md:col-span-6">
+                <h2 className="flex items-center gap-3 text-xl font-bold text-texto">
+                  <span className="paso">4</span>
+                  Opcional: ingresos extra y meta de ahorro
+                </h2>
+                <p className="mt-2 leading-7 text-texto-suave">
+                  Nada de esto es obligatorio para generar tu plan. Complétalo cuando quieras afinarlo.
+                </p>
+              </header>
+
+              <section aria-labelledby="titulo-ingresos" className="tarjeta p-6 sm:p-7 md:col-span-3">
+                <div className="flex items-start gap-4">
+                  <span className="icono-tarjeta">
+                    <IconoBillete />
+                  </span>
+                  <div>
+                    <h3 id="titulo-ingresos" className="text-lg font-bold text-texto">
+                      Ingresos extraordinarios
+                      {ingresos.length > 0 && (
+                        <span className="font-normal text-texto-suave"> · {ingresos.length} registrados</span>
+                      )}
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-texto-suave">
+                      Dinero que recibirás una sola vez, como una beca o un aguinaldo.
+                    </p>
+                  </div>
+                </div>
+                <SeccionIngresos ingresos={ingresos} agregar={agregarIngreso} eliminar={eliminarIngreso} />
+              </section>
+
+              <section aria-labelledby="titulo-meta" className="tarjeta p-6 sm:p-7 md:col-span-3">
+                <div className="flex items-start gap-4">
+                  <span className="icono-tarjeta">
+                    <IconoAlcancia />
+                  </span>
+                  <div>
+                    <h3 id="titulo-meta" className="text-lg font-bold text-texto">
+                      Meta de ahorro
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-texto-suave">
+                      Ahorrito te dirá si es alcanzable con lo que te sobra cada semana.
+                    </p>
+                  </div>
+                </div>
+                <FormularioMeta
+                  accion={guardarMeta}
+                  quitar={eliminarMeta}
+                  montoObjetivo={meta === null ? "" : centavosATextoPlano(meta.montoObjetivo)}
+                  fechaObjetivo={meta?.fechaObjetivo ?? ""}
+                  fechaMinima={fechaDeMananaEnMexico()}
+                />
+              </section>
+            </>
+          )}
+
+          <p className="elevado mt-4 p-5 text-sm leading-6 text-texto-suave md:col-span-6">
+            ¿Quieres ver cómo funciona el motor de cálculo por dentro? Visita la{" "}
+            <Link href="/demo" className="font-semibold text-texto underline underline-offset-4">
+              demostración del motor
+            </Link>
+            .
+          </p>
+        </div>
+      </main>
+    </TransicionRuta>
+  );
+}
+
+function nombreDelDia(valor: number): string {
+  return (DIAS_SEMANA.find((dia) => dia.valor === valor)?.nombre ?? "Lunes").toLowerCase();
 }

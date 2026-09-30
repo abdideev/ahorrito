@@ -5,11 +5,13 @@ import { DIAS_SEMANA } from "@/lib/captura/dias";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 import {
   ayuda as claseAyuda,
-  botonPrimario,
+  botonGuardar,
   campo,
   error as claseError,
   etiqueta,
   mensaje as claseMensaje,
+  campoPesos,
+  prefijoPesos,
 } from "@/components/captura/estilos";
 
 interface Props {
@@ -40,24 +42,30 @@ export function FormularioPresupuesto({ accion, montoSemanal, diaInicioSemana }:
   const errorDia = estado.errores.diaInicioSemana;
 
   return (
-    <form action={enviar} noValidate className="mt-6 space-y-5">
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form action={enviar} noValidate className="space-y-5">
+      <div className="grid gap-5">
         <div>
           <label htmlFor="montoSemanal" className={etiqueta}>
             ¿Cuánto dinero recibes cada semana?
           </label>
-          <input
-            id="montoSemanal"
-            name="montoSemanal"
-            type="text"
-            inputMode="decimal"
-            autoComplete="off"
-            required
-            defaultValue={valorMonto}
-            aria-invalid={Boolean(errorMonto)}
-            aria-describedby={["ayuda-monto", errorMonto ? "error-monto" : null].filter(Boolean).join(" ")}
-            className={campo}
-          />
+          <div className="relative">
+            <span aria-hidden="true" className={prefijoPesos}>
+              $
+            </span>
+            <input
+              id="montoSemanal"
+              name="montoSemanal"
+              type="text"
+              inputMode="decimal"
+              autoComplete="off"
+              placeholder="1200.00"
+              required
+              defaultValue={valorMonto}
+              aria-invalid={Boolean(errorMonto)}
+              aria-describedby={["ayuda-monto", errorMonto ? "error-monto" : null].filter(Boolean).join(" ")}
+              className={campoPesos}
+            />
+          </div>
           <p id="ayuda-monto" className={claseAyuda}>
             En pesos, con hasta dos decimales. Por ejemplo, 1200.50
           </p>
@@ -103,7 +111,7 @@ export function FormularioPresupuesto({ accion, montoSemanal, diaInicioSemana }:
       <button
         type="submit"
         disabled={pendiente}
-        className={botonPrimario}
+        className={`${botonGuardar} sm:w-full`}
       >
         {pendiente ? "Guardando…" : "Guardar presupuesto"}
       </button>

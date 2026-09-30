@@ -3,9 +3,10 @@
 import { useActionState, useId } from "react";
 import { BotonEliminar } from "@/components/captura/boton-eliminar";
 import { CampoCaptura, describedBy } from "@/components/captura/campo-captura";
-import { botonPrimario, campo, mensaje as claseMensaje } from "@/components/captura/estilos";
+import { botonGuardar, campo, mensaje as claseMensaje, campoPesos, prefijoPesos } from "@/components/captura/estilos";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
 import { formatearPesos } from "@/lib/dinero";
+import { formatearFechaLarga } from "@/lib/fecha";
 import type { IngresoExtra } from "@/core/tipos";
 
 type Accion = (estado: EstadoCaptura, formulario: FormData) => Promise<EstadoCaptura>;
@@ -33,11 +34,11 @@ export function SeccionIngresos({ ingresos, agregar, eliminar }: Props) {
           {ingresos.map((ingreso) => (
             <li
               key={ingreso.id}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-borde bg-superficie px-4 py-3"
+              className="elevado flex flex-wrap items-center justify-between gap-3 px-4 py-2"
             >
               <span>
-                {formatearPesos(ingreso.monto)}
-                <span className="text-texto-suave"> · {ingreso.fecha}</span>
+                <span className="font-bold tabular-nums">{formatearPesos(ingreso.monto)}</span>
+                <span className="text-texto-suave"> · {formatearFechaLarga(ingreso.fecha)}</span>
               </span>
               <BotonEliminar
                 accion={eliminar}
@@ -52,18 +53,24 @@ export function SeccionIngresos({ ingresos, agregar, eliminar }: Props) {
       <form action={enviar} noValidate className="space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <CampoCaptura idCampo={idMonto} etiqueta="¿De cuánto?" mensajeError={estado.errores.monto}>
-            <input
-              id={idMonto}
-              name="monto"
-              type="text"
-              inputMode="decimal"
-              autoComplete="off"
-              required
-              defaultValue={estado.valores.monto ?? ""}
-              aria-invalid={Boolean(estado.errores.monto)}
-              aria-describedby={describedBy(idMonto, { error: Boolean(estado.errores.monto) })}
-              className={campo}
-            />
+            <div className="relative">
+              <span aria-hidden="true" className={prefijoPesos}>
+                $
+              </span>
+              <input
+                id={idMonto}
+                name="monto"
+                type="text"
+                inputMode="decimal"
+                autoComplete="off"
+                placeholder="0.00"
+                required
+                defaultValue={estado.valores.monto ?? ""}
+                aria-invalid={Boolean(estado.errores.monto)}
+                aria-describedby={describedBy(idMonto, { error: Boolean(estado.errores.monto) })}
+                className={campoPesos}
+              />
+            </div>
           </CampoCaptura>
 
           <CampoCaptura idCampo={idFecha} etiqueta="¿Qué día lo recibes?" mensajeError={estado.errores.fecha}>
@@ -89,7 +96,7 @@ export function SeccionIngresos({ ingresos, agregar, eliminar }: Props) {
         <button
           type="submit"
           disabled={pendiente}
-          className={botonPrimario}
+          className={botonGuardar}
         >
           {pendiente ? "Guardando…" : "Agregar ingreso"}
         </button>
