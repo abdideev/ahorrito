@@ -5,14 +5,16 @@
  * Licencia: MIT, Copyright (c) Magic UI.
  *
  * Adaptaciones para Ahorrito: se eliminó la utilidad `cn`, se usaron los tokens de texto
- * con contraste verificado y la animación se limita a una pasada dentro de
- * `prefers-reduced-motion: no-preference`.
+ * con contraste verificado y la animación vive dentro de `prefers-reduced-motion:
+ * no-preference`. Se repite mientras dura una espera; con `unaVez` da una sola pasada,
+ * para textos que solo deben llamar la atención al aparecer.
  */
 
 import type { ComponentPropsWithoutRef, CSSProperties, FC } from "react";
 
 export interface AnimatedShinyTextProps extends ComponentPropsWithoutRef<"span"> {
   shimmerWidth?: number;
+  unaVez?: boolean;
 }
 
 function combinarClases(...clases: Array<string | undefined>): string {
@@ -23,6 +25,7 @@ export const AnimatedShinyText: FC<AnimatedShinyTextProps> = ({
   children,
   className,
   shimmerWidth = 100,
+  unaVez = false,
   style,
   ...props
 }) => {
@@ -34,6 +37,7 @@ export const AnimatedShinyText: FC<AnimatedShinyTextProps> = ({
           "--shiny-width": `${shimmerWidth}px`,
         } as CSSProperties
       }
+      data-una-vez={unaVez ? "" : undefined}
       className={combinarClases("texto-brillante-animado", className)}
       {...props}
     >
