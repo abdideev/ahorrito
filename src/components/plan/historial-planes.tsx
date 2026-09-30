@@ -10,6 +10,7 @@ import {
   IconoCirculoCheck,
   IconoError,
   IconoFlecha,
+  IconoPapelera,
 } from "@/components/ui/iconos";
 import type { Denominaciones } from "@/lib/plan/advertencias";
 import { conDenominaciones } from "@/lib/plan/etiquetas";
@@ -55,6 +56,12 @@ export function HistorialPlanes({ denominaciones }: Props) {
   const filas = useRef(new Map<string, HTMLButtonElement>());
   const enfocarAlAbrir = useRef(false);
   const volverA = useRef<string | null>(null);
+  // SC-07: borrado en dos pasos. `confirmando` es la fila que pide confirmación.
+  const [confirmando, setConfirmando] = useState<string | null>(null);
+  const [eliminando, setEliminando] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const tituloLista = useRef<HTMLHeadingElement>(null);
+  const enfocarTrasBorrar = useRef<string | null | undefined>(undefined);
 
   // Al abrir un plan a petición del usuario, el foco pasa a su detalle: queda a la vista
   // con el descargo arriba (CA-07) y el lector de pantalla anuncia a dónde llegó. La
@@ -115,6 +122,55 @@ export function HistorialPlanes({ denominaciones }: Props) {
     }
   }
 
+  // Tras un borrado el foco pasa a la fila siguiente, o al título de la lista si ya no
+  // quedan filas: nunca se queda en un botón que acaba de desaparecer.
+  useEffect(() => {
+    if (enfocarTrasBorrar.current === undefined) {
+      return;
+    }
+    const id = enfocarTrasBorrar.current;
+    enfocarTrasBorrar.current = undefined;
+    const fila = id === null ? undefined : filas.current.get(id);
+    if (fila) {
+      fila.focus();
+    } else {
+      tituloLista.current?.focus();
+    }
+  }, [resumenes]);
+
+  /** SC-07: elimina un plan con `DELETE /api/planes/{id}` (I-01). */
+  async function eliminar(id: string) {
+    if (resumenes === null) {
+      return;
+    }
+    setEliminando(id);
+    setError(null);
+    try {
+      const respuesta = await fetch(`/api/planes/${id}`, { method: "DELETE" });
+      // 404: el plan ya no existe, que es justo lo que el usuario pidió.
+      if (!respuesta.ok && respuesta.status !== 404) {
+        setError("No pudimos eliminar el plan. Intenta de nuevo.");
+        return;
+      }
+      const indice = resumenes.findIndex((resumen) => resumen.id === id);
+      const restantes = resumenes.filter((resumen) => resumen.id !== id);
+      enfocarTrasBorrar.current = (restantes[indice] ?? restantes[indice - 1])?.id ?? null;
+      setResumenes(restantes);
+      setConfirmando(null);
+      setAviso("Plan eliminado.");
+      if (pagina > 0 && pagina * POR_PAGINA >= restantes.length) {
+        setPagina(pagina - 1);
+      }
+      if (abierto?.id === id) {
+        setAbierto(null);
+      }
+    } catch {
+      setError("Se interrumpió la conexión. Intenta de nuevo.");
+    } finally {
+      setEliminando(null);
+    }
+  }
+
   function volverALaLista() {
     volverA.current = abierto?.id ?? null;
     setAbierto(null);
@@ -162,45 +218,88 @@ export function HistorialPlanes({ denominaciones }: Props) {
         aria-labelledby="titulo-lista-planes"
         className={`tarjeta p-3 sm:p-4 lg:sticky lg:top-4 lg:col-span-4 ${abierto !== null ? "hidden lg:block" : ""}`}
       >
-        <h2 id="titulo-lista-planes" className="px-2 pt-1 pb-3 text-sm font-bold text-texto-suave">
+        <h2
+          id="titulo-lista-planes"
+          ref={tituloLista}
+          tabIndex={-1}
+          className="px-2 pt-1 pb-3 text-sm font-bold text-texto-suave"
+        >
           {resumenes.length} {resumenes.length === 1 ? "plan" : "planes"}
         </h2>
+        <p role="status" className="sr-only">
+          {aviso}
+        </p>
         <ul className="space-y-1">
           {visibles.map((resumen, indice) => {
             const seleccionado = abierto?.id === resumen.id;
             return (
-              <li key={resumen.id}>
-                <button
-                  type="button"
-                  ref={(nodo) => {
-                    if (nodo === null) {
-                      filas.current.delete(resumen.id);
-                    } else {
-                      filas.current.set(resumen.id, nodo);
-                    }
-                  }}
-                  onClick={() => abrir(resumen.id)}
-                  disabled={cargandoDetalle !== null}
-                  aria-current={seleccionado ? "true" : undefined}
-                  className={`flex min-h-11 w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left disabled:cursor-wait ${
-                    seleccionado
-                      ? "border-primario bg-primario-suave"
-                      : "border-transparent hover:bg-superficie-hundida"
-                  }`}
-                >
-                  <span className="min-w-0 flex-1">
-                    <span className="flex flex-wrap items-center gap-x-2 text-sm font-bold text-texto">
-                      {FORMATO_GENERADO.format(new Date(resumen.generadoEn))}
-                      {pagina === 0 && indice === 0 && <span className="chip chip-exito">Más reciente</span>}
+              <li key={resumen.id} className="rounded-xl">
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    ref={(nodo) => {
+                      if (nodo === null) {
+                        filas.current.delete(resumen.id);
+                      } else {
+                        filas.current.set(resumen.id, nodo);
+                      }
+                    }}
+                    onClick={() => abrir(resumen.id)}
+                    disabled={cargandoDetalle !== null}
+                    aria-current={seleccionado ? "true" : undefined}
+                    className={`flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-xl border px-3 py-2.5 text-left disabled:cursor-wait ${
+                      seleccionado
+                        ? "border-primario bg-primario-suave"
+                        : "border-transparent hover:bg-superficie-hundida"
+                    }`}
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="flex flex-wrap items-center gap-x-2 text-sm font-bold text-texto">
+                        {FORMATO_GENERADO.format(new Date(resumen.generadoEn))}
+                        {pagina === 0 && indice === 0 && <span className="chip chip-exito">Más reciente</span>}
+                      </span>
+                      <span className="mt-0.5 block text-sm text-texto-suave">
+                        {resumen.semanas} semanas · {formatearFechaCorta(resumen.inicioHorizonte)} –{" "}
+                        {formatearFechaCorta(resumen.finHorizonte)}
+                      </span>
                     </span>
-                    <span className="mt-0.5 block text-sm text-texto-suave">
-                      {resumen.semanas} semanas · {formatearFechaCorta(resumen.inicioHorizonte)} –{" "}
-                      {formatearFechaCorta(resumen.finHorizonte)}
+                    <EstadoMeta viable={resumen.metaViable} />
+                    {cargandoDetalle === resumen.id && <span className="sr-only">Abriendo…</span>}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmando(confirmando === resumen.id ? null : resumen.id)}
+                    disabled={eliminando !== null}
+                    aria-expanded={confirmando === resumen.id}
+                    title="Eliminar este plan"
+                    className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-texto-suave hover:bg-error-suave hover:text-error aria-expanded:bg-error-suave aria-expanded:text-error"
+                  >
+                    <IconoPapelera className="size-4" />
+                    <span className="sr-only">
+                      Eliminar el plan del {FORMATO_GENERADO.format(new Date(resumen.generadoEn))}
                     </span>
-                  </span>
-                  <EstadoMeta viable={resumen.metaViable} />
-                  {cargandoDetalle === resumen.id && <span className="sr-only">Abriendo…</span>}
-                </button>
+                  </button>
+                </div>
+                {confirmando === resumen.id && (
+                  <div className="mt-1 flex flex-wrap items-center gap-2 rounded-xl border border-error/30 bg-error-suave px-3 py-2">
+                    <p className="flex-1 text-sm font-semibold text-error">¿Eliminar este plan? No se puede deshacer.</p>
+                    <button
+                      type="button"
+                      onClick={() => eliminar(resumen.id)}
+                      disabled={eliminando !== null}
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-error bg-tarjeta px-3 text-sm font-bold text-error disabled:cursor-wait disabled:opacity-60"
+                    >
+                      {eliminando === resumen.id ? "Eliminando…" : "Eliminar"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmando(null)}
+                      className="boton-secundario min-h-11 px-3 text-sm"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
               </li>
             );
           })}
@@ -236,6 +335,12 @@ export function HistorialPlanes({ denominaciones }: Props) {
       {error !== null && (
         <p role="alert" className="rounded-2xl border border-error/40 bg-error-suave p-4 text-sm font-semibold text-error lg:col-span-8">
           {error}
+        </p>
+      )}
+
+      {abierto === null && cargandoDetalle === null && (
+        <p className="tarjeta hidden p-8 text-texto-suave lg:col-span-8 lg:block">
+          Elige un plan de la lista para verlo aquí.
         </p>
       )}
 
