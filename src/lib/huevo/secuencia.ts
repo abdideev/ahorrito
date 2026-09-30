@@ -21,6 +21,18 @@ export function esCuadrePerfecto(plan: Plan): boolean {
   );
 }
 
+/**
+ * Pista del huevo de Pascua: alguna semana ya cierra en cero, pero no todas.
+ *
+ * Solo sugiere que existe algo por descubrir; no revela la secuencia. Un plan sin
+ * ninguna semana en cero no muestra pista, para que el secreto siga siéndolo.
+ */
+export function hayCuadreParcial(plan: Plan): boolean {
+  return (
+    !esCuadrePerfecto(plan) && plan.asignaciones.some((asignacion) => asignacion.remanente === 0)
+  );
+}
+
 export interface EstadoAlcancia {
   readonly totalSemanas: number;
   /** Monedas depositadas en orden: las semanas 1 a `depositadas`. */
