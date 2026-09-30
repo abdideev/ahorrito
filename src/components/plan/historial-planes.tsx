@@ -1,30 +1,74 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Descargo } from "@/components/plan/descargo";
-import { TablaSemanas } from "@/components/plan/tabla-semanas";
-import type { Plan } from "@/core/tipos";
-import { describirAdvertencias, type Denominaciones } from "@/lib/plan/advertencias";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { enfocarAlInicio } from "@/components/plan/enfocar";
+import { VistaPlan } from "@/components/plan/vista-plan";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
+import {
+  IconoCalendario,
+  IconoCirculoCheck,
+  IconoError,
+  IconoFlecha,
+} from "@/components/ui/iconos";
+import type { Denominaciones } from "@/lib/plan/advertencias";
 import { conDenominaciones } from "@/lib/plan/etiquetas";
-import { formatearPesos } from "@/lib/dinero";
+import { formatearFechaCorta } from "@/lib/fecha";
 import type { PlanGuardado, ResumenPlan } from "@/ports/repositorio";
 
 interface Props {
   denominaciones: Denominaciones;
 }
 
+/** Filas por página: la lista cabe en una pantalla de escritorio sin desplazarse. */
+const POR_PAGINA = 8;
+
+/** Desde este ancho lista y detalle se ven lado a lado (breakpoint `lg` de Tailwind). */
+const CONSULTA_ESCRITORIO = "(min-width: 64rem)";
+
+const FORMATO_GENERADO = new Intl.DateTimeFormat("es-MX", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 /**
- * Historial de planes guardados (RF-12).
+ * Historial de planes guardados (RF-12), en disposición de lista y detalle.
  *
  * Consume `GET /api/planes` y `GET /api/planes/{id}`, que son las operaciones que I-01
  * define. Podría leer el repositorio directamente desde el servidor, pero entonces esas
  * dos operaciones del contrato quedarían sin uso real y sin verificar.
+ *
+ * En escritorio la lista, compacta y paginada, queda a la izquierda y el plan abierto a
+ * la derecha; el más reciente se abre solo. En móvil el detalle sustituye a la lista y
+ * un botón "Volver" devuelve el foco a la fila de la que se partió.
  */
 export function HistorialPlanes({ denominaciones }: Props) {
   const [resumenes, setResumenes] = useState<ResumenPlan[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [abierto, setAbierto] = useState<PlanGuardado | null>(null);
   const [cargandoDetalle, setCargandoDetalle] = useState<string | null>(null);
+  const [pagina, setPagina] = useState(0);
+  const detalle = useRef<HTMLElement>(null);
+  const filas = useRef(new Map<string, HTMLButtonElement>());
+  const enfocarAlAbrir = useRef(false);
+  const volverA = useRef<string | null>(null);
+
+  // Al abrir un plan a petición del usuario, el foco pasa a su detalle: queda a la vista
+  // con el descargo arriba (CA-07) y el lector de pantalla anuncia a dónde llegó. La
+  // apertura automática del más reciente no mueve el foco.
+  useEffect(() => {
+    if (abierto !== null && enfocarAlAbrir.current) {
+      enfocarAlAbrir.current = false;
+      enfocarAlInicio(detalle.current);
+    } else if (abierto === null && volverA.current !== null) {
+      // "Volver a la lista" en móvil: la fila de la que se partió recupera el foco.
+      filas.current.get(volverA.current)?.focus();
+      volverA.current = null;
+    }
+  }, [abierto]);
 
   useEffect(() => {
     let vigente = true;
@@ -34,8 +78,12 @@ export function HistorialPlanes({ denominaciones }: Props) {
           throw new Error(String(respuesta.status));
         }
         const datos = (await respuesta.json()) as { planes: ResumenPlan[] };
-        if (vigente) {
-          setResumenes(datos.planes);
+        if (!vigente) {
+          return;
+        }
+        setResumenes(datos.planes);
+        if (datos.planes.length > 0 && window.matchMedia(CONSULTA_ESCRITORIO).matches) {
+          void abrir(datos.planes[0].id, false);
         }
       })
       .catch(() => {
@@ -49,7 +97,7 @@ export function HistorialPlanes({ denominaciones }: Props) {
     };
   }, []);
 
-  async function abrir(id: string) {
+  async function abrir(id: string, enfocar = true) {
     setCargandoDetalle(id);
     setError(null);
     try {
@@ -58,6 +106,7 @@ export function HistorialPlanes({ denominaciones }: Props) {
         setError(respuesta.status === 404 ? "Ese plan ya no existe." : "No pudimos abrir ese plan.");
         return;
       }
+      enfocarAlAbrir.current = enfocar;
       setAbierto((await respuesta.json()) as PlanGuardado);
     } catch {
       setError("Se interrumpió la conexión. Intenta de nuevo.");
@@ -66,148 +115,187 @@ export function HistorialPlanes({ denominaciones }: Props) {
     }
   }
 
+  function volverALaLista() {
+    volverA.current = abierto?.id ?? null;
+    setAbierto(null);
+  }
+
   if (error !== null && resumenes === null) {
     return (
-      <p
-        role="alert"
-        className="rounded-xl border border-error bg-error/6 p-4 text-sm font-semibold text-error"
-      >
+      <p role="alert" className="rounded-2xl border border-error/40 bg-error-suave p-4 text-sm font-semibold text-error">
         {error}
       </p>
     );
   }
 
   if (resumenes === null) {
-    return <p className="text-texto-suave">Cargando tus planes…</p>;
-  }
-
-  if (resumenes.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-borde bg-superficie p-5 text-texto-suave">
-        Todavía no has generado ningún plan.
+      <p className="tarjeta p-6">
+        <AnimatedShinyText>Cargando tus planes…</AnimatedShinyText>
       </p>
     );
   }
 
+  if (resumenes.length === 0) {
+    return (
+      <div className="tarjeta flex flex-col items-start gap-4 p-8">
+        <span className="icono-tarjeta">
+          <IconoCalendario />
+        </span>
+        <div>
+          <p className="text-lg font-bold text-texto">Todavía no has generado ningún plan.</p>
+          <p className="mt-1 text-texto-suave">Cuando lo hagas desde el panel, aparecerá aquí.</p>
+        </div>
+        <Link href="/panel" className="boton-invertido">
+          Ir al panel
+        </Link>
+      </div>
+    );
+  }
+
+  const paginas = Math.ceil(resumenes.length / POR_PAGINA);
+  const visibles = resumenes.slice(pagina * POR_PAGINA, (pagina + 1) * POR_PAGINA);
+
   return (
-    <div className="space-y-8">
-      <ul className="space-y-4">
-        {resumenes.map((resumen) => (
-          <li
-            key={resumen.id}
-            className="elevado flex flex-wrap items-center justify-between gap-4 p-5"
-          >
-            <div>
-              <p className="font-bold text-texto">
-                {new Date(resumen.generadoEn).toLocaleString("es-MX", {
-                  dateStyle: "long",
-                  timeStyle: "short",
-                })}
-              </p>
-              <p className="mt-1 text-sm leading-6 text-texto-suave">
-                {resumen.semanas} semanas, del {resumen.inicioHorizonte} al {resumen.finHorizonte}
-                {resumen.metaViable !== null &&
-                  (resumen.metaViable ? " · meta alcanzable" : " · meta no alcanzable")}
-              </p>
-            </div>
+    <div className="grid items-start gap-4 lg:grid-cols-12">
+      <nav
+        aria-labelledby="titulo-lista-planes"
+        className={`tarjeta p-3 sm:p-4 lg:sticky lg:top-4 lg:col-span-4 ${abierto !== null ? "hidden lg:block" : ""}`}
+      >
+        <h2 id="titulo-lista-planes" className="px-2 pt-1 pb-3 text-sm font-bold text-texto-suave">
+          {resumenes.length} {resumenes.length === 1 ? "plan" : "planes"}
+        </h2>
+        <ul className="space-y-1">
+          {visibles.map((resumen, indice) => {
+            const seleccionado = abierto?.id === resumen.id;
+            return (
+              <li key={resumen.id}>
+                <button
+                  type="button"
+                  ref={(nodo) => {
+                    if (nodo === null) {
+                      filas.current.delete(resumen.id);
+                    } else {
+                      filas.current.set(resumen.id, nodo);
+                    }
+                  }}
+                  onClick={() => abrir(resumen.id)}
+                  disabled={cargandoDetalle !== null}
+                  aria-current={seleccionado ? "true" : undefined}
+                  className={`flex min-h-11 w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left disabled:cursor-wait ${
+                    seleccionado
+                      ? "border-primario bg-primario-suave"
+                      : "border-transparent hover:bg-superficie-hundida"
+                  }`}
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-x-2 text-sm font-bold text-texto">
+                      {FORMATO_GENERADO.format(new Date(resumen.generadoEn))}
+                      {pagina === 0 && indice === 0 && <span className="chip chip-exito">Más reciente</span>}
+                    </span>
+                    <span className="mt-0.5 block text-sm text-texto-suave">
+                      {resumen.semanas} semanas · {formatearFechaCorta(resumen.inicioHorizonte)} –{" "}
+                      {formatearFechaCorta(resumen.finHorizonte)}
+                    </span>
+                  </span>
+                  <EstadoMeta viable={resumen.metaViable} />
+                  {cargandoDetalle === resumen.id && <span className="sr-only">Abriendo…</span>}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        {paginas > 1 && (
+          <div className="mt-3 flex items-center justify-between gap-2 border-t border-borde pt-3">
             <button
               type="button"
-              onClick={() => abrir(resumen.id)}
-              disabled={cargandoDetalle !== null}
-              aria-expanded={abierto?.id === resumen.id}
-              className="boton-secundario text-sm"
+              onClick={() => setPagina((valor) => valor - 1)}
+              disabled={pagina === 0}
+              className="boton-secundario min-h-11 min-w-11 px-0 text-sm"
             >
-              {cargandoDetalle === resumen.id ? "Abriendo…" : "Ver el plan"}
+              <IconoFlecha className="size-4 rotate-180" />
+              <span className="sr-only">Página anterior</span>
             </button>
-          </li>
-        ))}
-      </ul>
+            <p className="text-sm whitespace-nowrap text-texto-suave" aria-live="polite">
+              Página {pagina + 1} de {paginas}
+            </p>
+            <button
+              type="button"
+              onClick={() => setPagina((valor) => valor + 1)}
+              disabled={pagina === paginas - 1}
+              className="boton-secundario min-h-11 min-w-11 px-0 text-sm"
+            >
+              <span className="sr-only">Página siguiente</span>
+              <IconoFlecha className="size-4" />
+            </button>
+          </div>
+        )}
+      </nav>
 
       {error !== null && (
-        <p
-          role="alert"
-          className="rounded-xl border border-error bg-error/6 p-4 text-sm font-semibold text-error"
-        >
+        <p role="alert" className="rounded-2xl border border-error/40 bg-error-suave p-4 text-sm font-semibold text-error lg:col-span-8">
           {error}
         </p>
       )}
 
-      {abierto !== null && <DetallePlan guardado={abierto} denominaciones={denominaciones} />}
+      {abierto !== null && (
+        <section
+          ref={detalle}
+          tabIndex={-1}
+          aria-labelledby="titulo-detalle"
+          className="bento scroll-mt-4 rounded-3xl lg:col-span-8"
+        >
+          <div className="flex flex-wrap items-center gap-3 md:col-span-6">
+            <button type="button" onClick={volverALaLista} className="boton-secundario min-h-11 text-sm lg:hidden">
+              <IconoFlecha className="size-4 rotate-180" />
+              Volver a la lista
+            </button>
+            <h2 id="titulo-detalle" className="px-1 text-xl font-extrabold tracking-tight text-texto">
+              Plan generado el {FORMATO_GENERADO.format(new Date(abierto.generadoEn))}
+            </h2>
+          </div>
+          <VistaPlan
+            plan={abierto.plan}
+            denominaciones={denominaciones}
+            tituloExplicacion="Qué significa este plan"
+            explicacionGenerada={abierto.explicacion !== null}
+            explicacion={
+              abierto.explicacion === null ? (
+                <p className="rounded-xl border border-borde bg-superficie-hundida p-4 text-sm">
+                  Este plan se guardó sin explicación.
+                </p>
+              ) : (
+                conDenominaciones(abierto.explicacion, abierto.plan, denominaciones)
+                  .split("\n\n")
+                  .map((parrafo, indice) => (
+                    <p key={indice} className="mt-3 whitespace-pre-line first:mt-0">
+                      {parrafo}
+                    </p>
+                  ))
+              )
+            }
+          />
+        </section>
+      )}
     </div>
   );
 }
 
-function DetallePlan({
-  guardado,
-  denominaciones,
-}: {
-  guardado: PlanGuardado;
-  denominaciones: Denominaciones;
-}) {
-  const plan: Plan = guardado.plan;
-  const advertencias = describirAdvertencias(plan.advertencias, denominaciones);
-
-  return (
-    <section aria-label="Plan guardado" className="superficie space-y-6 p-5 sm:p-7">
-      <Descargo />
-
-      <p className="text-lg leading-8 text-texto">
-        Generado el{" "}
-        {new Date(guardado.generadoEn).toLocaleString("es-MX", { dateStyle: "long", timeStyle: "short" })}.
-        {plan.evaluacionMeta !== null && (
-          <>
-            {" "}
-            Meta de {formatearPesos(plan.evaluacionMeta.montoObjetivo)}:{" "}
-            {plan.evaluacionMeta.viable ? "alcanzable" : "no alcanzable"}.
-          </>
-        )}
-      </p>
-
-      {advertencias.length > 0 && (
-        <ul className="space-y-3">
-          {advertencias.map((advertencia, indice) => (
-            <li
-              key={`${advertencia.tipo}-${indice}`}
-              className={`flex items-start gap-3 rounded-xl border border-borde border-l-4 bg-fondo p-4 text-sm leading-6 text-texto ${
-                advertencia.gravedad === "alta" ? "border-l-error" : "border-l-alerta"
-              }`}
-            >
-              <span
-                aria-hidden="true"
-                className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full border text-xs font-black ${
-                  advertencia.gravedad === "alta"
-                    ? "border-error text-error"
-                    : "border-alerta text-alerta"
-                }`}
-              >
-                !
-              </span>
-              <span>{advertencia.texto}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <TablaSemanas plan={plan} denominaciones={denominaciones} />
-
-      <section aria-labelledby="titulo-explicacion-guardada" className="border-t border-borde pt-6">
-        <h3 id="titulo-explicacion-guardada" className="text-lg font-bold text-texto">
-          Qué significa este plan
-        </h3>
-        {guardado.explicacion === null ? (
-          <p className="mt-3 rounded-xl border border-borde bg-fondo p-4 text-sm">
-            Este plan se guardó sin explicación.
-          </p>
-        ) : (
-          conDenominaciones(guardado.explicacion, plan, denominaciones)
-            .split("\n\n")
-            .map((parrafo, indice) => (
-              <p key={indice} className="mt-3 whitespace-pre-line leading-7 text-texto">
-                {parrafo}
-              </p>
-            ))
-        )}
-      </section>
-    </section>
+/** Estado de la meta en la fila: icono con texto oculto, porque el color no basta. */
+function EstadoMeta({ viable }: { viable: boolean | null }) {
+  if (viable === null) {
+    return <span className="sr-only">Sin meta</span>;
+  }
+  return viable ? (
+    <span title="Meta alcanzable" className="shrink-0 text-terciario">
+      <IconoCirculoCheck className="size-5" />
+      <span className="sr-only">Meta alcanzable</span>
+    </span>
+  ) : (
+    <span title="Meta no alcanzable" className="shrink-0 text-error">
+      <IconoError className="size-5" />
+      <span className="sr-only">Meta no alcanzable</span>
+    </span>
   );
 }
