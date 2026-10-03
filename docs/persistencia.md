@@ -121,10 +121,20 @@ Incluyen la conversión exacta de importes y la ida y vuelta de tres planes real
 pnpm test:integracion
 ```
 
-Se conectan a la base de datos real con la **clave pública** y dos usuarios distintos, como lo
+Se conectan a la base de datos real con la **clave pública** y usuarios distintos, como lo
 haría el navegador. No usan la clave de servicio, que ignoraría la seguridad por fila y
-volvería la prueba inútil. Requieren en `.env.local` los cuatro valores declarados en
+volvería la prueba inútil. Requieren en `.env.local` los seis valores declarados en
 `.env.example` (`PRUEBA_USUARIO_*`); si faltan, las pruebas se omiten en lugar de fallar.
+
+| Usuario | Papel | Archivo |
+|---|---|---|
+| A | Propietario del plan de CA-10 y cuenta de la verificación manual en el navegador | `aislamiento.integracion.test.ts` (solo borra el plan que crea) |
+| B | Intenta el acceso cruzado; sus datos no se modifican | Los dos archivos |
+| C | Propietario de la captura; la prueba la borra antes y después | `captura.integracion.test.ts` |
+
+El usuario C existe desde la incidencia #27: hasta entonces `captura.integracion.test.ts` usaba
+al usuario A y cada ejecución borraba la captura con la que se revisaba la interfaz. La prueba
+se detiene si C se configura con el correo de A.
 
 Los usuarios de prueba se crean en Authentication → Users → Add user, con autoconfirmación y
 un dominio reservado (`.test`).
