@@ -3,9 +3,15 @@
  *
  * Verifica las doce operaciones que SC-06 agregó a I-04, y repite sobre ellas la
  * comprobación de aislamiento de CA-10: lo que el usuario B intenta leer, modificar o
- * borrar de los datos de A no alcanza ninguna fila.
+ * borrar de los datos de C no alcanza ninguna fila.
  *
- * Requiere en .env.local los mismos usuarios de prueba que `aislamiento.integracion.test.ts`.
+ * El propietario de la captura es el usuario C, exclusivo de este archivo, porque la prueba
+ * borra toda su captura antes y después de ejecutarse. Hasta la incidencia #27 lo era el
+ * usuario A, que también es la cuenta de la verificación manual en el navegador: cada
+ * ejecución borraba los datos con los que se revisaba la interfaz. B sigue siendo el
+ * usuario que intenta el acceso cruzado y su captura no se toca.
+ *
+ * Requiere en .env.local los usuarios C y B (`PRUEBA_USUARIO_C_*` y `PRUEBA_USUARIO_B_*`).
  * Si faltan, las pruebas se omiten en lugar de fallar.
  */
 
@@ -19,11 +25,11 @@ import { crearRepositorioSupabase } from "./repositorio-supabase";
 const URL_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const CLAVE_PUBLICA = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const USUARIOS = {
-  a: { correo: process.env.PRUEBA_USUARIO_A_CORREO, contrasena: process.env.PRUEBA_USUARIO_A_CONTRASENA },
+  c: { correo: process.env.PRUEBA_USUARIO_C_CORREO, contrasena: process.env.PRUEBA_USUARIO_C_CONTRASENA },
   b: { correo: process.env.PRUEBA_USUARIO_B_CORREO, contrasena: process.env.PRUEBA_USUARIO_B_CONTRASENA },
 };
 const CONFIGURADO = Boolean(
-  URL_SUPABASE && CLAVE_PUBLICA && USUARIOS.a.correo && USUARIOS.a.contrasena && USUARIOS.b.correo && USUARIOS.b.contrasena,
+  URL_SUPABASE && CLAVE_PUBLICA && USUARIOS.c.correo && USUARIOS.c.contrasena && USUARIOS.b.correo && USUARIOS.b.contrasena,
 );
 
 const pesos = (cantidad: number) => centavos(Math.round(cantidad * 100));
@@ -41,25 +47,30 @@ async function iniciarSesion(correo: string, contrasena: string): Promise<Supaba
 }
 
 describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de datos", () => {
-  let clienteA: SupabaseClient;
+  let clienteC: SupabaseClient;
   let clienteB: SupabaseClient;
-  let repositorioA: RepositorioPlanes;
+  let repositorioC: RepositorioPlanes;
   let repositorioB: RepositorioPlanes;
 
   beforeAll(async () => {
-    clienteA = await iniciarSesion(USUARIOS.a.correo as string, USUARIOS.a.contrasena as string);
+    // Protección de la #27: si C se configura con la cuenta de A, la limpieza borraría
+    // la captura de la verificación manual. Se detiene antes de iniciar sesión.
+    if (USUARIOS.c.correo === process.env.PRUEBA_USUARIO_A_CORREO) {
+      throw new Error("PRUEBA_USUARIO_C_CORREO no puede ser la cuenta del usuario A (incidencia #27)");
+    }
+    clienteC = await iniciarSesion(USUARIOS.c.correo as string, USUARIOS.c.contrasena as string);
     clienteB = await iniciarSesion(USUARIOS.b.correo as string, USUARIOS.b.contrasena as string);
-    repositorioA = crearRepositorioSupabase(clienteA);
+    repositorioC = crearRepositorioSupabase(clienteC);
     repositorioB = crearRepositorioSupabase(clienteB);
     // La prueba parte de un estado conocido, sin tocar los datos del usuario B.
-    await limpiar(clienteA);
+    await limpiar(clienteC);
   });
 
   afterAll(async () => {
-    if (clienteA) {
-      await limpiar(clienteA);
+    if (clienteC) {
+      await limpiar(clienteC);
     }
-    await Promise.all([clienteA?.auth.signOut(), clienteB?.auth.signOut()]);
+    await Promise.all([clienteC?.auth.signOut(), clienteB?.auth.signOut()]);
   });
 
   async function limpiar(cliente: SupabaseClient) {
@@ -71,25 +82,25 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
 
   describe("RF-02 · presupuesto", () => {
     it("no existe antes de capturarlo", async () => {
-      await expect(repositorioA.obtenerPresupuesto()).resolves.toBeNull();
+      await expect(repositorioC.obtenerPresupuesto()).resolves.toBeNull();
     });
 
     it("se guarda y vuelve con el mismo monto y dia de inicio", async () => {
       const presupuesto = { montoSemanal: pesos(500.25), diaInicioSemana: 1 as const };
 
-      await repositorioA.guardarPresupuesto(presupuesto);
+      await repositorioC.guardarPresupuesto(presupuesto);
 
-      await expect(repositorioA.obtenerPresupuesto()).resolves.toEqual(presupuesto);
+      await expect(repositorioC.obtenerPresupuesto()).resolves.toEqual(presupuesto);
     });
 
     it("guardarlo otra vez reemplaza el anterior en lugar de duplicarlo", async () => {
-      await repositorioA.guardarPresupuesto({ montoSemanal: pesos(800), diaInicioSemana: 0 });
+      await repositorioC.guardarPresupuesto({ montoSemanal: pesos(800), diaInicioSemana: 0 });
 
-      await expect(repositorioA.obtenerPresupuesto()).resolves.toEqual({
+      await expect(repositorioC.obtenerPresupuesto()).resolves.toEqual({
         montoSemanal: pesos(800),
         diaInicioSemana: 0,
       });
-      const { data } = await clienteA.from("presupuestos").select("id");
+      const { data } = await clienteC.from("presupuestos").select("id");
       expect(data).toHaveLength(1);
     });
   });
@@ -98,14 +109,14 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
     let idCompromiso: string;
 
     it("se da de alta y aparece en la lista con su denominacion", async () => {
-      idCompromiso = await repositorioA.agregarCompromiso({
+      idCompromiso = await repositorioC.agregarCompromiso({
         denominacion: "Tarjeta de credito",
         monto: pesos(600),
         fechaLimite: f("2026-10-30"),
         ocurrencias: 3,
       });
 
-      const compromisos = await repositorioA.listarCompromisos();
+      const compromisos = await repositorioC.listarCompromisos();
       expect(compromisos).toEqual([
         {
           id: idCompromiso,
@@ -118,7 +129,7 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
     });
 
     it("se modifica y conserva su identificador", async () => {
-      const cambiado = await repositorioA.actualizarCompromiso(idCompromiso, {
+      const cambiado = await repositorioC.actualizarCompromiso(idCompromiso, {
         denominacion: "Tarjeta departamental",
         monto: pesos(450.5),
         fechaLimite: f("2026-11-15"),
@@ -126,7 +137,7 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
       });
 
       expect(cambiado).toBe(true);
-      const [compromiso] = await repositorioA.listarCompromisos();
+      const [compromiso] = await repositorioC.listarCompromisos();
       expect(compromiso).toEqual({
         id: idCompromiso,
         denominacion: "Tarjeta departamental",
@@ -138,7 +149,7 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
 
     it("la base rechaza ocurrencias fuera del rango de 1 a 6 (regla de negocio 2)", async () => {
       await expect(
-        repositorioA.agregarCompromiso({
+        repositorioC.agregarCompromiso({
           denominacion: "Invalido",
           monto: pesos(100),
           fechaLimite: f("2026-10-30"),
@@ -148,49 +159,49 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
     });
 
     it("se elimina y desaparece de la lista", async () => {
-      await expect(repositorioA.eliminarCompromiso(idCompromiso)).resolves.toBe(true);
-      await expect(repositorioA.listarCompromisos()).resolves.toEqual([]);
+      await expect(repositorioC.eliminarCompromiso(idCompromiso)).resolves.toBe(true);
+      await expect(repositorioC.listarCompromisos()).resolves.toEqual([]);
     });
 
     it("eliminar dos veces el mismo devuelve false la segunda", async () => {
-      await expect(repositorioA.eliminarCompromiso(idCompromiso)).resolves.toBe(false);
+      await expect(repositorioC.eliminarCompromiso(idCompromiso)).resolves.toBe(false);
     });
   });
 
   describe("RF-05 y RF-06 · ingresos y meta", () => {
     it("el ingreso extraordinario se guarda, se lista y se elimina", async () => {
-      const id = await repositorioA.agregarIngreso({ monto: pesos(1200.75), fecha: f("2026-10-10") });
+      const id = await repositorioC.agregarIngreso({ monto: pesos(1200.75), fecha: f("2026-10-10") });
 
-      await expect(repositorioA.listarIngresos()).resolves.toEqual([
+      await expect(repositorioC.listarIngresos()).resolves.toEqual([
         { id, monto: pesos(1200.75), fecha: f("2026-10-10") },
       ]);
-      await expect(repositorioA.eliminarIngreso(id)).resolves.toBe(true);
-      await expect(repositorioA.listarIngresos()).resolves.toEqual([]);
+      await expect(repositorioC.eliminarIngreso(id)).resolves.toBe(true);
+      await expect(repositorioC.listarIngresos()).resolves.toEqual([]);
     });
 
     it("la meta se guarda, se reemplaza y se elimina", async () => {
-      await expect(repositorioA.obtenerMeta()).resolves.toBeNull();
+      await expect(repositorioC.obtenerMeta()).resolves.toBeNull();
 
-      await repositorioA.guardarMeta({ montoObjetivo: pesos(3000), fechaObjetivo: f("2026-12-31") });
-      await expect(repositorioA.obtenerMeta()).resolves.toEqual({
+      await repositorioC.guardarMeta({ montoObjetivo: pesos(3000), fechaObjetivo: f("2026-12-31") });
+      await expect(repositorioC.obtenerMeta()).resolves.toEqual({
         montoObjetivo: pesos(3000),
         fechaObjetivo: f("2026-12-31"),
       });
 
-      await repositorioA.guardarMeta({ montoObjetivo: pesos(5000), fechaObjetivo: f("2027-01-31") });
-      const { data } = await clienteA.from("metas_ahorro").select("id");
+      await repositorioC.guardarMeta({ montoObjetivo: pesos(5000), fechaObjetivo: f("2027-01-31") });
+      const { data } = await clienteC.from("metas_ahorro").select("id");
       expect(data).toHaveLength(1);
 
-      await expect(repositorioA.eliminarMeta()).resolves.toBe(true);
-      await expect(repositorioA.obtenerMeta()).resolves.toBeNull();
-      await expect(repositorioA.eliminarMeta()).resolves.toBe(false);
+      await expect(repositorioC.eliminarMeta()).resolves.toBe(true);
+      await expect(repositorioC.obtenerMeta()).resolves.toBeNull();
+      await expect(repositorioC.eliminarMeta()).resolves.toBe(false);
     });
   });
 
   describe("RNF-04 · la captura de un usuario no alcanza a la de otro", () => {
-    it("el usuario B no ve, no modifica ni borra la captura del usuario A", async () => {
-      await repositorioA.guardarPresupuesto({ montoSemanal: pesos(500), diaInicioSemana: 1 });
-      const idDeA = await repositorioA.agregarCompromiso({
+    it("el usuario B no ve, no modifica ni borra la captura del usuario C", async () => {
+      await repositorioC.guardarPresupuesto({ montoSemanal: pesos(500), diaInicioSemana: 1 });
+      const idDeC = await repositorioC.agregarCompromiso({
         denominacion: "Renta",
         monto: pesos(700),
         fechaLimite: f("2026-10-05"),
@@ -198,8 +209,8 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
       });
 
       const intentos = {
-        listarCompromisos: (await repositorioB.listarCompromisos()).filter((c) => c.id === idDeA).length,
-        actualizarCompromiso: (await repositorioB.actualizarCompromiso(idDeA, {
+        listarCompromisos: (await repositorioB.listarCompromisos()).filter((c) => c.id === idDeC).length,
+        actualizarCompromiso: (await repositorioB.actualizarCompromiso(idDeC, {
           denominacion: "Intrusion",
           monto: pesos(1),
           fechaLimite: f("2026-10-05"),
@@ -207,13 +218,13 @@ describe.skipIf(!CONFIGURADO)("SC-06 · captura del usuario contra la base de da
         }))
           ? 1
           : 0,
-        eliminarCompromiso: (await repositorioB.eliminarCompromiso(idDeA)) ? 1 : 0,
+        eliminarCompromiso: (await repositorioB.eliminarCompromiso(idDeC)) ? 1 : 0,
       };
 
       expect(intentos).toEqual({ listarCompromisos: 0, actualizarCompromiso: 0, eliminarCompromiso: 0 });
-      // El compromiso de A sigue intacto tras los tres intentos.
-      const [compromisoDeA] = await repositorioA.listarCompromisos();
-      expect(compromisoDeA).toMatchObject({ id: idDeA, denominacion: "Renta", monto: pesos(700) });
+      // El compromiso de C sigue intacto tras los tres intentos.
+      const [compromisoDeC] = await repositorioC.listarCompromisos();
+      expect(compromisoDeC).toMatchObject({ id: idDeC, denominacion: "Renta", monto: pesos(700) });
     });
   });
 });
