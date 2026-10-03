@@ -60,7 +60,7 @@ export default function Home() {
               alt="Ahorrito"
               width={160}
               height={47}
-              priority
+              loading="eager"
               className="h-auto w-32 sm:w-36 dark:brightness-[2.6]"
             />
           </Link>
