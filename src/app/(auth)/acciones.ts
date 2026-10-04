@@ -20,19 +20,22 @@ import {
   urlDeConfirmacion,
 } from "@/lib/autenticacion/rutas";
 import { validarInicioSesion, validarRegistro } from "@/lib/autenticacion/validacion";
+import { VALOR_ACEPTA_AVISO, constanciaDeConsentimiento } from "@/lib/privacidad/aviso";
 import { crearClienteServidor } from "@/lib/supabase/servidor";
 
 export async function registrarse(
   _estadoPrevio: EstadoFormulario,
   formulario: FormData,
 ): Promise<EstadoFormulario> {
-  const validacion = validarRegistro(formulario.get("correo"), formulario.get("contrasena"));
+  const aceptaAviso = formulario.get("acepta_aviso");
+  const validacion = validarRegistro(formulario.get("correo"), formulario.get("contrasena"), aceptaAviso);
   if (!validacion.valido) {
     return {
       tipo: "error",
       mensaje: "Revisa los campos marcados.",
       errores: validacion.errores,
       correo: validacion.correo,
+      aceptaAviso: aceptaAviso === VALOR_ACEPTA_AVISO,
     };
   }
 
@@ -43,7 +46,9 @@ export async function registrarse(
     password: validacion.contrasena,
     // Flujo PKCE: el enlace del correo confirma la cuenta en Supabase y vuelve a
     // /confirmar con un código que se canjea por la sesión.
-    options: { emailRedirectTo: urlDeConfirmacion(origen) },
+    // La constancia del consentimiento (versión del aviso y fecha) queda en los
+    // metadatos del usuario: no requiere tabla propia (RF-15, SC-09).
+    options: { emailRedirectTo: urlDeConfirmacion(origen), data: constanciaDeConsentimiento(new Date()) },
   });
 
   if (error) {
@@ -52,6 +57,7 @@ export async function registrarse(
       mensaje: mensajeDeErrorAutenticacion(error.code),
       errores: {},
       correo: validacion.correo,
+      aceptaAviso: true,
     };
   }
 
