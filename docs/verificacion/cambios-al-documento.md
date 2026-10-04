@@ -151,7 +151,7 @@ No las causa el trabajo de verificación: las encontré al comparar tu .docx mod
 
 ## 4. Plan de pruebas: criterios CA-14 a CA-25 y redacción de CA-10
 
-**Estado:** condicionado a la aprobación de `docs/plan-de-pruebas.md`, sección 10.4.
+**Estado:** pendiente. El plan se aprobó el 03/10/2026.
 
 ### 4.1 Sección 2.10, Verificabilidad de los requisitos: tabla
 
@@ -182,9 +182,9 @@ Texto nuevo:
 
 ### 4.3 Redacción del resultado de CA-10
 
-Sin cambio en el documento maestro si el cliente aprueba la redacción del plan (sección 6.1: "0
-filas o 404"). Si prefiere ajustar el criterio, hace falta una solicitud de cambio y esta
-entrada se reemplaza.
+Sin cambio en el documento maestro: el cliente decidió conservar "error de autorización" (03/10/2026).
+El informe de pruebas explica cómo se manifiesta: 0 filas, 404 o `42501`, sin revelar la
+existencia del recurso (AM-01).
 
 ---
 

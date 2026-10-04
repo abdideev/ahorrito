@@ -2,7 +2,7 @@
 
 | Dato | Valor |
 |---|---|
-| Versión del plan | 1.0, **borrador para aprobación** |
+| Versión del plan | 1.0, **aprobada por el responsable el 03/10/2026** (decisiones en la sección 10.4) |
 | Fecha | 03/10/2026 |
 | Elaboró | Abdiel Avila Neri, como tester (STK-02), con asistencia de Claude |
 | Aprueba | Abdiel Avila Neri, como líder y cliente (STK-01) |
@@ -137,7 +137,7 @@ autoconfirmación:
 
 ### 5.1 Entrada (para empezar el Bloque 3)
 
-- [ ] Plan de pruebas aprobado por el responsable.
+- [x] Plan de pruebas aprobado por el responsable (03/10/2026).
 - [x] `pnpm lint`, `tsc` y `pnpm test` en verde sobre la base de prueba: 354 de 354 el
   03/10/2026.
 - [x] Defecto #27 corregido (usuario C).
@@ -193,12 +193,18 @@ parte que faltaba.
 | CA-12 | RNF-11 | CP-12: contraste de 4.5:1 o más y el 100 % de los controles operables con teclado | Medición con herramienta | Lighthouse + script + recorrido con teclado | Preliminar (sin herramienta) |
 | CA-13 | RF-14 | CP-13: secuencia de créditos; un plan que no cuadra no la muestra; solo con teclado; **paso 5 con "reducir movimiento"** | Unitaria y funcional | Auto (`secuencia.test.ts`) + manual | Preliminar (pasos 1 a 4) |
 
-**Redacción de CA-10.** El criterio dice "devuelven error de autorización". El sistema responde,
-por diseño, con **0 filas** en las consultas directas y con **404** en la API, para no revelar
-qué identificadores existen (control AM-01, sección 3.6.1). El informe registrará el resultado
-como "0 filas o 404 en N de N intentos", y lo declarará como cumplimiento del objetivo de
-RNF-04, no de su redacción literal. Si el cliente prefiere ajustar el texto del criterio, hace
-falta una solicitud de cambio.
+**Redacción de CA-10 (decisión del 03/10/2026).** El criterio conserva su texto: "devuelven
+error de autorización". El sistema deniega la autorización sin decir que el recurso existe, como
+exige el control AM-01 (sección 3.6.1):
+
+- la seguridad por fila devuelve **0 filas** en las consultas directas;
+- la API responde **404**;
+- los intentos de escritura se rechazan con el error **`42501`** de PostgreSQL ("insufficient
+  privilege") o no afectan ninguna fila.
+
+El informe registra, por cada intento, la forma concreta de la denegación, y declara el criterio
+cumplido si **ninguno** alcanza datos ajenos. No se cambia el sistema para responder 403: eso
+revelaría qué identificadores existen. No se requiere solicitud de cambio.
 
 ### 6.2 Criterios nuevos, CA-14 a CA-26
 
@@ -213,7 +219,7 @@ SC-09. Se agregan al documento maestro según `docs/verificacion/cambios-al-docu
 | CA-16 | RF-06 | Una meta con fecha de hoy o anterior se rechaza con un mensaje en el campo; una meta válida aparece evaluada en el plan siguiente | CP-16 | Unitaria, integración y funcional | Auto + manual | Pendiente |
 | CA-17 | RF-10 | Con el servicio disponible, 5 de 5 planes reciben una explicación no nula que menciona al menos una advertencia del plan y cuyas cifras coinciden al centavo con las del motor | CP-17 | Funcional e inspección | Manual (consume cuota de Gemini) | Pendiente |
 | CA-18 | RF-12 | Tras generar 3 planes, `GET /api/planes` los lista en orden descendente; el detalle es idéntico al generado; `DELETE` responde 204, el plan desaparece y un segundo `DELETE` responde 404 | CP-18 | Sistema HTTP | Script versionado | Pendiente |
-| CA-19 | RF-13 | Al modificar un dato y pulsar "Recalcular con mis datos", el plan se actualiza sin pedir explicación en **2 s o menos**, 5 de 5 veces | CP-19 | Funcional y medición | Manual con medición | Pendiente. **El umbral de 2 s es una propuesta que debe aprobarse** |
+| CA-19 | RF-13 | Al modificar un dato y pulsar "Recalcular con mis datos", el plan se actualiza sin pedir explicación en **2 s o menos**, 5 de 5 veces | CP-19 | Funcional y medición | Manual con medición | Pendiente. Umbral aprobado el 03/10/2026 |
 | CA-20 | RNF-02 | 3 de 3 usuarios sin experiencia previa pasan del registro al primer plan en 8 min o menos, con los perfiles P1 a P3 | CP-20 | Medición con usuarios | Manual | Fase 7 |
 | CA-21 | RNF-05 | (a) El 100 % de las contraseñas almacenadas tiene formato bcrypt. (b) En producción, una petición `http://` se redirige con 308 o 301 a `https://`, la respuesta lleva HSTS y el HAR de un recorrido completo tiene 0 peticiones `http://` | CP-21a, CP-21b | (a) Consulta SQL; (b) inspección en el despliegue | (a) Manual con `supabase/verificacion/autenticacion.sql`; (b) manual | (a) Pendiente; (b) Despliegue |
 | CA-22 | RNF-06 | `pnpm test` ejecuta los casos de `src/core` con 100 % de resultado satisfactorio y 15 casos o más | CP-22 | Unitaria | Auto | Preliminar: 94 casos del núcleo, todos en verde el 03/10/2026 |
@@ -352,9 +358,9 @@ Los scripts no se importan desde `src/` ni entran en la compilación.
 
 ### 10.2 Lighthouse y axe
 
-Lighthouse viene incluido en Chrome 154 y no requiere instalar nada. **axe-core requiere
-descargar un paquete** (`pnpm dlx @axe-core/cli`) o una extensión: se usa solo si el responsable
-lo autoriza.
+Lighthouse viene incluido en Chrome 154 y no requiere instalar nada. axe-core requiere
+descargar un paquete: **el responsable lo autorizó el 03/10/2026**. Se ejecuta con
+`pnpm dlx @axe-core/cli`, sin agregarlo a `package.json`, como segunda opinión de Lighthouse.
 
 ### 10.3 Pruebas de interfaz automatizadas
 
@@ -362,13 +368,14 @@ lo autoriza.
 herramienta, la licencia, el costo, el alcance y los tres defectos de interfaz que protegería
 (9.4). Este plan no depende de ella: todos sus casos tienen ejecución manual.
 
-### 10.4 Decisiones que este plan pide al responsable
+### 10.4 Decisiones del responsable (03/10/2026)
 
-1. Aprobar el umbral de **2 s** de CA-19.
-2. Aprobar la **redacción del resultado de CA-10** (6.1) o pedir la solicitud de cambio para
-   ajustar el criterio.
-3. Aprobar el texto de **CA-14 a CA-25**.
-4. Autorizar o no **axe-core** (10.2).
+| # | Decisión pedida | Respuesta |
+|---|---|---|
+| 1 | Umbral de 2 s para CA-19 | Aprobado |
+| 2 | Redacción de CA-10 | Se conserva "error de autorización". El resultado se informa como denegación sin revelar la existencia: 0 filas, 404 o `42501` (sección 6.1). Sin solicitud de cambio |
+| 3 | Texto de CA-14 a CA-25 | Aprobado |
+| 4 | Uso de axe-core | Autorizado, con `pnpm dlx` y sin dependencia nueva |
 
 ---
 
