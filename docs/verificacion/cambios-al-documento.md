@@ -146,3 +146,52 @@ No las causa el trabajo de verificación: las encontré al comparar tu .docx mod
 |---|---|
 | Cambios detectados | Cronograma (S6-S9 → S8-S11; S10 → S11, S12; S11-S2 → S12), fecha objetivo interna (viernes 6 de noviembre, holgura S14), importe en letra del contrato corregido a "setenta y nueve mil … 20/100", y la contingencia de riesgos con S13 y S14 |
 | Índice | Al actualizarse, el índice ya no lista **4.1** ni **5.1**, aunque sus títulos siguen en el cuerpo. El índice de `dev` sí los listaba, pero ya en esa versión los dos párrafos carecían de estilo de título; por eso desaparecen al actualizarlo. Hay que aplicarles el estilo **Título 2**, como a 4.2, y volver a actualizar el índice |
+
+---
+
+## 4. Plan de pruebas: criterios CA-14 a CA-25 y redacción de CA-10
+
+**Estado:** condicionado a la aprobación de `docs/plan-de-pruebas.md`, sección 10.4.
+
+### 4.1 Sección 2.10, Verificabilidad de los requisitos: tabla
+
+Texto actual: la tabla termina en CA-13.
+
+Texto nuevo: se agregan las filas CA-14 a CA-25, con el criterio, el requisito y el método tal
+como aparecen en `docs/plan-de-pruebas.md`, sección 6.2, seguidas de CA-26 (sección 2.5 de esta
+bitácora).
+
+### 4.2 Sección 2.10: párrafo final
+
+Texto actual:
+
+> Requisitos sin criterio individual. RF-04, RF-05, RF-06, RF-10, RF-12, RF-13, RNF-02, RNF-05,
+> RNF-06, RNF-07, RNF-08 y RNF-09 se verifican mediante los indicadores ya declarados en su propio
+> enunciado o mediante los casos de prueba que se definirán en el plan de pruebas de la semana 10.
+> Su criterio de aceptación se incorporará en esa etapa, conforme al punto 6.2 de la lista de
+> verificación.
+
+Texto nuevo:
+
+> Criterios incorporados en el plan de pruebas. Conforme a lo previsto, el plan de pruebas
+> (docs/plan-de-pruebas.md, versión 1.0 del 03/10/2026) incorporó un criterio individual para
+> cada requisito que no lo tenía: CA-14 (RF-04), CA-15 (RF-05), CA-16 (RF-06), CA-17 (RF-10),
+> CA-18 (RF-12), CA-19 (RF-13), CA-20 (RNF-02), CA-21 (RNF-05), CA-22 (RNF-06), CA-23 (RNF-07),
+> CA-24 (RNF-08) y CA-25 (RNF-09). El plan se redactó en la semana 11, no en la 10, y declara las
+> mediciones que lo precedieron.
+
+### 4.3 Redacción del resultado de CA-10
+
+Sin cambio en el documento maestro si el cliente aprueba la redacción del plan (sección 6.1: "0
+filas o 404"). Si prefiere ajustar el criterio, hace falta una solicitud de cambio y esta
+entrada se reemplaza.
+
+---
+
+## 5. Apellido del autor
+
+**Estado:** pendiente.
+
+**En todo el documento**, incluidos la portada y el historial de versiones: "Ávila" →
+"**Avila**", sin acento (indicación del responsable, 03/10/2026). En el repositorio se corrigió
+en `src/lib/huevo/creditos.ts`, `src/lib/privacidad/aviso.ts` y `docs/Ahorrito-PLAN.md`.
