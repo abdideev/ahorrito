@@ -2,7 +2,7 @@
 
 | Dato | Valor |
 |---|---|
-| Versión del informe | 1.0, **borrador para aprobación** |
+| Versión del informe | 1.0, **aprobada por el responsable el 04/10/2026** |
 | Fecha | 04/10/2026 |
 | Elaboró | Abdiel Avila Neri, como tester (STK-02), con asistencia de Claude |
 | Aprueba | Abdiel Avila Neri, como líder y cliente (STK-01) |
@@ -208,8 +208,31 @@ sin prueba automática propia:
 
 ---
 
-## 11. Aprobación
+## 11. Correspondencia con la lista de cotejo, apartado 6 (Verificación)
+
+Pregunta del apartado: "¿El software fue construido correctamente respecto de los requisitos y
+especificaciones?".
+
+| No. | Punto de verificación | Evidencia esperada | Resultado | Evidencia en el repositorio |
+|---|---|---|---|---|
+| 6.1 | ¿Existe un plan de pruebas? | Plan de pruebas | **Sí** | `docs/plan-de-pruebas.md`, versión 1.0, aprobada el 03/10/2026. Su sección 0 declara qué se midió antes de escribirlo |
+| 6.2 | ¿Se definieron casos de prueba? | Casos de prueba | **Sí**, con una salvedad de formato | CP-01 a CP-26 en la matriz del plan (sección 6). Perfiles P1 a P3 con guion paso a paso (sección 7). Entradas inválidas (sección 7.3). Guion de humo de CA-23. Casos automatizados: 354 unitarios, 20 de integración y 6 de interfaz (E2E-01 a E2E-04). **Salvedad:** los CP están definidos de forma compacta en la matriz (criterio, método y tipo), no como fichas individuales con precondición, pasos y resultado esperado; los pasos detallados están en cada evidencia de ejecución |
+| 6.3 | ¿Los casos de prueba están relacionados con requisitos? | Matriz de trazabilidad | **Sí** | Plan, sección 6: criterio → requisito → caso → método → automatizada o manual → estado, para CA-01 a CA-26 y RF-01 a RF-15 y RNF-01 a RNF-11. En el documento maestro, la columna de prueba de la matriz 2.7 se actualiza según `docs/verificacion/cambios-al-documento.md` |
+| 6.4 | ¿Se realizaron pruebas unitarias? | Resultados | **Sí** | 354 de 354 (`regresion/2026-10-04-unitarias.json`). Cobertura de `src/core` de 99.19 % en líneas (`2026-10-04-unitarias-cobertura.json`); **no es la cobertura de toda la aplicación** (sección 6) |
+| 6.5 | ¿Se realizaron pruebas de integración? | Resultados | **Sí** | 20 de 20 contra la base real, con tres cuentas (`regresion/2026-10-04-integracion.json`). CA-10, 13 de 13 intentos denegados (`2026-10-03-ca10.md`) |
+| 6.6 | ¿Se realizaron pruebas funcionales? | Resultados | **Sí** | CA-01, CA-02, CA-03, CA-05, CA-07, CA-09, CA-13 a CA-19 y CA-26 en la interfaz (`2026-10-04-funcionales.md` y los demás archivos por criterio); CA-23 en Chrome, Edge y Firefox; 6 pruebas de interfaz automatizadas |
+| 6.7 | ¿Se registraron los defectos encontrados? | Incidencias | **Sí**, con una salvedad | #27, #30, #31 y #34 en GitHub, con etiqueta `defecto`, prioridad, severidad en el cuerpo, reproducción y comentario de corrección. **Salvedad:** tres hallazgos se corrigieron sin incidencia propia (sección 4.2) |
+| 6.8 | ¿Se corrigieron los defectos críticos? | Tickets / evidencias | **Sí** | No hubo defectos bloqueantes. El único mayor, #31 (aviso de privacidad), se corrigió con SC-09 (#32). Los cuatro tienen corrección verificada y comentario de cierre publicado. **Las incidencias se cierran en GitHub al fusionar el pull request de `feature/verificacion`** |
+| 6.9 | ¿Se realizaron pruebas de regresión? | Reportes | **Sí** | `docs/verificacion/regresion/`: suite final y evolución durante la fase. Antes y después de #30 y de #34. La política de regresión está en el plan, sección 9 |
+| 6.10 | ¿Se documentaron los resultados de las pruebas? | Informe de pruebas | **Sí** | Este informe, versión 1.0, aprobado el 04/10/2026 |
+
+**Resultado: los 10 puntos tienen evidencia.** Las salvedades de 6.2 y 6.7 se declaran, no se
+ocultan. El punto 6.8 queda cerrado en GitHub al fusionar el pull request.
+
+---
+
+## 12. Aprobación
 
 | Rol | Nombre | Decisión | Fecha |
 |---|---|---|---|
-| Líder y cliente (STK-01) | Abdiel Avila Neri | Pendiente | — |
+| Líder y cliente (STK-01) | Abdiel Avila Neri | **Aprobado** | 04/10/2026 |

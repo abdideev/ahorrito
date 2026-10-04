@@ -10,7 +10,7 @@
 export const VERSION_AVISO = "1.0";
 
 /** Fecha de aprobación de la versión vigente: la de la fusión de SC-09 en `dev`. */
-export const FECHA_AVISO = "2026-10-03";
+export const FECHA_AVISO = "2026-10-04";
 
 export const RESPONSABLE = {
   nombre: "Abdiel Avila Neri",
