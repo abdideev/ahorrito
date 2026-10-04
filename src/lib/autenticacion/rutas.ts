@@ -10,9 +10,11 @@ export type TipoRuta = "publica" | "invitado" | "protegida" | "api";
 export const RUTA_INICIO_SESION = "/iniciar-sesion";
 export const RUTA_PANEL = "/panel";
 export const RUTA_CONFIRMAR = "/confirmar";
+/** Aviso de privacidad integral: consultable sin sesión (RF-15, SC-09). */
+export const RUTA_PRIVACIDAD = "/privacidad";
 
 /** Accesibles con o sin sesión. */
-const RUTAS_PUBLICAS = ["/", "/demo", RUTA_CONFIRMAR] as const;
+const RUTAS_PUBLICAS = ["/", "/demo", RUTA_CONFIRMAR, RUTA_PRIVACIDAD] as const;
 
 /** Solo tienen sentido sin sesión; con sesión se redirige al panel. */
 const RUTAS_DE_INVITADO = [RUTA_INICIO_SESION, "/registro"] as const;
