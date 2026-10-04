@@ -6,11 +6,11 @@ que el código implementa.
 
 | Dato | Valor |
 |---|---|
-| Requisitos | RF-02 a RF-06, RF-08, RF-11, RF-12, RF-13, RF-14 · RNF-02, RNF-11 |
+| Requisitos | RF-02 a RF-06, RF-08, RF-11, RF-12, RF-13, RF-14, RF-15 · RNF-02, RNF-11 |
 | Interfaces | I-01 (`/api/planes`), I-04 (captura y planes), I-07 (sesión) |
 | Componente | C-01, `src/app` y `src/components` |
 | Fase | 4, pasos 4.1 a 4.7 |
-| Cambios de alcance aplicados | SC-02 (#8) huevo de Pascua · SC-06 (#21) operaciones de captura en I-04 · SC-07 (#25) eliminar planes · SC-08 (#26) Motion y react-icons |
+| Cambios de alcance aplicados | SC-02 (#8) huevo de Pascua · SC-06 (#21) operaciones de captura en I-04 · SC-07 (#25) eliminar planes · SC-08 (#26) Motion y react-icons · SC-09 (#32) aviso de privacidad |
 
 ---
 
@@ -19,7 +19,8 @@ que el código implementa.
 | Ruta | Protegida | Contenido | Requisitos |
 |---|---|---|---|
 | `/` | No | Portada con el descargo de responsabilidad | RES-09 |
-| `/registro`, `/iniciar-sesion` | No | Alta y acceso | RF-01 |
+| `/registro`, `/iniciar-sesion` | No | Alta y acceso; el registro muestra el aviso simplificado y pide el consentimiento | RF-01, RF-15 |
+| `/privacidad` | No | Aviso de privacidad integral, enlazado desde la portada, las pantallas de acceso y la barra | RF-15 |
 | `/panel` | Sí | Captura, generación del plan y resultado | RF-02 a RF-06, RF-08, RF-11, RF-13, RF-14 |
 | `/planes` | Sí | Historial de planes guardados | RF-12 |
 | `/demo` | No | Prototipo del motor, sin sesión ni persistencia | — |
@@ -34,6 +35,25 @@ tiempo al umbral de ocho minutos que mide RNF-02, así que las cuatro secciones 
 
 La sección 4 **solo aparece después del primer plan**, o si el usuario ya capturó algo. Es la
 regla de negocio 6 expresada en la interfaz: lo opcional no estorba el camino al primer plan.
+
+### Aviso de privacidad (RF-15, SC-09)
+
+Origen: la restricción legal RES-08, que no tenía requisito hasta el defecto #31.
+
+- **Datos compartidos.** La versión, la fecha y los datos del responsable viven en
+  `src/lib/privacidad/aviso.ts`. Los usan tres lugares que deben coincidir: el aviso integral, el
+  simplificado y la constancia de consentimiento.
+- **Consentimiento validado en el servidor.** `validarRegistro` exige la casilla, así que una
+  petición directa sin ella no llega a `signUp` (CA-26).
+- **Constancia sin tabla propia.** Al registrarse, la versión aceptada y la fecha quedan en los
+  metadatos del usuario de Supabase Auth (`aviso_privacidad_version`,
+  `aviso_privacidad_aceptado_en`).
+- **El enlace del aviso simplificado abre una pestaña nueva**, para no perder lo escrito en el
+  formulario.
+- **Las tablas del aviso integral se desplazan dentro de su contenedor en móvil.** El contenedor
+  es una región enfocable para poder desplazarla con el teclado.
+- **Limitación.** Las cuentas de prueba creadas antes del 03/10/2026 no tienen constancia de
+  consentimiento.
 
 ## 2. Cómo se comunica la interfaz con el servidor
 

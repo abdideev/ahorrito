@@ -14,8 +14,8 @@ la sección, el texto actual (tal como está en el .docx), el texto nuevo y su o
 
 ## 1. Incidencia #27 · usuario C para las pruebas de captura
 
-**Estado:** condicionado al cierre de la #27, que necesita la ejecución de
-`pnpm test:integracion` con el usuario C.
+**Estado:** pendiente. La corrección se verificó el 03/10/2026
+(`2026-10-03-integracion-27.md`); la #27 se cierra con el pull request.
 
 ### 1.1 Sección 4.6, Registro y control de defectos
 
@@ -34,14 +34,17 @@ Texto nuevo:
 > prueba exclusivo para esas pruebas. Ninguna corresponde a un defecto funcional del código
 > entregado.
 
-**Nota.** Si se registra la incidencia de RES-08 (sección 2 de esta bitácora), este párrafo
-cambia también su conteo de incidencias. Conviene redactarlo una sola vez al cerrar el bloque.
+**Nota.** En la Fase 5 se registraron además los defectos #30 (la prueba de CA-10 cuenta las
+filas propias de B) y #31 (RES-08 sin requisito), y la solicitud de cambio SC-09 (#32). El
+conteo de incidencias de este párrafo conviene redactarlo una sola vez, al cerrar los defectos
+de la fase.
 
 ---
 
 ## 2. RES-08 · aviso de privacidad (SC-09, RF-15, CA-26)
 
-**Estado:** condicionado a la decisión del cliente sobre SC-09.
+**Estado:** pendiente. SC-09 (#32) fue autorizada por STK-01 el 03/10/2026; se aplica después de
+fusionar su implementación.
 
 ### 2.1 Sección 1.5.1, Funcionalidad incluida
 
@@ -85,7 +88,7 @@ Texto nuevo (fila agregada):
 
 | ID | Fecha | Cambio solicitado | Requisitos afectados | Impacto evaluado | Decisión |
 |---|---|---|---|---|---|
-| SC-09 | 03/10/2026 | Aviso de privacidad (simplificado en el registro, con consentimiento; integral sin sesión) | Nuevo RF-15; 1.5.1; CA-26 | Sin migración ni cambio de interfaces; unas 5 h, absorbidas por el adelanto del cronograma. Corrige el defecto #[N] (RES-08 sin requisito) | [Decisión de STK-01, fecha, incidencia #M] |
+| SC-09 | 03/10/2026 | Aviso de privacidad (simplificado en el registro, con consentimiento; integral sin sesión) | Nuevo RF-15; 1.5.1; CA-26 | Sin migración ni cambio de interfaces; unas 5 h, absorbidas por el adelanto del cronograma. Corrige el defecto #31 (RES-08 sin requisito) | Autorizado por STK-01 el 03/10/2026, incidencia #32 |
 
 ### 2.5 Sección 2.10, Verificabilidad de los requisitos
 

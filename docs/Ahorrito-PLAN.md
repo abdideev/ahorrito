@@ -90,6 +90,8 @@ ahorrito/
     │   │   ├── panel/          ← captura, generación del plan y resultado
     │   │   └── planes/         ← historial (RF-12)
     │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
+    │   ├── privacidad/     ← aviso de privacidad integral, público (RF-15, SC-09)
+    │   ├── privacidad/     ← aviso de privacidad integral, público (RF-15, SC-09)
     │   ├── api/
     │   │   └── planes/
     │   │       ├── route.ts         ← POST y GET del índice de planes
@@ -125,7 +127,8 @@ ahorrito/
         ├── plan/               ← advertencias, etiquetas y lectura del flujo
         ├── autenticacion/      ← rutas, validación y mensajes (C-06)
         ├── supabase/           ← clientes y sesión
-        └── huevo/              ← lógica del huevo de Pascua (SC-02)
+        ├── huevo/              ← lógica del huevo de Pascua (SC-02)
+        └── privacidad/         ← versión, fecha y responsable del aviso (SC-09)
 ```
 
 ### 1.5 Requisitos por implementar
@@ -148,6 +151,7 @@ ahorrito/
 | RF-12 | Almacenar, consultar y eliminar los planes generados (SC-07) | Media | F2 |
 | RF-13 | Regenerar el plan ante cambios en los datos | Media | F4 |
 | RF-14 | Revelar los créditos mediante una secuencia oculta de interacción | Baja | SC-02 |
+| RF-15 | Dar a conocer el aviso de privacidad y obtener el consentimiento al registrarse (origen RES-08) | Alta | SC-09 |
 
 **No funcionales**
 
@@ -210,6 +214,7 @@ medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7
 | SC-06 | #21 | I-04 incorpora las operaciones de captura de RF-02 a RF-06 | Implementado |
 | SC-07 | #25 | RF-12 incluye eliminar planes: `DELETE /api/planes/{id}` en I-01 y `eliminarPlan` en I-04 | Implementado |
 | SC-08 | #26 | La interfaz incorpora Motion y react-icons (sección 3.5) | Implementado |
+| SC-09 | #32 | RF-15: aviso de privacidad simplificado con consentimiento en el registro e integral sin sesión (corrige el defecto #31, RES-08) | Implementado |
 
 ---
 
