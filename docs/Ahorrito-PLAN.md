@@ -26,7 +26,7 @@ Ese descargo debe estar visible en la pantalla del plan (RF-11).
 |---|---|
 | Asignatura | Administración de la Calidad del Software |
 | Norma de referencia | ISO/IEC/IEEE 12207:2026, complementada con 29148 e ISO/IEC 25010 |
-| Alumno | Abdiel Ávila Neri, grupo 702, UAEH Escuela Superior de Tlahuelilpan |
+| Alumno | Abdiel Avila Neri, grupo 702, UAEH Escuela Superior de Tlahuelilpan |
 | Periodo | 10 de agosto – 13 de noviembre de 2026 (14 semanas) |
 | Construcción | Semanas 8 a 12 |
 | Equipo | Una persona, que asume los roles de cliente, analista, diseñador, programador, tester y líder |
@@ -90,7 +90,6 @@ ahorrito/
     │   │   ├── panel/          ← captura, generación del plan y resultado
     │   │   └── planes/         ← historial (RF-12)
     │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
-    │   ├── privacidad/     ← aviso de privacidad integral, público (RF-15, SC-09)
     │   ├── privacidad/     ← aviso de privacidad integral, público (RF-15, SC-09)
     │   ├── api/
     │   │   └── planes/

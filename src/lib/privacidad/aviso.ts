@@ -13,7 +13,7 @@ export const VERSION_AVISO = "1.0";
 export const FECHA_AVISO = "2026-10-03";
 
 export const RESPONSABLE = {
-  nombre: "Abdiel Ávila Neri",
+  nombre: "Abdiel Avila Neri",
   correo: "av446034@uaeh.edu.mx",
   domicilio: "Allende 319, Colonia Centro, C.P. 43600, Tulancingo de Bravo, Hidalgo",
 } as const;
