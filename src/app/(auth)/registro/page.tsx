@@ -23,6 +23,7 @@ export default function PaginaRegistro() {
         textoBoton="Crear mi cuenta"
         autocompletarContrasena="new-password"
         ayudaContrasena={`Mínimo ${LONGITUD_MINIMA_CONTRASENA} caracteres.`}
+        pedirConsentimiento
       />
 
       <p className="mt-6 border-t border-borde pt-5 text-center text-sm text-texto-suave">
