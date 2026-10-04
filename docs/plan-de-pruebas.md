@@ -350,7 +350,7 @@ entornos y solo la medición en producción cuenta para RNF-01 en el informe.
 |---|---|---|
 | Script de contraste (hoy solo en una carpeta temporal) | `docs/verificacion/scripts/contraste.js` | CA-12 |
 | Script de medición de la posición del descargo | `docs/verificacion/scripts/descargo.js` | CA-07 |
-| Script de cronometraje del flujo NDJSON | `docs/verificacion/scripts/cronometro-plan.mjs` | CA-08 y CA-19 |
+| Script de cronometraje del flujo NDJSON | `docs/verificacion/scripts/cronometro-plan.js` | CA-08 y CA-19 |
 | Script de perfiles | `docs/verificacion/scripts/perfiles.sim.ts` | Resultados esperados de P1 a P3 (7.1) |
 | Registros y JSON de cada ejecución | `docs/verificacion/` | Evidencia |
 
