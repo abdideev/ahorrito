@@ -195,3 +195,33 @@ existencia del recurso (AM-01).
 **En todo el documento**, incluidos la portada y el historial de versiones: "Ávila" →
 "**Avila**", sin acento (indicación del responsable, 03/10/2026). En el repositorio se corrigió
 en `src/lib/huevo/creditos.ts`, `src/lib/privacidad/aviso.ts` y `docs/Ahorrito-PLAN.md`.
+
+---
+
+## 6. SC-10 (#33): pruebas de interfaz con Playwright
+
+**Estado:** pendiente, para después de fusionar.
+
+### 6.1 Sección 3.5, Tecnologías utilizadas
+
+Texto nuevo (fila agregada, con el formato de la tabla):
+
+> Playwright Test 1.63 · Pruebas de interfaz de extremo a extremo contra la compilación de
+> producción (regresión de CA-07, capas de CSS, render sin JavaScript y prueba de humo) ·
+> Licencia Apache 2.0 · Incorporado por SC-10.
+
+### 6.2 Sección 2.8, Registro de solicitudes de cambio
+
+| ID | Fecha | Cambio solicitado | Requisitos afectados | Impacto evaluado | Decisión |
+|---|---|---|---|---|---|
+| SC-10 | 04/10/2026 | Pruebas de interfaz automatizadas con Playwright | Tecnologías (3.5); ningún requisito cambia | $0; unas 6 h, absorbidas por el adelanto del cronograma. Protege tres defectos de interfaz que solo tenían prueba manual. Descubrió el defecto #34 | Autorizado por STK-01 el 04/10/2026, incidencia #33 |
+
+### 6.3 Sección 2.7, matriz de trazabilidad
+
+En la columna de caso de prueba de la fila con RF-11, agregar: "E2E-01 (Playwright)".
+
+### 6.4 Sección 4.6, Registro de defectos
+
+Sumar el defecto **#34** (severidad menor, prioridad media): al borrar el último plan no se
+anunciaba la confirmación y se perdía el foco. Lo detectó la prueba de humo automatizada y se
+corrigió en la Fase 5.

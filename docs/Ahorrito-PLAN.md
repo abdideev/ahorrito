@@ -65,6 +65,8 @@ ahorrito/
 ├── eslint.config.mjs
 ├── vitest.config.mts       ← extensión .mts: módulo ESM (import.meta.dirname)
 ├── vitest.integracion.mts  ← pruebas que tocan la base de datos real
+├── playwright.config.ts    ← pruebas de interfaz contra la compilación de producción (SC-10)
+├── e2e/                    ← regresión de interfaz y prueba de humo (SC-10)
 ├── supabase/
 │   ├── config.toml
 │   ├── migrations/         ← esquema, seguridad por fila y guardado atómico
@@ -214,6 +216,7 @@ medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7
 | SC-07 | #25 | RF-12 incluye eliminar planes: `DELETE /api/planes/{id}` en I-01 y `eliminarPlan` en I-04 | Implementado |
 | SC-08 | #26 | La interfaz incorpora Motion y react-icons (sección 3.5) | Implementado |
 | SC-09 | #32 | RF-15: aviso de privacidad simplificado con consentimiento en el registro e integral sin sesión (corrige el defecto #31, RES-08) | Implementado |
+| SC-10 | #33 | Pruebas de interfaz automatizadas con Playwright (sección 3.5) | Implementado |
 
 ---
 
@@ -235,6 +238,7 @@ repositorio; si aparece alguno, se elimina. El único archivo de bloqueo válido
 | Pruebas | `pnpm test` |
 | Pruebas con cobertura | `pnpm test:cov` |
 | Pruebas de integración | `pnpm test:integracion` |
+| Pruebas de interfaz (extremo a extremo, SC-10) | `pnpm build && pnpm test:e2e` |
 | Análisis estático | `pnpm lint` |
 
 ### 2.2 Ramas

@@ -67,7 +67,7 @@ plan y su evidencia queda en `docs/verificacion/`.
 | **Unitaria** | Motor (`src/core`), adaptadores, validación, rutas, flujo NDJSON, utilidades | Vitest 5 (`pnpm test`) | Sí | En cada cambio y antes de cada commit |
 | **Integración** | Repositorio contra la base real con la clave pública y seguridad por fila (CA-10, captura) | Vitest con `vitest.integracion.mts` (`pnpm test:integracion`) y los usuarios A, B y C | Sí, con credenciales locales | Antes de cada pull request que toque C-05, C-07 o las pruebas |
 | **Sistema (HTTP)** | `POST`, `GET` y `DELETE /api/planes` con y sin sesión, inyección de fallo de la IA, cronometraje del flujo | `pnpm build` + `pnpm start` y peticiones con sesión, más scripts de medición versionados | Parcial: los scripts automatizan la medición | En el Bloque 3 y, para CA-08 y CA-21b, en producción |
-| **Interfaz y funcional** | Recorridos de la persona usuaria en el navegador: captura, plan, historial, créditos, aviso | Navegador integrado (Chromium 152), Chrome 154 y Edge 154 | **Manual.** Su automatización requiere una solicitud de cambio (sección 10.3) | En el Bloque 3, con el guion de la sección 7 |
+| **Interfaz y funcional** | Recorridos de la persona usuaria en el navegador: captura, plan, historial, créditos, aviso | Navegador integrado (Chromium 152), Chrome 154 y Edge 154; Playwright 1.63 con Chromium (SC-10, #33) | **Manual** en general. **Automatizada** para la regresión de interfaz y el humo (`pnpm test:e2e`, sección 10.3) | En el Bloque 3, con el guion de la sección 7; `pnpm test:e2e` antes de cada pull request que toque la interfaz |
 | **Accesibilidad** | Contraste, teclado, nombres accesibles y estructura | Lighthouse de Chrome DevTools, más el script de contraste **versionado** en `docs/verificacion/scripts/`. axe-core solo si el responsable lo autoriza | Semiautomatizada | En el Bloque 3, en 6 pantallas × 2 temas |
 | **Aceptación** | Cada criterio CA, con su evidencia | Los niveles anteriores | — | Bloques 3 y 6 |
 
@@ -327,16 +327,16 @@ entornos y solo la medición en producción cuenta para RNF-01 en el informe.
    el nombre `AAAA-MM-DD-<nivel>-<motivo>.json`. Si la corrección toca C-05 o C-07, también la
    integración.
 3. **Suite mínima antes de cada commit:** `pnpm lint`, `pnpm exec tsc --noEmit` y `pnpm test`.
-   **Antes de cada pull request**, además: `pnpm build` y `pnpm test:integracion` si el cambio
-   toca la persistencia o las pruebas.
+   **Antes de cada pull request**, además: `pnpm build`, `pnpm test:integracion` si el cambio
+   toca la persistencia o las pruebas, y `pnpm test:e2e` si toca la interfaz.
 4. **Defectos ya corregidos sin protección automática**, identificados en la evidencia del punto
    6:
    - las dos regresiones de CA-07;
    - las capas de CSS que mostraban "Crear cuenta" en móvil;
    - el panel en blanco hasta hidratar.
 
-   Hoy solo los protege una prueba manual: CP-07 en escritorio y móvil, y la inspección de
-   `/` a 375 px. Su protección automática depende de la solicitud de cambio de la sección 10.3.
+   Hasta el 04/10/2026 solo los protegía una prueba manual. Desde SC-10 (#33) los protegen
+   E2E-01, E2E-02 y E2E-03 (sección 10.3).
 5. Ningún resultado de `pnpm test:integracion` se cita sin leer **cuántas** pruebas corrieron. Sin
    `.env.local`, termina en verde con solo los 2 marcadores.
 
@@ -364,9 +364,22 @@ descargar un paquete: **el responsable lo autorizó el 03/10/2026**. Se ejecuta 
 
 ### 10.3 Pruebas de interfaz automatizadas
 
-**No se instalan sin una solicitud de cambio.** En el Bloque 3 se propondrá una SC con la
-herramienta, la licencia, el costo, el alcance y los tres defectos de interfaz que protegería
-(9.4). Este plan no depende de ella: todos sus casos tienen ejecución manual.
+**Autorizadas por SC-10 (#33) el 04/10/2026.** Playwright Test 1.63 (Apache 2.0, $0), con
+Chromium de Playwright fuera del repositorio. Las pruebas están en `e2e/` y se ejecutan con
+`pnpm build && pnpm test:e2e`, contra la compilación de producción en el puerto 3100, con la
+cuenta C.
+
+| Prueba | Protege |
+|---|---|
+| E2E-01 | CA-07 en escritorio (1280 × 800) y móvil (375 × 812): las dos regresiones del descargo |
+| E2E-02 | Capas de CSS: "Crear cuenta" oculto en móvil y visible en escritorio |
+| E2E-03 | Portada y panel con opacidad 1 sin JavaScript: el panel en blanco hasta hidratar |
+| E2E-04 | Recorrido de humo. Protege además el defecto #34, que esta prueba descubrió |
+
+**Cuidado:** cuando una prueba falla, Playwright guarda en `test-results/` una instantánea con
+los valores de los campos, incluida la contraseña de la cuenta C. Esa carpeta está en
+`.gitignore` y se borra después de cada ejecución. La evidencia solo lleva el JSON resumido, y se
+comprueba que no contenga credenciales.
 
 ### 10.4 Decisiones del responsable (03/10/2026)
 
