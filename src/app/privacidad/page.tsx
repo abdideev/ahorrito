@@ -4,8 +4,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { TransicionRuta } from "@/components/ui/transicion-ruta";
+import { RUTA_PANEL } from "@/lib/autenticacion/rutas";
 import { formatearFechaLarga } from "@/lib/fecha";
 import { DIAS_ELIMINACION_TRAS_RETIRO, FECHA_AVISO, RESPONSABLE, VERSION_AVISO } from "@/lib/privacidad/aviso";
+import { obtenerUsuarioActual } from "@/lib/supabase/usuario";
 
 export const metadata: Metadata = {
   title: "Aviso de privacidad · Ahorrito",
@@ -103,8 +105,16 @@ function Tabla({ titulo, columnas, filas }: { titulo: string; columnas: string[]
  * crear una cuenta. Cada afirmación se cotejó con el código el 03/10/2026: las tablas de
  * `supabase/migrations`, la anonimización de `src/adapters/ia/carga.ts` y las cookies de
  * `src/lib/tema.ts` y `@supabase/ssr`. El texto lo aprobó el responsable; no es asesoría legal.
+ *
+ * Se llega con o sin sesión. Con sesión, el logo y el enlace final regresan al panel: la
+ * portada no muestra la sesión y daría la impresión de que se cerró.
  */
-export default function PaginaPrivacidad() {
+export default async function PaginaPrivacidad() {
+  const conSesion = (await obtenerUsuarioActual()) !== null;
+  const regreso = conSesion
+    ? { href: RUTA_PANEL, texto: "Volver al panel", etiquetaLogo: "Ahorrito, ir al panel" }
+    : { href: "/", texto: "Volver al inicio", etiquetaLogo: "Ahorrito, ir al inicio" };
+
   return (
     <TransicionRuta>
       <div className="flex min-h-dvh flex-1 flex-col">
@@ -113,7 +123,7 @@ export default function PaginaPrivacidad() {
         </a>
 
         <header className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link href="/" aria-label="Ahorrito, ir al inicio" className="inline-flex min-h-11 items-center rounded-xl px-1">
+          <Link href={regreso.href} aria-label={regreso.etiquetaLogo} className="inline-flex min-h-11 items-center rounded-xl px-1">
             <Image src="/ahorrito-logo.svg" alt="Ahorrito" width={160} height={47} className="h-auto w-32 sm:w-36 dark:brightness-[2.6]" />
           </Link>
           <AnimatedThemeToggler />
@@ -272,8 +282,8 @@ export default function PaginaPrivacidad() {
             </Seccion>
 
             <p className="border-t border-borde pt-6">
-              <Link href="/" className={`inline-flex min-h-11 items-center ${enlace}`}>
-                Volver al inicio
+              <Link href={regreso.href} className={`inline-flex min-h-11 items-center ${enlace}`}>
+                {regreso.texto}
               </Link>
             </p>
           </article>
