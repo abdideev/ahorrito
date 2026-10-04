@@ -5,34 +5,28 @@ import { RESPONSABLE, VERSION_AVISO } from "@/lib/privacidad/aviso";
 /**
  * Aviso de privacidad simplificado del registro (RF-15, SC-09 #32).
  *
- * Va antes de la casilla de consentimiento y la casilla lo cita con
- * `aria-describedby`, de modo que un lector de pantalla lo anuncia al llegar a ella.
- * El texto es el aprobado por el responsable; no es asesoría legal.
+ * Va justo debajo de la casilla de consentimiento, que lo cita con `aria-describedby`: un
+ * lector de pantalla lo anuncia al llegar a ella. Conserva lo que debe decir un aviso
+ * simplificado (responsable, finalidades, ausencia de finalidades secundarias y dónde leer
+ * el integral) en tres líneas, para que la tarjeta del registro no obligue a desplazarse;
+ * el detalle vive en `/privacidad`. No es asesoría legal.
  */
 export function AvisoSimplificado({ id }: { id: string }) {
   return (
-    <div id={id} className="hundido space-y-2 p-4 text-sm leading-6 text-texto-suave">
-      <p className="font-semibold text-texto">Aviso de privacidad simplificado · versión {VERSION_AVISO}</p>
-      <p>
-        {RESPONSABLE.nombre}, desarrollador del proyecto académico Ahorrito, es responsable del tratamiento de tus
-        datos. Usamos tu correo y tu contraseña para crear tu cuenta y dejarte entrar, y lo que captures (presupuesto,
-        pagos, ingresos extra y meta de ahorro) para calcular tu plan semanal, guardarlo y generar su explicación. Al
-        servicio de inteligencia artificial solo se envían montos y fechas, nunca tu correo ni el nombre de tus pagos.
-        Todas estas finalidades son necesarias para el servicio; no usamos tus datos para publicidad ni los vendemos.
-      </p>
-      <p>
-        Consulta el{" "}
-        <Link
-          href={RUTA_PRIVACIDAD}
-          className="font-bold text-texto underline decoration-2 underline-offset-4"
-          target="_blank"
-          rel="noopener"
-        >
-          aviso de privacidad integral
-          <span className="sr-only"> (se abre en una pestaña nueva)</span>
-        </Link>
-        .
-      </p>
-    </div>
+    <p id={id} className="pl-9 text-xs leading-5 text-texto-suave">
+      <span className="font-semibold text-texto">Aviso simplificado v{VERSION_AVISO}.</span> {RESPONSABLE.nombre},
+      responsable de este proyecto académico, usa tu correo y lo que captures solo para tu cuenta y para calcular,
+      guardar y explicar tu plan. A la inteligencia artificial solo van montos y fechas. Sin publicidad ni venta de
+      datos.{" "}
+      <Link
+        href={RUTA_PRIVACIDAD}
+        className="font-bold text-texto underline decoration-2 underline-offset-4"
+        target="_blank"
+        rel="noopener"
+      >
+        Aviso integral
+        <span className="sr-only"> (se abre en una pestaña nueva)</span>
+      </Link>
+    </p>
   );
 }

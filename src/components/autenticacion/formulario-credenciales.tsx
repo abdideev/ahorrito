@@ -50,7 +50,7 @@ export function FormularioCredenciales({
       .join(" ") || undefined;
 
   return (
-    <form action={enviar} noValidate className="mt-6 space-y-5">
+    <form action={enviar} noValidate className="mt-6 space-y-4">
       {siguiente && <input type="hidden" name="siguiente" value={siguiente} />}
 
       <div>
@@ -110,8 +110,7 @@ export function FormularioCredenciales({
       </div>
 
       {pedirConsentimiento && (
-        <div className="space-y-3">
-          <AvisoSimplificado id="aviso-simplificado" />
+        <div className="space-y-1.5">
           {/* El servidor rechaza el registro sin la casilla (CA-26); `required` no basta
               porque el formulario usa `noValidate` y se puede enviar sin la interfaz. */}
           <div className="flex items-start gap-3">
@@ -129,12 +128,12 @@ export function FormularioCredenciales({
               className="mt-0.5 size-6 shrink-0 accent-terciario"
             />
             <label htmlFor="acepta-aviso" className="text-sm leading-6 font-semibold text-texto">
-              He leído el aviso de privacidad y consiento el tratamiento de mis datos, incluidos los patrimoniales,
-              para las finalidades descritas.
+              Acepto el aviso de privacidad y el tratamiento de mis datos, incluidos los patrimoniales.
             </label>
           </div>
+          <AvisoSimplificado id="aviso-simplificado" />
           {estado.errores.aviso && (
-            <p id="error-aviso" className={claseError}>
+            <p id="error-aviso" className={`${claseError} pl-9`}>
               {estado.errores.aviso}
             </p>
           )}
