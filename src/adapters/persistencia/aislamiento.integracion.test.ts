@@ -199,9 +199,25 @@ describe.skipIf(!CONFIGURADO)("CA-10 · aislamiento entre usuarios", () => {
         "select asignaciones_semanales del plan de A",
         clienteB.from("asignaciones_semanales").select("*").eq("plan_id", idPlanDeA),
       );
-      // 5 a 10: lectura completa de cada tabla con datos del usuario.
+      // 5 a 10: lectura completa de cada tabla con datos del usuario. Se cuentan solo las
+      // filas ajenas a B: B puede tener datos propios, y contarlos como intrusión daba un
+      // falso positivo (defecto #30). Las asignaciones no tienen usuario_id; son ajenas si
+      // su plan no es de B.
+      const idDeB = (await clienteB.auth.getUser()).data.user?.id;
+      expect(idDeB).toBeDefined();
+      const visibles: Record<string, { usuario_id?: string; plan_id?: string }[]> = {};
       for (const tabla of TABLAS) {
-        await registrar(`select * from ${tabla}`, clienteB.from(tabla).select("*"));
+        const { data } = await clienteB.from(tabla).select("*");
+        visibles[tabla] = (data ?? []) as { usuario_id?: string; plan_id?: string }[];
+      }
+      const planesDeB = new Set(
+        visibles.planes.filter((fila) => fila.usuario_id === idDeB).map((fila) => (fila as { id?: string }).id),
+      );
+      for (const tabla of TABLAS) {
+        const ajenas = visibles[tabla].filter((fila) =>
+          tabla === "asignaciones_semanales" ? !planesDeB.has(fila.plan_id) : fila.usuario_id !== idDeB,
+        );
+        intentos.push({ descripcion: `select * from ${tabla} (filas ajenas a B)`, filas: ajenas.length });
       }
       // 11: intento de modificar la explicacion del plan ajeno.
       await registrar(
@@ -215,6 +231,15 @@ describe.skipIf(!CONFIGURADO)("CA-10 · aislamiento entre usuarios", () => {
         "delete del plan de A",
         clienteB.from("planes").delete().eq("id", idPlanDeA).select(),
       );
+
+      // Control positivo: el filtro anterior solo tiene sentido si B sí ve lo suyo. Si B tiene
+      // planes, debe ver sus semanas; así "no ve nada" no se confunde con "no ve lo ajeno".
+      if (planesDeB.size > 0) {
+        expect(visibles.asignaciones_semanales.length).toBeGreaterThan(0);
+      }
+
+      // Queda en la salida de la ejecución como evidencia de CA-10, intento por intento.
+      console.info("[CA-10]", JSON.stringify(intentos));
 
       expect(intentos.length).toBeGreaterThanOrEqual(10);
       expect(intentos.filter((intento) => intento.filas > 0)).toEqual([]);

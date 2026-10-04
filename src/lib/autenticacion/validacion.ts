@@ -12,6 +12,8 @@
  *   porque una "ñ" ocupa 2 bytes y un emoji 4.
  */
 
+import { VALOR_ACEPTA_AVISO } from "@/lib/privacidad/aviso";
+
 export const LONGITUD_MINIMA_CONTRASENA = 8;
 export const BYTES_MAXIMOS_CONTRASENA = 72;
 const LONGITUD_MAXIMA_CORREO = 254;
@@ -20,6 +22,8 @@ const PATRON_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export interface ErroresCredenciales {
   readonly correo?: string;
   readonly contrasena?: string;
+  /** Solo en el registro: la casilla de consentimiento del aviso de privacidad (RF-15). */
+  readonly aviso?: string;
 }
 
 export type ResultadoValidacion =
@@ -40,8 +44,16 @@ function errorDeCorreo(correo: string): string | undefined {
   return undefined;
 }
 
-/** Registro: aplica la política completa de contraseñas. */
-export function validarRegistro(correoRecibido: unknown, contrasenaRecibida: unknown): ResultadoValidacion {
+/**
+ * Registro: aplica la política completa de contraseñas y exige el consentimiento del
+ * aviso de privacidad (RF-15, SC-09). La casilla se comprueba aquí y no solo en el
+ * navegador: una petición directa sin ella no debe crear la cuenta (CA-26).
+ */
+export function validarRegistro(
+  correoRecibido: unknown,
+  contrasenaRecibida: unknown,
+  aceptaAvisoRecibido: unknown,
+): ResultadoValidacion {
   const correo = normalizarCorreo(correoRecibido);
   // La contraseña no se recorta: los espacios pueden ser parte de ella.
   const contrasena = typeof contrasenaRecibida === "string" ? contrasenaRecibida : "";
@@ -53,8 +65,15 @@ export function validarRegistro(correoRecibido: unknown, contrasenaRecibida: unk
     errorContrasena = "La contraseña es demasiado larga. Usa una más corta o con menos símbolos especiales.";
   }
 
-  const errores: ErroresCredenciales = { correo: errorDeCorreo(correo), contrasena: errorContrasena };
-  if (errores.correo || errores.contrasena) {
+  const errores: ErroresCredenciales = {
+    correo: errorDeCorreo(correo),
+    contrasena: errorContrasena,
+    aviso:
+      aceptaAvisoRecibido === VALOR_ACEPTA_AVISO
+        ? undefined
+        : "Para crear tu cuenta, acepta el aviso de privacidad.",
+  };
+  if (errores.correo || errores.contrasena || errores.aviso) {
     return { valido: false, correo, errores };
   }
   return { valido: true, correo, contrasena };

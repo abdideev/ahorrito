@@ -20,6 +20,11 @@ describe("clasificarRuta", () => {
     expect(clasificarRuta("/confirmar")).toBe("publica");
   });
 
+  it("el aviso de privacidad es publico: se consulta antes de tener cuenta (RF-15, CA-26)", () => {
+    expect(clasificarRuta("/privacidad")).toBe("publica");
+    expect(clasificarRuta("/privacidades")).toBe("protegida");
+  });
+
   it("distingue las rutas de invitado y las de la API", () => {
     expect(clasificarRuta("/iniciar-sesion")).toBe("invitado");
     expect(clasificarRuta("/registro")).toBe("invitado");

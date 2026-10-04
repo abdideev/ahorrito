@@ -9,9 +9,11 @@ import {
   iconoCampo,
   mensaje as claseMensaje,
 } from "@/components/captura/estilos";
+import { AvisoSimplificado } from "@/components/privacidad/aviso-simplificado";
 import { IconoCandado, IconoCorreo } from "@/components/ui/iconos";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { ESTADO_INICIAL, type EstadoFormulario } from "@/lib/autenticacion/estado";
+import { VALOR_ACEPTA_AVISO } from "@/lib/privacidad/aviso";
 
 interface Props {
   accion: (estado: EstadoFormulario, formulario: FormData) => Promise<EstadoFormulario>;
@@ -20,6 +22,8 @@ interface Props {
   ayudaContrasena?: string;
   /** Ruta a la que volver después de iniciar sesión. El servidor la valida de nuevo. */
   siguiente?: string;
+  /** Registro: muestra el aviso simplificado y la casilla de consentimiento (RF-15). */
+  pedirConsentimiento?: boolean;
 }
 
 /**
@@ -36,6 +40,7 @@ export function FormularioCredenciales({
   autocompletarContrasena,
   ayudaContrasena,
   siguiente,
+  pedirConsentimiento = false,
 }: Props) {
   const [estado, enviar, pendiente] = useActionState(accion, ESTADO_INICIAL);
 
@@ -45,7 +50,7 @@ export function FormularioCredenciales({
       .join(" ") || undefined;
 
   return (
-    <form action={enviar} noValidate className="mt-6 space-y-5">
+    <form action={enviar} noValidate className="mt-6 space-y-4">
       {siguiente && <input type="hidden" name="siguiente" value={siguiente} />}
 
       <div>
@@ -103,6 +108,37 @@ export function FormularioCredenciales({
           </p>
         )}
       </div>
+
+      {pedirConsentimiento && (
+        <div className="space-y-1.5">
+          {/* El servidor rechaza el registro sin la casilla (CA-26); `required` no basta
+              porque el formulario usa `noValidate` y se puede enviar sin la interfaz. */}
+          <div className="flex items-start gap-3">
+            <input
+              id="acepta-aviso"
+              name="acepta_aviso"
+              type="checkbox"
+              value={VALOR_ACEPTA_AVISO}
+              required
+              defaultChecked={estado.aceptaAviso}
+              aria-invalid={Boolean(estado.errores.aviso)}
+              aria-describedby={["aviso-simplificado", estado.errores.aviso ? "error-aviso" : null]
+                .filter(Boolean)
+                .join(" ")}
+              className="mt-0.5 size-6 shrink-0 accent-terciario"
+            />
+            <label htmlFor="acepta-aviso" className="text-sm leading-6 font-semibold text-texto">
+              Acepto el aviso de privacidad y el tratamiento de mis datos, incluidos los patrimoniales.
+            </label>
+          </div>
+          <AvisoSimplificado id="aviso-simplificado" />
+          {estado.errores.aviso && (
+            <p id="error-aviso" className={`${claseError} pl-9`}>
+              {estado.errores.aviso}
+            </p>
+          )}
+        </div>
+      )}
 
       {estado.mensaje && (
         <p

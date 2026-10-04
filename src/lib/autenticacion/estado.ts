@@ -9,6 +9,8 @@ export interface EstadoFormulario {
   readonly mensaje: string | null;
   readonly errores: ErroresCredenciales;
   readonly correo: string;
+  /** Registro: conserva la casilla del aviso marcada si el envío falla por otro campo. */
+  readonly aceptaAviso?: boolean;
 }
 
 export const ESTADO_INICIAL: EstadoFormulario = {

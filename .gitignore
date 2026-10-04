@@ -47,3 +47,9 @@ yarn.lock
 
 # archivos temporales de Office
 ~$*
+
+# Playwright (SC-10): reportes y trazas de las pruebas de extremo a extremo
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

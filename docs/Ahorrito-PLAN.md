@@ -26,7 +26,7 @@ Ese descargo debe estar visible en la pantalla del plan (RF-11).
 |---|---|
 | Asignatura | Administración de la Calidad del Software |
 | Norma de referencia | ISO/IEC/IEEE 12207:2026, complementada con 29148 e ISO/IEC 25010 |
-| Alumno | Abdiel Ávila Neri, grupo 702, UAEH Escuela Superior de Tlahuelilpan |
+| Alumno | Abdiel Avila Neri, grupo 702, UAEH Escuela Superior de Tlahuelilpan |
 | Periodo | 10 de agosto – 13 de noviembre de 2026 (14 semanas) |
 | Construcción | Semanas 8 a 12 |
 | Equipo | Una persona, que asume los roles de cliente, analista, diseñador, programador, tester y líder |
@@ -65,6 +65,8 @@ ahorrito/
 ├── eslint.config.mjs
 ├── vitest.config.mts       ← extensión .mts: módulo ESM (import.meta.dirname)
 ├── vitest.integracion.mts  ← pruebas que tocan la base de datos real
+├── playwright.config.ts    ← pruebas de interfaz contra la compilación de producción (SC-10)
+├── e2e/                    ← regresión de interfaz y prueba de humo (SC-10)
 ├── supabase/
 │   ├── config.toml
 │   ├── migrations/         ← esquema, seguridad por fila y guardado atómico
@@ -90,6 +92,7 @@ ahorrito/
     │   │   ├── panel/          ← captura, generación del plan y resultado
     │   │   └── planes/         ← historial (RF-12)
     │   ├── demo/           ← prototipo de demostración del motor y huevo de Pascua
+    │   ├── privacidad/     ← aviso de privacidad integral, público (RF-15, SC-09)
     │   ├── api/
     │   │   └── planes/
     │   │       ├── route.ts         ← POST y GET del índice de planes
@@ -125,7 +128,8 @@ ahorrito/
         ├── plan/               ← advertencias, etiquetas y lectura del flujo
         ├── autenticacion/      ← rutas, validación y mensajes (C-06)
         ├── supabase/           ← clientes y sesión
-        └── huevo/              ← lógica del huevo de Pascua (SC-02)
+        ├── huevo/              ← lógica del huevo de Pascua (SC-02)
+        └── privacidad/         ← versión, fecha y responsable del aviso (SC-09)
 ```
 
 ### 1.5 Requisitos por implementar
@@ -148,6 +152,7 @@ ahorrito/
 | RF-12 | Almacenar, consultar y eliminar los planes generados (SC-07) | Media | F2 |
 | RF-13 | Regenerar el plan ante cambios en los datos | Media | F4 |
 | RF-14 | Revelar los créditos mediante una secuencia oculta de interacción | Baja | SC-02 |
+| RF-15 | Dar a conocer el aviso de privacidad y obtener el consentimiento al registrarse (origen RES-08) | Alta | SC-09 |
 
 **No funcionales**
 
@@ -181,7 +186,7 @@ ahorrito/
 
 ### 1.7 Estado del proyecto
 
-Actualizado al 29 de septiembre de 2026.
+Actualizado al 4 de octubre de 2026.
 
 | Fase | Contenido | Estado | Evidencia |
 |---|---|---|---|
@@ -190,13 +195,14 @@ Actualizado al 29 de septiembre de 2026.
 | 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Completada** | 7 pruebas de integración en verde, CA-10 cumplido con 11 intentos |
 | 3 | Integración con la IA (C-02, C-04) | **Completada** | 224 pruebas unitarias en verde, CA-09 cumplido 10 de 10 en el servidor, primera evidencia de CA-11 |
 | 4 | Interfaz de usuario (C-01) | **Completada** | 330 pruebas unitarias y 21 de integración en verde, CA-07, CA-09 y CA-13 verificados en la aplicación, contraste mínimo 7.55:1 |
-| 5 | Verificación | **Siguiente** | — |
-| 6 | Despliegue y liberación | Pendiente | — |
+| 5 | Verificación | **Completada** | Plan e informe de pruebas aprobados; 21 de 26 criterios cumplidos, 3 en parte y 2 pendientes del despliegue o de usuarios; 354 unitarias, 20 de integración y 6 de interfaz en verde |
+| 6 | Despliegue y liberación | **Siguiente** | — |
 | 7 | Validación y cierre | Pendiente | — |
 
-**Requisitos implementados:** los catorce, RF-01 a RF-14. Verificados RNF-03, RNF-04, RNF-05,
-RNF-06, RNF-08 y RNF-11; RNF-10 con su primera evidencia (CA-11). Quedan para la Fase 5 la
-medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7 la de RNF-02.
+**Requisitos implementados:** los quince, RF-01 a RF-15 (RF-15 por SC-09). Verificados en la
+Fase 5 con su criterio: RF-01 a RF-15, RNF-03, RNF-04, RNF-06, RNF-08, RNF-10 y RNF-11. En parte:
+RNF-01 (CA-08, solo local), RNF-05 (CA-21 a) y RNF-07 (CA-23, una versión por navegador). Quedan
+para la Fase 6 RNF-01 y RNF-05 en producción y RNF-09 (CA-25), y para la Fase 7 RNF-02 (CA-20).
 
 **Cambios de alcance aprobados:**
 
@@ -210,6 +216,8 @@ medición de RNF-01 (CA-08) y la verificación formal de CA-12, y para la Fase 7
 | SC-06 | #21 | I-04 incorpora las operaciones de captura de RF-02 a RF-06 | Implementado |
 | SC-07 | #25 | RF-12 incluye eliminar planes: `DELETE /api/planes/{id}` en I-01 y `eliminarPlan` en I-04 | Implementado |
 | SC-08 | #26 | La interfaz incorpora Motion y react-icons (sección 3.5) | Implementado |
+| SC-09 | #32 | RF-15: aviso de privacidad simplificado con consentimiento en el registro e integral sin sesión (corrige el defecto #31, RES-08) | Implementado |
+| SC-10 | #33 | Pruebas de interfaz automatizadas con Playwright (sección 3.5) | Implementado |
 
 ---
 
@@ -231,6 +239,7 @@ repositorio; si aparece alguno, se elimina. El único archivo de bloqueo válido
 | Pruebas | `pnpm test` |
 | Pruebas con cobertura | `pnpm test:cov` |
 | Pruebas de integración | `pnpm test:integracion` |
+| Pruebas de interfaz (extremo a extremo, SC-10) | `pnpm build && pnpm test:e2e` |
 | Análisis estático | `pnpm lint` |
 
 ### 2.2 Ramas
@@ -522,13 +531,14 @@ Fase 7; aquí solo se construyó el flujo que lo hace posible.
 
 ---
 
-### Fase 5 — Verificación · SIGUIENTE
+### Fase 5 — Verificación · COMPLETADA
 
 **Semanas 11 y 12 · Rama:** `feature/verificacion` · **Requisitos:** puntos 6.1 a 6.10
 
-Plan de pruebas, ejecución de los criterios de aceptación CA-01 a CA-12, medición de RNF-01
-sobre 20 solicitudes, pruebas de acceso cruzado, verificación de contraste, registro de
-defectos como incidencias, corrección y pruebas de regresión.
+Plan de pruebas, ejecución de los criterios de aceptación CA-01 a CA-26 (CA-14 a CA-25 se
+definieron en el plan, conforme a la sección 2.10 del documento maestro, y CA-26 con SC-09),
+medición de RNF-01 sobre 20 solicitudes, pruebas de acceso cruzado, verificación de contraste,
+registro de defectos como incidencias, corrección y pruebas de regresión.
 
 **Commits**
 
@@ -539,6 +549,15 @@ defectos como incidencias, corrección y pruebas de regresión.
 | 3 | `fix: corrige los defectos detectados en verificacion` |
 | 4 | `test: agrega pruebas de regresion sobre los defectos corregidos` |
 | 5 | `docs(test): registra el informe de resultados de pruebas` |
+
+**Resultado obtenido.** Plan de pruebas (`docs/plan-de-pruebas.md`) aprobado el 03/10/2026 e
+informe (`docs/informe-de-pruebas.md`) aprobado el 04/10/2026. 21 criterios cumplidos, 3 en parte
+(CA-08 y CA-21, a medir en producción; CA-23, una versión de Chrome 154, Edge 154 y Firefox 157) y
+2 pendientes por diseño (CA-25 en la Fase 6 y CA-20 en la Fase 7). Defectos: #27, #30, #31
+(mayor: RES-08 sin aviso de privacidad) y #34, todos corregidos con prueba de regresión. Se
+aprobaron SC-09 (RF-15, aviso de privacidad) y SC-10 (Playwright), que descubrió el defecto #34.
+Suite final: 354 unitarias, 20 de integración y 6 de interfaz. Los 10 puntos del apartado 6 de la
+lista de cotejo tienen evidencia (informe, sección 11). La evidencia está en `docs/verificacion/`.
 
 ---
 
@@ -586,10 +605,11 @@ trazabilidad del documento maestro (sección 2.7).
 | RF-07 | C-03 | `src/core/distribucion.ts`, `src/core/plan.ts` | `distribucion.test.ts`, `plan.test.ts` |
 | RF-08 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
 | RF-09 | C-03 | `src/core/evaluacion.ts` | `evaluacion.test.ts`, `plan.test.ts` |
-| RF-01 | C-06 | `src/app/(auth)`, `src/lib/autenticacion` | `validacion.test.ts`, `rutas.test.ts`; CA-01 en F5 |
+| RF-01 | C-06 | `src/app/(auth)`, `src/lib/autenticacion` | `validacion.test.ts`, `rutas.test.ts`; CA-01 (Fase 5) |
 | RF-12 | C-01, C-02, C-05 | `src/adapters/persistencia`, `supabase/migrations`, `src/app/api/planes/[id]/route.ts` | `filas.test.ts`, `route.test.ts`, `aislamiento.integracion.test.ts` (CA-10) |
 | RF-10 | C-02, C-04 | `src/adapters/ia`, `src/app/api/planes` | `carga.test.ts`, `gemini.test.ts`, `orquestador.test.ts`, `degradacion.test.ts`; CA-09, CA-11 |
-| RF-11 | C-01 | `src/components/plan/descargo.tsx` | CA-07 verificado en la Fase 4 |
+| RF-11 | C-01 | `src/components/plan/descargo.tsx` | CA-07 en escritorio y móvil (Fase 5); `e2e/regresion-interfaz.spec.ts` (E2E-01) |
+| RF-15 | C-01, C-06 | `src/app/privacidad`, `src/lib/privacidad`, `src/components/privacidad` | `aviso.test.ts`, `validacion.test.ts`, `rutas.test.ts`, E2E-04; CA-26 |
 | RF-14 | C-01 | `src/lib/huevo`, `src/components/creditos`, `src/components/plan/tabla-semanas.tsx` | `secuencia.test.ts`, `creditos.test.ts`, CA-13 verificado en la Fase 4 |
 | RF-02 a RF-06 | C-01, C-05 | `src/app/(app)/acciones.ts`, `src/components/captura`, `src/adapters/persistencia` | `validacion.test.ts`, `captura.integracion.test.ts` |
 | RF-13 | C-01, C-02 | `src/components/plan/generador-plan.tsx` | Medición del recálculo, Fase 4 |

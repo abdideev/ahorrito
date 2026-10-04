@@ -1,0 +1,32 @@
+
+ RUN  v5.0.0 C:/dev/ahorrito
+
+ ✓ src/adapters/persistencia/captura.integracion.test.ts (12 tests | 1 skipped) 5803ms
+   ✓ SC-06 · captura del usuario contra la base de datos (11)
+     ✓ RF-02 · presupuesto (3)
+       ✓ se guarda y vuelve con el mismo monto y dia de inicio 300ms
+       ✓ guardarlo otra vez reemplaza el anterior en lugar de duplicarlo 347ms
+     ✓ RF-05 y RF-06 · ingresos y meta (2)
+       ✓ el ingreso extraordinario se guarda, se lista y se elimina 463ms
+       ✓ la meta se guarda, se reemplaza y se elimina 869ms
+     ✓ RNF-04 · la captura de un usuario no alcanza a la de otro (1)
+       ✓ el usuario B no ve, no modifica ni borra la captura del usuario C 763ms
+stdout | src/adapters/persistencia/aislamiento.integracion.test.ts > CA-10 · aislamiento entre usuarios > CA-10 · diez intentos de acceso cruzado > ningun intento del usuario B alcanza datos del usuario A
+[CA-10] [{"descripcion":"obtenerPlan con el id de A","filas":0},{"descripcion":"listarPlanes incluye el plan de A","filas":0},{"descripcion":"select planes por id de A","filas":0},{"descripcion":"select asignaciones_semanales del plan de A","filas":0},{"descripcion":"select * from planes (filas ajenas a B)","filas":0},{"descripcion":"select * from asignaciones_semanales (filas ajenas a B)","filas":0},{"descripcion":"select * from presupuestos (filas ajenas a B)","filas":0},{"descripcion":"select * from compromisos (filas ajenas a B)","filas":0},{"descripcion":"select * from ingresos_extra (filas ajenas a B)","filas":0},{"descripcion":"select * from metas_ahorro (filas ajenas a B)","filas":0},{"descripcion":"update de la explicacion del plan de A","filas":0},{"descripcion":"eliminarPlan con el id de A","filas":0},{"descripcion":"delete del plan de A","filas":0}]
+
+ ✓ src/adapters/persistencia/aislamiento.integracion.test.ts (10 tests | 1 skipped) 5781ms
+   ✓ CA-10 · aislamiento entre usuarios (9)
+     ✓ RF-12 · guardado y consulta (6)
+       ✓ guarda la explicacion solo en el plan propio (SC-05) 379ms
+       ✓ elimina un plan propio junto con sus semanas (SC-07) 597ms
+     ✓ CA-10 · diez intentos de acceso cruzado (3)
+       ✓ ningun intento del usuario B alcanza datos del usuario A 1778ms
+       ✓ el usuario B no puede crear un plan a nombre del usuario A 323ms
+       ✓ una sesion anonima no obtiene ninguna fila de ninguna tabla 763ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed | 2 skipped (22)
+   Start at  02:38:17
+   Duration  13.83s (tests 86%, import 12%, transform 1%)
+
+JSON report written to C:/dev/ahorrito/docs/verificacion/regresion/2026-10-04-integracion.json

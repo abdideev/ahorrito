@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Aparecer } from "@/components/ui/movimiento";
-import { RUTA_INICIO_SESION } from "@/lib/autenticacion/rutas";
+import { RUTA_INICIO_SESION, RUTA_PRIVACIDAD } from "@/lib/autenticacion/rutas";
 import { TransicionRuta } from "@/components/ui/transicion-ruta";
 
 interface Props {
@@ -12,6 +12,11 @@ interface Props {
   titulo: string;
   descripcion: string;
   children: ReactNode;
+  /**
+   * Muestra el enlace al aviso de privacidad al pie. El registro lo omite porque su aviso
+   * simplificado ya enlaza al integral, y así la tarjeta cabe sin desplazarse.
+   */
+  enlaceAviso?: boolean;
 }
 
 const PESTANAS = [
@@ -26,10 +31,10 @@ const PESTANAS = [
  * con su propio título y su propio formulario, que es lo que un lector de pantalla debe
  * anunciar. La activa se marca con `aria-current="page"`.
  */
-export function TarjetaAcceso({ pantalla, idTitulo, titulo, descripcion, children }: Props) {
+export function TarjetaAcceso({ pantalla, idTitulo, titulo, descripcion, children, enlaceAviso = true }: Props) {
   return (
     <TransicionRuta>
-      <main className="flex min-h-dvh w-full items-center justify-center px-4 py-10 sm:py-16">
+      <main className="flex min-h-dvh w-full items-center justify-center px-4 py-6 sm:py-8">
         <Aparecer como="section" aria-labelledby={idTitulo} className="tarjeta relative w-full max-w-md p-6 sm:p-8">
           <AnimatedThemeToggler className="absolute top-4 right-4" />
           <div className="flex justify-center">
@@ -65,12 +70,24 @@ export function TarjetaAcceso({ pantalla, idTitulo, titulo, descripcion, childre
             </ul>
           </nav>
 
-          <h1 id={idTitulo} className="mt-8 text-center text-3xl font-extrabold tracking-tight text-texto">
+          <h1 id={idTitulo} className="mt-6 text-center text-3xl font-extrabold tracking-tight text-texto">
             {titulo}
           </h1>
           <p className="mt-2 text-center leading-7 text-texto-suave">{descripcion}</p>
 
           {children}
+
+          {/* RF-15: el aviso integral, a un clic y sin sesión desde las pantallas de acceso (CA-26). */}
+          {enlaceAviso && (
+            <p className="mt-4 text-center text-sm">
+              <Link
+                href={RUTA_PRIVACIDAD}
+                className="inline-flex min-h-11 items-center font-semibold text-texto-suave underline decoration-2 underline-offset-4 hover:text-texto"
+              >
+                Aviso de privacidad
+              </Link>
+            </p>
+          )}
         </Aparecer>
       </main>
     </TransicionRuta>

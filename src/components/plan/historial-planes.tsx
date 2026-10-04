@@ -63,6 +63,8 @@ export function HistorialPlanes({ denominaciones }: Props) {
   const [eliminando, setEliminando] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const tituloLista = useRef<HTMLHeadingElement>(null);
+  /** Destino del foco cuando se borra el último plan y solo queda la pantalla vacía (#34). */
+  const enlaceVacio = useRef<HTMLAnchorElement>(null);
   const enfocarTrasBorrar = useRef<string | null | undefined>(undefined);
 
   // Al abrir un plan a petición del usuario, el foco pasa a su detalle: queda a la vista
@@ -135,8 +137,12 @@ export function HistorialPlanes({ denominaciones }: Props) {
     const fila = id === null ? undefined : filas.current.get(id);
     if (fila) {
       fila.focus();
+    } else if (tituloLista.current) {
+      tituloLista.current.focus();
     } else {
-      tituloLista.current?.focus();
+      // Se borró el último plan: la lista desapareció y el foco no puede quedarse en un botón
+      // desmontado (#34).
+      enlaceVacio.current?.focus();
     }
   }, [resumenes]);
 
@@ -197,6 +203,10 @@ export function HistorialPlanes({ denominaciones }: Props) {
   if (resumenes.length === 0) {
     return (
       <div className="tarjeta flex flex-col items-start gap-4 p-8">
+        {/* Si se llegó aquí borrando el último plan, la confirmación se anuncia también (#34). */}
+        <p role="status" className="sr-only">
+          {aviso}
+        </p>
         <span className="icono-tarjeta">
           <IconoCalendario />
         </span>
@@ -204,7 +214,7 @@ export function HistorialPlanes({ denominaciones }: Props) {
           <p className="text-lg font-bold text-texto">Todavía no has generado ningún plan.</p>
           <p className="mt-1 text-texto-suave">Cuando lo hagas desde el panel, aparecerá aquí.</p>
         </div>
-        <Link href="/panel" className="boton-invertido">
+        <Link ref={enlaceVacio} href="/panel" className="boton-invertido">
           Ir al panel
         </Link>
       </div>

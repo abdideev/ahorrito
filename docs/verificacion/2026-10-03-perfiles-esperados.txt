@@ -1,0 +1,20 @@
+Fecha de referencia: 2026-10-03
+
+P1 · Ingreso muy ajustado: 15 semanas (2026-09-28 a 2027-01-05)
+  sobrecargadas: 6, 10, 12, 15
+  en déficit: 7, 8, 9, 10
+  remanente mínimo: -50 · apartado máximo: 750
+  semana 1: aparta 637.5, queda 62.5
+
+P2 · Vencimiento grande a corto plazo: 14 semanas (2026-10-01 a 2027-01-01)
+  sobrecargadas: 3, 5, 9, 14
+  en déficit: 1, 2, 3
+  remanente mínimo: -975 · apartado máximo: 2475
+  semana 1: aparta 2475, queda -975
+
+P3 · Meta poco realista: 10 semanas (2026-09-27 a 2026-12-04)
+  sobrecargadas: 6, 10
+  en déficit: ninguna
+  remanente mínimo: 1255 · apartado máximo: 745
+  semana 1: aparta 566.67, queda 1433.33
+  meta: no alcanzable · ahorro posible 14800 · faltante 10200
