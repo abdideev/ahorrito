@@ -7,6 +7,7 @@ import { Aparecer } from "@/components/ui/movimiento";
 import { IconoCalendario, IconoEscudo, IconoInfo, IconoTendencia } from "@/components/ui/iconos";
 import { InteractiveHoverLink } from "@/components/ui/interactive-hover-button";
 import { TransicionRuta } from "@/components/ui/transicion-ruta";
+import { RUTA_PRIVACIDAD } from "@/lib/autenticacion/rutas";
 
 const beneficios: { titulo: string; descripcion: string; icono: ReactNode }[] = [
   {
@@ -181,10 +182,17 @@ export default function Home() {
             <Aparecer
               como="footer"
               indice={5}
-              className="elevado flex items-start gap-3 p-5 text-sm leading-6 text-texto-suave md:col-span-6 md:items-center"
+              className="elevado flex flex-wrap items-start gap-3 p-5 text-sm leading-6 text-texto-suave md:col-span-6 md:items-center"
             >
               <IconoInfo className="size-5 shrink-0 text-texto" />
-              <p>Ahorrito organiza tu información; no sustituye asesoría financiera profesional.</p>
+              <p className="min-w-0 flex-1">Ahorrito organiza tu información; no sustituye asesoría financiera profesional.</p>
+              {/* RF-15: el aviso integral, a un clic y sin sesión (CA-26). */}
+              <Link
+                href={RUTA_PRIVACIDAD}
+                className="inline-flex min-h-11 items-center font-bold text-texto underline decoration-2 underline-offset-4"
+              >
+                Aviso de privacidad
+              </Link>
             </Aparecer>
           </div>
         </main>

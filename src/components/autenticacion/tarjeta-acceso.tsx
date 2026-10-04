@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Aparecer } from "@/components/ui/movimiento";
-import { RUTA_INICIO_SESION } from "@/lib/autenticacion/rutas";
+import { RUTA_INICIO_SESION, RUTA_PRIVACIDAD } from "@/lib/autenticacion/rutas";
 import { TransicionRuta } from "@/components/ui/transicion-ruta";
 
 interface Props {
@@ -71,6 +71,16 @@ export function TarjetaAcceso({ pantalla, idTitulo, titulo, descripcion, childre
           <p className="mt-2 text-center leading-7 text-texto-suave">{descripcion}</p>
 
           {children}
+
+          {/* RF-15: el aviso integral, a un clic y sin sesión desde las pantallas de acceso (CA-26). */}
+          <p className="mt-4 text-center text-sm">
+            <Link
+              href={RUTA_PRIVACIDAD}
+              className="inline-flex min-h-11 items-center font-semibold text-texto-suave underline decoration-2 underline-offset-4 hover:text-texto"
+            >
+              Aviso de privacidad
+            </Link>
+          </p>
         </Aparecer>
       </main>
     </TransicionRuta>

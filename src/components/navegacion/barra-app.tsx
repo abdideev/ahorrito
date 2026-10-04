@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { IconoHistorial, IconoPanel, IconoSalir } from "@/components/ui/iconos";
+import { IconoEscudo, IconoHistorial, IconoPanel, IconoSalir } from "@/components/ui/iconos";
+import { RUTA_PRIVACIDAD } from "@/lib/autenticacion/rutas";
 
 interface Props {
   correo: string;
@@ -62,6 +63,16 @@ export function BarraApp({ correo, cerrarSesion }: Props) {
             <span className="sr-only">Sesión iniciada como </span>
             {correo}
           </p>
+          {/* RF-15: el aviso integral también desde la sesión (CA-26). Solo icono, como el
+              cierre de sesión en móvil; el nombre accesible lo da el texto oculto. */}
+          <Link
+            href={RUTA_PRIVACIDAD}
+            title="Aviso de privacidad"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-borde-fuerte bg-tarjeta text-texto hover:bg-superficie-hundida"
+          >
+            <IconoEscudo />
+            <span className="sr-only">Aviso de privacidad</span>
+          </Link>
           <AnimatedThemeToggler />
           <form action={cerrarSesion}>
             {/* En móvil queda solo el icono para que la barra quepa en dos filas; el texto
