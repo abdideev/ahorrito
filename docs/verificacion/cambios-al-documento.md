@@ -242,3 +242,15 @@ corrigió en la Fase 5.
 | **Resultados de verificación (sección 6)** | CA-08: 20 de 20 en producción, mediana de 360 ms. CA-21: cumplido completo. CA-25: unos 4 min, con 37 s de compilación. CA-01: repetido en producción con el SMTP propio. Con eso, **24 de 26 criterios cumplidos**, CA-23 en parte y CA-20 en la Fase 7 |
 | **Riesgos (1.8.7), RSG-01** | Agregar como evidencia: en producción, una ráfaga de 20 solicitudes en menos de un minuto recibió HTTP 429 de Gemini en las 6 últimas; el plan se entregó en todas (RNF-03) |
 | **Historial de versiones** | Nueva fila con la versión siguiente: "Fase 6: despliegue en Vercel, SMTP propio, verificación en producción, defecto #37 y liberación de v1.0.0" |
+
+---
+
+## 8. Versión v1.1.0: botón "Mostrar contraseña"
+
+**Estado:** pendiente, para aplicar en `docs/version-1.1.0`.
+
+| Sección | Cambio |
+|---|---|
+| **4.8, Identificación de las versiones liberadas** | Agregar **`v1.1.0`** (`main`, `4d14004`, 05/10/2026): botón para mostrar u ocultar la contraseña en el registro y el inicio de sesión (#41). Versión MENOR según el versionado semántico, porque agrega una funcionalidad compatible; sin cambios en la base de datos ni en la configuración |
+| **Sección 8 (liberación), identificación de la versión** | Misma fila que en 4.8, y la nota: "Se liberó después del acta de `v1.0.0`, con las suites en verde sobre `dev` y la verificación posterior en producción (`docs/verificacion/2026-10-05-liberacion-v1.1.0.md`)" |
+| **Historial de versiones** | Nueva fila: "Versión v1.1.0 del sistema: botón Mostrar contraseña en el registro y el inicio de sesión" |

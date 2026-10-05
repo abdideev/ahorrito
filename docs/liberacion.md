@@ -56,6 +56,7 @@ y desplegada para personas usuarias reales, con los quince requisitos funcionale
 | `v0.9.0` | `main` | `623fe1a` | 29/09/2026 | Aplicación completa, sin verificar |
 | `v1.0.0-rc.1` | `dev` | `888c06c` | 04/10/2026 | Versión candidata: cierre de la Fase 5, base del despliegue inicial y de las capturas |
 | **`v1.0.0`** | `main` | `b072b45` | 04/10/2026 | **Versión liberada** |
+| `v1.1.0` | `main` | `4d14004` | 05/10/2026 | Botón "Mostrar contraseña" en el registro y el inicio de sesión (#41) |
 
 **Desviación declarada:** GITFLOW solo prevé etiquetas en `main`. La etiqueta candidata
 `v1.0.0-rc.1` se creó en `dev` por decisión del responsable (04/10/2026), para fijar el código de
@@ -71,6 +72,15 @@ las capturas finales antes de `v1.0.0`.
 | Verificación | 24 de 26 criterios cumplidos: los 21 del informe, más CA-08, CA-21 y CA-25 en producción (CA-01 se repitió en producción con el SMTP propio). CA-23 en parte (una versión de cada navegador, sin Safari) y CA-20 pendiente (Fase 7) |
 | Pruebas | 356 unitarias, 20 de integración y 6 de interfaz |
 | Esquema de la base de datos | **Sin cambios desde `v0.9.0`**: tres migraciones, la última del 17/09/2026 |
+
+**Contenido de v1.1.0** (versión MENOR: funcionalidad nueva y compatible, liberada después del acta
+de `v1.0.0`):
+
+| Ámbito | Contenido |
+|---|---|
+| Cambio | Botón para mostrar u ocultar la contraseña en `/registro` y `/iniciar-sesion` (#41), con `aria-pressed` y área de 44 × 44 px; se oculta el ojo nativo de Edge |
+| Verificación | Suites sobre `dev`: 356 unitarias, 20 de integración y 6 de interfaz. En producción: HTTP 200, 308 y HSTS, prueba de humo 1 de 1 y el botón funcionando. Evidencia en `docs/verificacion/2026-10-05-liberacion-v1.1.0.md` |
+| Esquema y configuración | Sin cambios: la reversión de 8.6 vuelve a `v1.0.0` sin tocar la base de datos |
 
 ---
 
