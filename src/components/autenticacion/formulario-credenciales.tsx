@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import {
   ayuda as claseAyuda,
   campoConIcono,
@@ -10,7 +10,7 @@ import {
   mensaje as claseMensaje,
 } from "@/components/captura/estilos";
 import { AvisoSimplificado } from "@/components/privacidad/aviso-simplificado";
-import { IconoCandado, IconoCorreo } from "@/components/ui/iconos";
+import { IconoCandado, IconoCorreo, IconoOjo, IconoOjoTachado } from "@/components/ui/iconos";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { ESTADO_INICIAL, type EstadoFormulario } from "@/lib/autenticacion/estado";
 import { VALOR_ACEPTA_AVISO } from "@/lib/privacidad/aviso";
@@ -43,6 +43,7 @@ export function FormularioCredenciales({
   pedirConsentimiento = false,
 }: Props) {
   const [estado, enviar, pendiente] = useActionState(accion, ESTADO_INICIAL);
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
   const describeContrasena =
     [ayudaContrasena ? "ayuda-contrasena" : null, estado.errores.contrasena ? "error-contrasena" : null]
@@ -88,14 +89,27 @@ export function FormularioCredenciales({
           <input
             id="contrasena"
             name="contrasena"
-            type="password"
+            type={mostrarContrasena ? "text" : "password"}
             autoComplete={autocompletarContrasena}
             placeholder={autocompletarContrasena === "new-password" ? "Crea una contraseña" : "Tu contraseña"}
             required
             aria-invalid={Boolean(estado.errores.contrasena)}
             aria-describedby={describeContrasena}
-            className={campoConIcono}
+            className={`${campoConIcono} pr-12`}
           />
+          {/* Etiqueta fija con aria-pressed: el lector anuncia "Mostrar contraseña, botón de
+              alternancia, presionado / no presionado", sin cambiar el nombre al pulsarlo. */}
+          <button
+            type="button"
+            onClick={() => setMostrarContrasena((visible) => !visible)}
+            aria-pressed={mostrarContrasena}
+            aria-controls="contrasena"
+            aria-label="Mostrar contraseña"
+            title={mostrarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
+            className="absolute top-1/2 right-1 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-texto-suave transition-colors hover:text-texto"
+          >
+            {mostrarContrasena ? <IconoOjoTachado /> : <IconoOjo />}
+          </button>
         </div>
         {ayudaContrasena && (
           <p id="ayuda-contrasena" className={claseAyuda}>
