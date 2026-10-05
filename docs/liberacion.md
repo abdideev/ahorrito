@@ -273,9 +273,9 @@ Pro de Vercel. Se agrega a las limitaciones.
 
 **Recomendación de Claude:** liberada con observaciones (las limitaciones de esta acta).
 
-**Decisión:** *[Liberada / Liberada con observaciones / No liberada]* (la marca el responsable)
+**Decisión:** Liberada con observaciones (las limitaciones de esta acta).
 
 | Rol | Nombre | Firma | Fecha |
 |---|---|---|---|
-| Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Abdiel Avila Neri | 04/10/2026 |
-| Desarrollador y tester (STK-02) | Abdiel Avila Neri | Abdiel Avila Neri | 04/10/2026 |
+| Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Abdiel Avila Neri | 05/10/2026 |
+| Desarrollador y tester (STK-02) | Abdiel Avila Neri | Abdiel Avila Neri | 05/10/2026 |
