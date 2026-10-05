@@ -55,7 +55,7 @@ y desplegada para personas usuarias reales, con los quince requisitos funcionale
 | `v0.3.0` | `main` | `0b13e87` | 19/09/2026 | Integración con la inteligencia artificial |
 | `v0.9.0` | `main` | `623fe1a` | 29/09/2026 | Aplicación completa, sin verificar |
 | `v1.0.0-rc.1` | `dev` | `888c06c` | 04/10/2026 | Versión candidata: cierre de la Fase 5, base del despliegue inicial y de las capturas |
-| **`v1.0.0`** | `main` | Fusión del pull request del paso 5 | 04/10/2026 | **Versión liberada** |
+| **`v1.0.0`** | `main` | `b072b45` | 04/10/2026 | **Versión liberada** |
 
 **Desviación declarada:** GITFLOW solo prevé etiquetas en `main`. La etiqueta candidata
 `v1.0.0-rc.1` se creó en `dev` por decisión del responsable (04/10/2026), para fijar el código de
@@ -93,8 +93,8 @@ las capturas finales antes de `v1.0.0`.
 | 13 | Supabase: *Site URL* y *Redirect URLs* con la URL de producción | ✅ |
 | 14 | Aviso de privacidad publicado (`/privacidad`, versión 1.0) | ✅ |
 | 15 | Juego final de capturas | ✅ 28 capturas de `v1.0.0-rc.1` (`docs/capturas/`) |
-| 16 | Pull request `dev` → `main` fusionado y etiqueta `v1.0.0` publicada | ⏳ Pasos 5 y 6 de 8.1 |
-| 17 | Producción sirviendo `v1.0.0` y prueba de humo en verde | ⏳ Paso 7 de 8.1 |
+| 16 | Pull request `dev` → `main` fusionado y etiqueta `v1.0.0` publicada | ✅ 04/10/2026: `b072b45` y etiqueta `v1.0.0` |
+| 17 | Producción sirviendo `v1.0.0` y prueba de humo en verde | ✅ 05/10/2026 03:18 UTC: 1 de 1 |
 
 ---
 
@@ -257,15 +257,23 @@ ejemplo `v1.0.0-rc.1`, `888c06c`), y después **Promote to Production**.
 |---|---|
 | Sistema | Ahorrito, planificador semanal de pagos y ahorro para estudiantes |
 | Versión | v1.0.0 |
-| Commit liberado | *[Se completa en el paso 6 de 8.1: commit de la fusión en `main`]* |
+| Commit liberado | `b072b45` (fusión de `dev` en `main`), etiqueta anotada `v1.0.0` (`4882334`) |
 | URL | https://ahorrito-nine.vercel.app |
-| Fecha y hora de la liberación | *[Se completa en el paso 7]* |
+| Fecha y hora de la liberación | 04/10/2026, 21:13 (hora del centro de México); despliegue de producción de Vercel del 05/10/2026 03:13:57 UTC |
 | Criterios de aceptación | **24 cumplidos** (21 en local, más CA-08, CA-21 y CA-25 en producción), **CA-23 en parte** y **CA-20 pendiente** de la Fase 7 (usuarios reales) |
 | Defectos abiertos | 0 |
-| Limitaciones aceptadas | Safari sin probar y una versión por navegador (CA-23); correos de confirmación que pueden llegar a spam; límite por minuto del plan gratuito de Gemini (la explicación puede faltar en ráfagas, el plan no); un solo proyecto de Supabase para el desarrollo, las pruebas y la producción; puntos legales del aviso aceptados como supuestos |
-| Verificación posterior (paso 7) | *[HTTP 200, prueba de humo y texto del #37 en producción]* |
+| Limitaciones aceptadas | Safari sin probar y una versión por navegador (CA-23); quien tenga la aplicación abierta durante un despliegue puede ver un error hasta recargar; correos de confirmación que pueden llegar a spam; límite por minuto del plan gratuito de Gemini (la explicación puede faltar en ráfagas, el plan no); un solo proyecto de Supabase para el desarrollo, las pruebas y la producción; puntos legales del aviso aceptados como supuestos |
+| Verificación posterior (paso 7) | Vercel publicó `b072b45` en **Production** (la compilación servida cambió de `tIyIKpCz…` a `veLzngZ…`). `/` responde **200**; `http://` → **308** a `https://`; HSTS presente. **Prueba de humo E2E-04 contra producción: 1 de 1** (22.2 s, `docs/verificacion/produccion/2026-10-05-humo-v1.0.0.json`). **#37:** con un plan, el enlace dice "Ver mi plan guardado". Pestaña limpia sin mensajes en la consola en `/`, `/panel`, `/planes` y `/privacidad` |
 
-**Decisión:** *[Liberada / Liberada con observaciones / No liberada]*
+**Observación de la verificación posterior:** una pestaña que ya tenía abierta la versión anterior
+mostró en la consola un error 500 y el error #441 de React al navegar después del despliegue. Es el
+desfase de despliegue: el JavaScript viejo en el navegador habla con el servidor nuevo, y se
+resuelve recargando la página. La protección contra ese desfase (*Skew Protection*) es del plan
+Pro de Vercel. Se agrega a las limitaciones.
+
+**Recomendación de Claude:** liberada con observaciones (las limitaciones de esta acta).
+
+**Decisión:** *[Liberada / Liberada con observaciones / No liberada]* (la marca el responsable)
 
 | Rol | Nombre | Firma | Fecha |
 |---|---|---|---|
