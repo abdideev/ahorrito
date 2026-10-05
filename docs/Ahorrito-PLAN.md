@@ -186,7 +186,7 @@ ahorrito/
 
 ### 1.7 Estado del proyecto
 
-Actualizado al 4 de octubre de 2026.
+Actualizado al 5 de octubre de 2026.
 
 | Fase | Contenido | Estado | Evidencia |
 |---|---|---|---|
@@ -196,8 +196,8 @@ Actualizado al 4 de octubre de 2026.
 | 3 | Integración con la IA (C-02, C-04) | **Completada** | 224 pruebas unitarias en verde, CA-09 cumplido 10 de 10 en el servidor, primera evidencia de CA-11 |
 | 4 | Interfaz de usuario (C-01) | **Completada** | 330 pruebas unitarias y 21 de integración en verde, CA-07, CA-09 y CA-13 verificados en la aplicación, contraste mínimo 7.55:1 |
 | 5 | Verificación | **Completada** | Plan e informe de pruebas aprobados; 21 de 26 criterios cumplidos, 3 en parte y 2 pendientes del despliegue o de usuarios; 354 unitarias, 20 de integración y 6 de interfaz en verde |
-| 6 | Despliegue y liberación | **Siguiente** | — |
-| 7 | Validación y cierre | Pendiente | — |
+| 6 | Despliegue y liberación | **Completada** | `v1.0.0` en `main` (`b072b45`), en producción en https://ahorrito-nine.vercel.app; CA-01, CA-08, CA-21 y CA-25 cumplidos en producción; `docs/liberacion.md` |
+| 7 | Validación y cierre | **Siguiente** | — |
 
 **Requisitos implementados:** los quince, RF-01 a RF-15 (RF-15 por SC-09). Verificados en la
 Fase 5 con su criterio: RF-01 a RF-15, RNF-03, RNF-04, RNF-06, RNF-08, RNF-10 y RNF-11. En parte:
@@ -561,7 +561,7 @@ lista de cotejo tienen evidencia (informe, sección 11). La evidencia está en `
 
 ---
 
-### Fase 6 — Despliegue y liberación
+### Fase 6 — Despliegue y liberación · COMPLETADA
 
 **Semana 12 · Rama:** `feature/despliegue` · **Requisitos:** puntos 8.1 a 8.7
 
@@ -582,6 +582,15 @@ editar plantillas, de modo que ningún usuario real podría confirmar su cuenta.
 
 **Criterio de salida:** aplicación accesible en la URL de producción. Fusión a `main` con
 etiqueta `v1.0.0` y acta de liberación firmada.
+
+**Resultado obtenido.** Despliegue en Vercel (plan Hobby, Node 24, mismo proyecto de Supabase) en
+unos 4 minutos con 37 s de compilación (CA-25). SMTP propio con una cuenta de Gmail dedicada y
+plantilla en español, sin dominio propio: el registro real de un correo ajeno al proyecto confirmó
+la cuenta (CA-01), lo que resuelve RES-16. Redirección 308 con HSTS y 0 peticiones `http://`
+(CA-21 b). 20 de 20 planes en producción con mediana de 360 ms (CA-08). Juego final de 28
+capturas desde `v1.0.0-rc.1`. Se corrigió el defecto #37. `v1.0.0` se etiquetó sobre `b072b45`, y
+la prueba de humo contra producción pasó. El procedimiento, la configuración, la reversión y el
+acta están en `docs/liberacion.md`.
 
 ---
 
