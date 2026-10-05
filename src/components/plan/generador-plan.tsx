@@ -12,6 +12,7 @@ import { IconoDestello, IconoHistorial } from "@/components/ui/iconos";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import type { Plan } from "@/core/tipos";
 import type { Denominaciones } from "@/lib/plan/advertencias";
+import { textoEnlaceHistorial } from "@/lib/plan/enlace-historial";
 import { conDenominaciones } from "@/lib/plan/etiquetas";
 import { leerFlujo, mensajeDeError } from "@/lib/plan/flujo";
 import {
@@ -192,7 +193,7 @@ export function GeneradorPlan({ denominaciones, faltanDatos, cantidadPlanes }: P
               className="inline-flex min-h-11 items-center gap-2 font-semibold text-texto underline underline-offset-4"
             >
               <IconoHistorial className="size-4" />
-              Ver mis {cantidadPlanes === 1 ? "plan guardado" : `${cantidadPlanes} planes guardados`}
+              {textoEnlaceHistorial(cantidadPlanes)}
             </Link>
           </p>
         )}
