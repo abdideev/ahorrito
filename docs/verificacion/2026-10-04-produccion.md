@@ -4,7 +4,7 @@
 |---|---|
 | URL | https://ahorrito-nine.vercel.app |
 | Plataforma | Vercel, plan Hobby, subdominio de la plataforma (sin dominio propio, como fija el documento maestro) |
-| Rama desplegada | `dev` (la rama predeterminada del repositorio en GitHub), en `888c06c` = etiqueta `v1.0.0-rc.1` |
+| Despliegue de producción | La importación inicial publicó la rama predeterminada del repositorio (`dev`) en `888c06c` = etiqueta `v1.0.0-rc.1`. La **rama de producción configurada en Vercel es `main`**: después de la importación, las fusiones en `dev` generan despliegues de vista previa, no de producción (comprobado el 05/10/2026 con el despliegue de `1e3e1dc`) |
 | Node.js | 24.x (ajuste del proyecto en Vercel; sin `engines` en `package.json`) |
 | Región de las funciones | `iad1`, Washington D. C., Estados Unidos (cabecera `X-Vercel-Id`) |
 | Base de datos | **El mismo proyecto de Supabase** (`bnvuvcsrjvupzhrbwcmc`, us-east-2) que el desarrollo y las pruebas |
