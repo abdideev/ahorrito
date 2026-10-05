@@ -29,7 +29,7 @@ export function fechaDentroDe(dias: number): string {
 export async function iniciarSesion(page: Page): Promise<void> {
   await page.goto("/iniciar-sesion");
   await page.getByLabel("Correo electrónico").fill(CORREO as string);
-  await page.getByLabel("Contraseña").fill(CONTRASENA as string);
+  await page.getByLabel("Contraseña", { exact: true }).fill(CONTRASENA as string);
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
   // El primer inicio de sesión tras arrancar el servidor puede tardar varios segundos.
   await expect(page).toHaveURL(/\/panel$/, { timeout: 20_000 });

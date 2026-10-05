@@ -19,6 +19,8 @@ import {
   LuCircleCheck,
   LuCircleX,
   LuClock,
+  LuEye,
+  LuEyeOff,
   LuHistory,
   LuInfo,
   LuLayoutDashboard,
@@ -74,6 +76,8 @@ export const IconoReloj = adaptar(LuClock, "IconoReloj");
 export const IconoRepetir = adaptar(LuRepeat, "IconoRepetir");
 export const IconoCandado = adaptar(LuLock, "IconoCandado");
 export const IconoCorreo = adaptar(LuMail, "IconoCorreo");
+export const IconoOjo = adaptar(LuEye, "IconoOjo");
+export const IconoOjoTachado = adaptar(LuEyeOff, "IconoOjoTachado");
 export const IconoChevron = adaptar(LuChevronDown, "IconoChevron");
 export const IconoSol = adaptar(LuSun, "IconoSol");
 export const IconoLuna = adaptar(LuMoon, "IconoLuna");

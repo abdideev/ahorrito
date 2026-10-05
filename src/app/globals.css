@@ -164,6 +164,13 @@ input[type="date"]:focus-within {
   outline-offset: 3px;
 }
 
+/* Edge dibuja su propio ojo en los campos de contraseña; se oculta porque el formulario
+   de acceso ya tiene el botón "Mostrar contraseña" y aparecerían dos. */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 /*
  * Transición del selector de tema (Magic UI): la vista nueva se revela en círculo desde
  * el botón. Se anula la animación por omisión del navegador y se fija el recorte
