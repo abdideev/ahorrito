@@ -277,5 +277,5 @@ Pro de Vercel. Se agrega a las limitaciones.
 
 | Rol | Nombre | Firma | Fecha |
 |---|---|---|---|
-| Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | | |
-| Desarrollador y tester (STK-02) | Abdiel Avila Neri | | |
+| Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Abdiel Avila Neri | 04/10/2026 |
+| Desarrollador y tester (STK-02) | Abdiel Avila Neri | Abdiel Avila Neri | 04/10/2026 |
