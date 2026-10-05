@@ -11,6 +11,10 @@ import { defineConfig, devices } from "@playwright/test";
  *
  *   pnpm build && pnpm test:e2e
  *
+ * Contra un despliegue ya publicado, sin levantar el servidor local (prueba de humo del Bloque 6):
+ *
+ *   E2E_URL_BASE=https://ahorrito-nine.vercel.app pnpm test:e2e e2e/humo.spec.ts
+ *
  * Usan la cuenta de prueba C (`PRUEBA_USUARIO_C_*` en .env.local), que preparan y limpian ellas
  * mismas. Sin esas variables, las pruebas que necesitan sesión se omiten.
  */
@@ -21,6 +25,8 @@ if (existsSync(ARCHIVO_ENTORNO)) {
 }
 
 const PUERTO = 3100;
+/** URL de un despliegue publicado. Si se define, no se arranca el servidor local. */
+const URL_REMOTA = process.env.E2E_URL_BASE;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -30,16 +36,18 @@ export default defineConfig({
   retries: 0,
   reporter: [["list"], ["json", { outputFile: "test-results/e2e.json" }]],
   use: {
-    baseURL: `http://localhost:${PUERTO}`,
+    baseURL: URL_REMOTA ?? `http://localhost:${PUERTO}`,
     locale: "es-MX",
     timezoneId: "America/Mexico_City",
     trace: "retain-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: {
-    command: `pnpm exec next start -p ${PUERTO}`,
-    url: `http://localhost:${PUERTO}`,
-    reuseExistingServer: false,
-    timeout: 60_000,
-  },
+  webServer: URL_REMOTA
+    ? undefined
+    : {
+        command: `pnpm exec next start -p ${PUERTO}`,
+        url: `http://localhost:${PUERTO}`,
+        reuseExistingServer: false,
+        timeout: 60_000,
+      },
 });
