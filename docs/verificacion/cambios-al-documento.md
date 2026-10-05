@@ -225,3 +225,20 @@ En la columna de caso de prueba de la fila con RF-11, agregar: "E2E-01 (Playwrig
 Sumar el defecto **#34** (severidad menor, prioridad media): al borrar el último plan no se
 anunciaba la confirmación y se perdía el foco. Lo detectó la prueba de humo automatizada y se
 corrigió en la Fase 5.
+
+---
+
+## 7. Fase 6: despliegue y liberación
+
+**Estado:** pendiente, para aplicar en `docs/cierre-fase-6`.
+
+| Sección | Cambio |
+|---|---|
+| **1.6.1, RES-16** | Agregar al final: "Resuelta en la Fase 6 (04/10/2026) con un SMTP propio sobre una cuenta de Gmail dedicada (`ahorrito.app.uaeh@gmail.com`), sin dominio propio; el registro de un correo ajeno al proyecto se confirmó en producción (CA-01)." |
+| **2.8** | Fila SC-10, si aún no se aplicó (sección 6.2 de esta bitácora) |
+| **4.6** | Sumar el defecto **#37** (cosmético, prioridad baja): con un solo plan, el enlace decía "Ver mis plan guardado". Se detectó al revisar el juego final de capturas y se corrigió antes de `v1.0.0` |
+| **4.8, Identificación de las versiones liberadas** | Agregar `v1.0.0-rc.1` (`dev`, `888c06c`, versión candidata; desviación de GITFLOW declarada) y **`v1.0.0`** (`main`, `b072b45`, 04/10/2026, versión liberada y desplegada en https://ahorrito-nine.vercel.app) |
+| **Nueva sección 8 (o la que corresponda a los puntos 8.1 a 8.7)** | Resumir `docs/liberacion.md`: procedimiento, versión, lista de liberación, instalación y despliegue (unos 4 min en Vercel, 151 s en local), configuración (variables, Supabase, SMTP, Vercel), reversión (3 opciones; el esquema no cambia desde `v0.9.0`) y el acta firmada |
+| **Resultados de verificación (sección 6)** | CA-08: 20 de 20 en producción, mediana de 360 ms. CA-21: cumplido completo. CA-25: unos 4 min, con 37 s de compilación. CA-01: repetido en producción con el SMTP propio. Con eso, **24 de 26 criterios cumplidos**, CA-23 en parte y CA-20 en la Fase 7 |
+| **Riesgos (1.8.7), RSG-01** | Agregar como evidencia: en producción, una ráfaga de 20 solicitudes en menos de un minuto recibió HTTP 429 de Gemini en las 6 últimas; el plan se entregó en todas (RNF-03) |
+| **Historial de versiones** | Nueva fila con la versión siguiente: "Fase 6: despliegue en Vercel, SMTP propio, verificación en producción, defecto #37 y liberación de v1.0.0" |
