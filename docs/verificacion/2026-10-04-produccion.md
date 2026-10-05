@@ -107,8 +107,10 @@ es la más lenta (1,189 ms), consistente con el arranque en frío de la función
 **Observación: explicaciones nulas en las solicitudes 15 a 20.** Las solicitudes 1 a 14 recibieron
 explicación (de 1.7 a 2.6 s). Las seis últimas recibieron `explicacion: null` en menos de 0.5 s, sin
 que el plan se viera afectado. La causa más probable es el límite por minuto del plan gratuito de
-Gemini: hubo 20 solicitudes en menos de un minuto **[SUPUESTO: confirmar en los registros de Vercel,
-evento `[ia]` con `estadoHttp` 429]**. Es el riesgo RSG-01 materializado bajo una ráfaga artificial,
+Gemini: hubo 20 solicitudes en menos de un minuto. **Confirmado en los registros de Vercel**
+(captura `produccion/2026-10-04-ca08-registros-ia-vercel.png`, filtro `[ia]`): las solicitudes de
+18:26:36 a 18:27:02 tienen `"resultado":"exito","estadoHttp":200`, y las seis de 18:27:04 a
+18:27:06, `"resultado":"error-http","estadoHttp":429`, con duraciones de 90 a 113 ms. Es el riesgo RSG-01 materializado bajo una ráfaga artificial,
 y la aplicación lo manejó como exige RNF-03: plan completo y aviso de explicación no disponible. No
 afecta a CA-08, que mide la entrega del plan.
 
