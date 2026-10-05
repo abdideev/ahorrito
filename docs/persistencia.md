@@ -5,11 +5,11 @@
 | Requisitos | RF-12, RNF-04 · control AM-01 |
 | Interfaz | I-04, `src/ports/repositorio.ts` |
 | Fase | 2, pasos 2.1, 2.2, 2.5 y 2.6 |
-| Cambios de alcance aplicados | SC-03 (#10) modelo de datos · SC-04 (#13) firma de I-04 · SC-05 (#17) `guardarExplicacion` · SC-06 (#21) operaciones de captura |
+| Cambios de alcance aplicados | SC-03 (#10) modelo de datos · SC-04 (#13) firma de I-04 · SC-05 (#17) `guardarExplicacion` · SC-06 (#21) operaciones de captura · SC-07 (#25) `eliminarPlan` |
 
 ---
 
-## 1. Contrato del repositorio (I-04, modificado por SC-04, SC-05 y SC-06)
+## 1. Contrato del repositorio (I-04, modificado por SC-04, SC-05, SC-06 y SC-07)
 
 ```ts
 interface RepositorioPlanes {
@@ -17,6 +17,7 @@ interface RepositorioPlanes {
   guardarExplicacion(id: string, explicacion: string): Promise<boolean>;
   listarPlanes(): Promise<ResumenPlan[]>;
   obtenerPlan(id: string): Promise<PlanGuardado | null>;
+  eliminarPlan(id: string): Promise<boolean>; // SC-07
   obtenerDatosEntrada(fechaReferencia: FechaIso): Promise<EntradaPlan | null>;
 
   // Captura del usuario (RF-02 a RF-06), incorporada por SC-06
@@ -45,6 +46,12 @@ distinguir ambos casos revelaría qué identificadores existen.
 `guardarExplicacion` (SC-05, Fase 3) actualiza solo la columna `explicacion`, que es lo
 único de un plan guardado que puede cambiar. Con un plan ajeno o inexistente la seguridad
 por fila no actualiza ninguna fila y la operación devuelve `false`.
+
+`eliminarPlan` (SC-07, 30/09/2026) borra un plan propio; sus semanas caen con él por el
+`on delete cascade` de `asignaciones_semanales`. No requirió migración: el privilegio `delete`
+y la política "planes: eliminar los propios" existen desde la Fase 2. Con un plan ajeno,
+inexistente o un identificador inválido devuelve `false`, igual que `obtenerPlan` devuelve
+`null`, y la ruta `DELETE /api/planes/{id}` responde 404 en todos esos casos.
 
 Las operaciones de captura (SC-06, Fase 4) siguen el mismo principio: ninguna recibe el
 identificador de usuario. Las altas necesitan escribir `usuario_id`, y ese valor se toma de la
@@ -114,17 +121,30 @@ Incluyen la conversión exacta de importes y la ida y vuelta de tres planes real
 pnpm test:integracion
 ```
 
-Se conectan a la base de datos real con la **clave pública** y dos usuarios distintos, como lo
+Se conectan a la base de datos real con la **clave pública** y usuarios distintos, como lo
 haría el navegador. No usan la clave de servicio, que ignoraría la seguridad por fila y
-volvería la prueba inútil. Requieren en `.env.local` los cuatro valores declarados en
+volvería la prueba inútil. Requieren en `.env.local` los seis valores declarados en
 `.env.example` (`PRUEBA_USUARIO_*`); si faltan, las pruebas se omiten en lugar de fallar.
+
+| Usuario | Papel | Archivo |
+|---|---|---|
+| A | Propietario del plan de CA-10 y cuenta de la verificación manual en el navegador | `aislamiento.integracion.test.ts` (solo borra el plan que crea) |
+| B | Intenta el acceso cruzado; sus datos no se modifican | Los dos archivos |
+| C | Propietario de la captura; la prueba la borra antes y después | `captura.integracion.test.ts` |
+
+El usuario C existe desde la incidencia #27: hasta entonces `captura.integracion.test.ts` usaba
+al usuario A y cada ejecución borraba la captura con la que se revisaba la interfaz. La prueba
+se detiene si C se configura con el correo de A.
 
 Los usuarios de prueba se crean en Authentication → Users → Add user, con autoconfirmación y
 un dominio reservado (`.test`).
 
 **Resultado del 17 de septiembre de 2026: 7 pruebas en verde.** El 18 de septiembre, al
 agregar `guardarExplicacion` (SC-05), se sumó una prueba: **8 en verde**. El 29 de septiembre,
-las doce operaciones de captura de SC-06 sumaron `captura.integracion.test.ts`: **21 en verde**.
+las doce operaciones de captura de SC-06 sumaron `captura.integracion.test.ts`: 19 en verde.
+El 30 de septiembre, SC-07 sumó la prueba del borrado: **20 en verde**. La cifra de 21 que
+se registró el 29 de septiembre contaba también los dos marcadores que solo se ejecutan
+cuando faltan los usuarios de prueba; `vitest` los reporta como omitidos.
 
 | Verificación | Resultado |
 |---|---|
@@ -133,10 +153,12 @@ las doce operaciones de captura de SC-06 sumaron `captura.integracion.test.ts`: 
 | Una lista de asignaciones vacía se rechaza y no deja planes huérfanos | Correcto |
 | Un importe con tres decimales es rechazado | Correcto |
 | La explicación solo se guarda en el plan propio y no altera las cifras (SC-05, 18/09/2026) | Correcto |
-| **Once intentos de acceso cruzado del usuario B: cero filas en todos** | **CA-10 cumplido** |
+| Un plan propio se elimina con sus semanas; repetir el borrado devuelve `false` (SC-07, 30/09/2026) | Correcto |
+| **Trece intentos de acceso cruzado del usuario B: cero filas en todos** | **CA-10 cumplido** |
 | B no puede crear un plan a nombre de A | Error `42501` |
 | Una sesión anónima no obtiene ninguna fila de ninguna tabla | Correcto |
 
-Los once intentos: por el puerto (`obtenerPlan` y `listarPlanes`), consulta directa del plan
-por su identificador, de sus asignaciones, lectura completa de las seis tablas con datos del
-usuario, y una actualización de la explicación ajena.
+Los trece intentos: por el puerto (`obtenerPlan`, `listarPlanes` y `eliminarPlan`), consulta
+directa del plan por su identificador, de sus asignaciones, lectura completa de las seis tablas
+con datos del usuario, una actualización de la explicación ajena y un borrado directo del plan
+ajeno. Tras los dos intentos de borrado, el plan de A sigue existiendo.

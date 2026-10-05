@@ -1,7 +1,7 @@
-import { BotonEliminar } from "@/components/captura/boton-eliminar";
-import { FormularioCompromiso } from "@/components/captura/formulario-compromiso";
+import { FilaCompromiso } from "@/components/captura/fila-compromiso";
+import { ListaAnimada } from "@/components/ui/movimiento";
 import type { CompromisoGuardado } from "@/ports/repositorio";
-import { centavosATextoPlano } from "@/lib/dinero";
+import { centavos } from "@/core/tipos";
 import { formatearPesos } from "@/lib/dinero";
 import type { EstadoCaptura } from "@/lib/captura/estado";
 
@@ -12,64 +12,47 @@ interface Props {
 }
 
 /**
- * Lista de compromisos capturados, con su modificación y su baja (RF-04).
+ * Lista compacta de compromisos capturados, con su modificación y su baja (RF-04).
  *
- * La edición vive dentro de un `<details>` nativo: se abre con Enter o Espacio, no
- * necesita JavaScript propio y no saca al usuario de la página, que es lo que haría una
- * ventana modal. Componente de servidor: solo los formularios son de cliente.
+ * Componente de servidor: solo cada fila es de cliente, por el estado de su edición.
+ * El pie suma cada pago por todas sus ocurrencias; es una cifra de captura, no del plan,
+ * que además descarta las que caen fuera del horizonte.
  */
 export function ListaCompromisos({ compromisos, actualizar, eliminar }: Props) {
   if (compromisos.length === 0) {
     return (
-      <p className="mt-4 rounded border border-dashed border-zinc-400 p-4 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
-        Todavía no registras ningún pago. Agrega al menos uno para generar tu plan.
+      <p className="mt-5 rounded-2xl border border-dashed border-borde-fuerte p-5 text-center text-texto-suave">
+        Todavía no registras ningún pago. Usa &quot;Agregar pago&quot; para generar tu plan.
       </p>
     );
   }
 
-  return (
-    <ul className="mt-4 space-y-3">
-      {compromisos.map((compromiso) => (
-        <li
-          key={compromiso.id}
-          className="rounded border border-zinc-300 p-4 dark:border-zinc-700"
-        >
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <p className="font-medium">{compromiso.denominacion}</p>
-            <p className="text-zinc-700 dark:text-zinc-300">
-              {formatearPesos(compromiso.monto)}
-              <span className="text-zinc-600 dark:text-zinc-400">
-                {" · "}
-                {compromiso.ocurrencias === 1
-                  ? `vence el ${compromiso.fechaLimite}`
-                  : `desde el ${compromiso.fechaLimite}, ${compromiso.ocurrencias} meses`}
-              </span>
-            </p>
-          </div>
+  const total = compromisos.reduce(
+    (suma, compromiso) => suma + compromiso.monto * compromiso.ocurrencias,
+    0,
+  );
 
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <details className="w-full">
-              <summary className="cursor-pointer rounded px-1 py-1 text-sm underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
-                Editar<span className="sr-only"> {compromiso.denominacion}</span>
-              </summary>
-              <div className="mt-3">
-                <FormularioCompromiso
-                  accion={actualizar}
-                  id={compromiso.id}
-                  iniciales={{
-                    denominacion: compromiso.denominacion,
-                    monto: centavosATextoPlano(compromiso.monto),
-                    fechaLimite: compromiso.fechaLimite,
-                    ocurrencias: String(compromiso.ocurrencias),
-                  }}
-                  textoBoton="Guardar cambios"
-                />
-              </div>
-            </details>
-            <BotonEliminar accion={eliminar} id={compromiso.id} descripcion={compromiso.denominacion} />
-          </div>
-        </li>
-      ))}
-    </ul>
+  return (
+    <>
+      <ListaAnimada className="mt-5 space-y-2">
+        {compromisos.map((compromiso) => (
+          <FilaCompromiso
+            key={compromiso.id}
+            compromiso={compromiso}
+            actualizar={actualizar}
+            eliminar={eliminar}
+          />
+        ))}
+      </ListaAnimada>
+      <p className="mt-4 flex flex-wrap items-baseline justify-between gap-2 border-t border-borde pt-4 text-sm text-texto-suave">
+        <span>
+          {compromisos.length} {compromisos.length === 1 ? "pago registrado" : "pagos registrados"}
+        </span>
+        <span>
+          <strong className="text-base text-texto tabular-nums">{formatearPesos(centavos(total))}</strong>{" "}
+          contando cada mes
+        </span>
+      </p>
+    </>
   );
 }

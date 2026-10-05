@@ -1,0 +1,38 @@
+
+ RUN  v5.0.0 C:/dev/ahorrito
+
+stdout | src/adapters/persistencia/aislamiento.integracion.test.ts > CA-10 · aislamiento entre usuarios > CA-10 · diez intentos de acceso cruzado > ningun intento del usuario B alcanza datos del usuario A
+[CA-10] [{"descripcion":"obtenerPlan con el id de A","filas":0},{"descripcion":"listarPlanes incluye el plan de A","filas":0},{"descripcion":"select planes por id de A","filas":0},{"descripcion":"select asignaciones_semanales del plan de A","filas":0},{"descripcion":"select * from planes (filas ajenas a B)","filas":0},{"descripcion":"select * from asignaciones_semanales (filas ajenas a B)","filas":0},{"descripcion":"select * from presupuestos (filas ajenas a B)","filas":0},{"descripcion":"select * from compromisos (filas ajenas a B)","filas":0},{"descripcion":"select * from ingresos_extra (filas ajenas a B)","filas":0},{"descripcion":"select * from metas_ahorro (filas ajenas a B)","filas":0},{"descripcion":"update de la explicacion del plan de A","filas":0},{"descripcion":"eliminarPlan con el id de A","filas":0},{"descripcion":"delete del plan de A","filas":0}]
+
+ ✓ src/adapters/persistencia/aislamiento.integracion.test.ts (10 tests | 1 skipped) 11417ms
+   ✓ CA-10 · aislamiento entre usuarios (9)
+     ✓ RF-12 · guardado y consulta (6)
+       ✓ el plan vuelve de la base de datos identico al calculado 809ms
+       ✓ guarda la explicacion solo en el plan propio (SC-05) 916ms
+       ✓ elimina un plan propio junto con sus semanas (SC-07) 1026ms
+       ✓ guardar un plan es atomico: no existe plan sin asignaciones 307ms
+     ✓ CA-10 · diez intentos de acceso cruzado (3)
+       ✓ ningun intento del usuario B alcanza datos del usuario A 3861ms
+       ✓ el usuario B no puede crear un plan a nombre del usuario A 522ms
+       ✓ una sesion anonima no obtiene ninguna fila de ninguna tabla 801ms
+ ✓ src/adapters/persistencia/captura.integracion.test.ts (12 tests | 1 skipped) 12336ms
+   ✓ SC-06 · captura del usuario contra la base de datos (11)
+     ✓ RF-02 · presupuesto (3)
+       ✓ se guarda y vuelve con el mismo monto y dia de inicio 820ms
+       ✓ guardarlo otra vez reemplaza el anterior en lugar de duplicarlo 836ms
+     ✓ RF-03 y RF-04 · compromisos (5)
+       ✓ se da de alta y aparece en la lista con su denominacion 816ms
+       ✓ se modifica y conserva su identificador 402ms
+       ✓ se elimina y desaparece de la lista 406ms
+     ✓ RF-05 y RF-06 · ingresos y meta (2)
+       ✓ el ingreso extraordinario se guarda, se lista y se elimina 1130ms
+       ✓ la meta se guarda, se reemplaza y se elimina 2086ms
+     ✓ RNF-04 · la captura de un usuario no alcanza a la de otro (1)
+       ✓ el usuario B no ve, no modifica ni borra la captura del usuario C 1191ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed | 2 skipped (22)
+   Start at  22:27:20
+   Duration  26.11s (tests 93%, import 7%, transform 1%)
+
+JSON report written to C:/dev/ahorrito/docs/verificacion/2026-10-03-integracion-30-despues.json

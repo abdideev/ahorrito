@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { error as claseError, etiqueta as claseEtiqueta } from "@/components/captura/estilos";
+import { ayuda as claseAyuda, error as claseError, etiqueta as claseEtiqueta } from "@/components/captura/estilos";
 
 interface Props {
   idCampo: string;
@@ -28,7 +28,7 @@ export function CampoCaptura({ idCampo, etiqueta, mensajeError, ayuda, children 
       </label>
       {children}
       {ayuda && (
-        <p id={idAyuda(idCampo)} className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <p id={idAyuda(idCampo)} className={claseAyuda}>
           {ayuda}
         </p>
       )}

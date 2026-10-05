@@ -1,29 +1,36 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import { cookies } from "next/headers";
+import { ProveedorMovimiento } from "@/components/ui/movimiento";
+import { COOKIE_TEMA } from "@/lib/tema";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Fuente variable autoalojada por next/font: el navegador no hace solicitudes a Google.
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Ahorrito",
-  description: "Plan semanal de asignacion de dinero para estudiantes",
+  description: "Plan semanal de asignación de dinero para estudiantes",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+/**
+ * El tema elegido viaja en una cookie para que el servidor entregue el HTML ya con la
+ * clase `dark` y no haya destello del tema contrario. Se descartó un script en línea:
+ * React lo rechaza al hidratar, y `next/script` con `beforeInteractive` lo difiere
+ * hasta después del primer pintado. Sin cookie queda el claro, el predeterminado.
+ */
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const oscuro = (await cookies()).get(COOKIE_TEMA)?.value === "dark";
+
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="es" className={`${jakarta.variable} h-full antialiased${oscuro ? " dark" : ""}`}>
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
+        <ProveedorMovimiento>{children}</ProveedorMovimiento>
+      </body>
     </html>
   );
 }

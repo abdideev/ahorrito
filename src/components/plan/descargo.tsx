@@ -1,3 +1,5 @@
+import { IconoAviso } from "@/components/ui/iconos";
+
 /**
  * Descargo de responsabilidad (RF-11, restricción legal RES-09).
  *
@@ -13,11 +15,16 @@ export function Descargo() {
   return (
     <p
       role="note"
-      className="rounded border border-amber-600 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100"
+      className="flex items-start gap-4 rounded-3xl border border-alerta/30 bg-alerta-suave p-4 text-sm leading-6 text-texto sm:items-center sm:p-5"
     >
-      <strong>Esto es una sugerencia de organización personal, no asesoría financiera.</strong>{" "}
-      Ahorrito reparte el dinero que tú declaras; revisa el plan con tu criterio antes de
-      comprometer un pago.
+      <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-tarjeta text-alerta-texto">
+        <IconoAviso />
+      </span>
+      <span>
+        <strong>Esto es una sugerencia de organización personal, no asesoría financiera.</strong>{" "}
+        Ahorrito reparte el dinero que tú declaras; revisa el plan con tu criterio antes de
+        comprometer un pago.
+      </span>
     </p>
   );
 }

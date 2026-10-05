@@ -81,6 +81,13 @@ export interface RepositorioPlanes {
   obtenerPlan(id: string): Promise<PlanGuardado | null>;
 
   /**
+   * Elimina un plan propio con sus semanas (SC-07). Devuelve false si el plan no existe
+   * o pertenece a otro usuario: ambos casos responden igual para no revelar qué
+   * identificadores existen (AM-01).
+   */
+  eliminarPlan(id: string): Promise<boolean>;
+
+  /**
    * Datos capturados por el usuario listos para el motor, o null si falta lo
    * obligatorio: el presupuesto y al menos un compromiso (regla de negocio 6).
    */

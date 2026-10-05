@@ -138,6 +138,12 @@ export function crearRepositorioSupabase(cliente: SupabaseClient): RepositorioPl
       };
     },
 
+    async eliminarPlan(id: string) {
+      // Las asignaciones semanales se borran en cascada (on delete cascade) y la
+      // política "planes: eliminar los propios" deja fuera cualquier plan ajeno.
+      return eliminarFila(cliente, "planes", id, "No se pudo eliminar el plan.");
+    },
+
     async obtenerDatosEntrada(fechaReferencia: FechaIso) {
       const [presupuesto, compromisos, ingresos, meta] = await Promise.all([
         cliente.from("presupuestos").select("monto_semanal::text, dia_inicio_semana").maybeSingle(),
@@ -315,7 +321,7 @@ async function idDeLaSesion(cliente: SupabaseClient): Promise<string> {
 /** Baja por identificador. La seguridad por fila limita el alcance a las filas propias. */
 async function eliminarFila(
   cliente: SupabaseClient,
-  tabla: "compromisos" | "ingresos_extra",
+  tabla: "compromisos" | "ingresos_extra" | "planes",
   id: string,
   mensaje: string,
 ): Promise<boolean> {

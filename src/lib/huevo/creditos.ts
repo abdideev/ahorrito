@@ -19,31 +19,31 @@ export const HORAS_ESTIMADAS = 752;
 export const ROLES: readonly RolProyecto[] = [
   {
     rol: "Analista",
-    responsable: "Abdiel Ávila Neri",
+    responsable: "Abdiel Avila Neri",
     aportacion: "Requisitos y modelado del sistema",
     horas: 192,
   },
   {
     rol: "Diseñador",
-    responsable: "Abdiel Ávila Neri",
+    responsable: "Abdiel Avila Neri",
     aportacion: "Interfaz, base de datos y componentes",
     horas: 160,
   },
   {
     rol: "Programador",
-    responsable: "Abdiel Ávila Neri",
+    responsable: "Abdiel Avila Neri",
     aportacion: "Codificación y pruebas unitarias",
     horas: 248,
   },
   {
     rol: "Tester",
-    responsable: "Abdiel Ávila Neri",
+    responsable: "Abdiel Avila Neri",
     aportacion: "Casos de prueba y registro de defectos",
     horas: 64,
   },
   {
     rol: "Líder del proyecto",
-    responsable: "Abdiel Ávila Neri",
+    responsable: "Abdiel Avila Neri",
     aportacion: "Planificación, cambios y riesgos",
     horas: 88,
   },
@@ -54,13 +54,14 @@ export const CREDITOS = {
   institucion: "Universidad Autónoma del Estado de Hidalgo · Escuela Superior de Tlahuelilpan",
   asignatura: "Administración de la Calidad del Software",
   grupo: "702",
-  cliente: "Abdiel Ávila Neri",
+  cliente: "Abdiel Avila Neri",
   docente: "Mtro. Guillermo Mera Callejas",
   evaluadores: "Tres estudiantes evaluadores",
   norma: "ISO/IEC/IEEE 12207:2026",
   tecnologias: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "API de Gemini", "Vitest"],
   asistencia: "Claude (Anthropic)",
-  componentes: "Confeti: Magic UI (MIT) sobre canvas-confetti (ISC)",
+  componentes:
+    "Magic UI (MIT): Confetti, Interactive Hover Button, Animated Shiny Text y Animated Theme Toggler · canvas-confetti (ISC)",
   entrega: "13 de noviembre de 2026",
 } as const;
 

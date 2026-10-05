@@ -1,42 +1,559 @@
 @import "tailwindcss";
 
+/*
+ * Identidad visual de Ahorrito: cuadrícula Bento sobre la paleta
+ * Primario #10B981 · Secundario #09090B · Terciario #15803D · Neutro #F8FAFC.
+ *
+ * Contraste (RNF-11, umbral 4.5:1) medido para cada par de uso:
+ * - #10B981 con texto blanco da 2.54:1 y no se usa así. Queda como acento decorativo
+ *   (barras, puntos, fondos de icono) y, como fondo, siempre con texto #09090B (7.84:1).
+ * - El botón primario usa #047857 con texto blanco (5.48:1); el mismo tono es el verde
+ *   legible sobre blanco (5.48:1) y sobre el neutro (5.24:1).
+ * - El terciario #15803D da 5.02:1 sobre blanco y marca el estado "al día".
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* Ámbar oscuro: contrasta con el blanco y con el casi negro del tema oscuro. */
-  --foco: #b45309;
+  color-scheme: light;
+
+  /* Neutros */
+  --fondo: #f8fafc;
+  --tarjeta: #ffffff;
+  --superficie: #ffffff;
+  --superficie-hundida: #f1f5f9;
+  --borde: #e2e8f0;
+  --borde-fuerte: #cbd5e1;
+
+  /* Texto */
+  --texto: #09090b;
+  --texto-suave: #475569;
+
+  /* Paleta */
+  --primario: #10b981;
+  --primario-suave: #ecfdf5;
+  --primario-boton: #047857;
+  --primario-boton-hover: #065f46;
+  --sobre-primario-boton: #ffffff;
+  --verde-texto: #047857;
+  --secundario: #09090b;
+  --sobre-secundario: #ffffff;
+  --terciario: #15803d;
+  --terciario-suave: #f0fdf4;
+  --invertida: #09090b;
+  --sobre-invertida: #ffffff;
+  /* Círculo del Interactive Hover Button: al expandirse es el fondo del botón y lleva
+     texto #09090B (7.84:1 sobre #10B981; 19.1:1 sobre #FAFAFA en el tema oscuro). */
+  --punto-interactivo: #10b981;
+
+  /* Estados */
+  --alerta: #b45309;
+  --alerta-texto: #92400e;
+  --alerta-suave: #fffbeb;
+  --error: #b91c1c;
+  --error-suave: #fef2f2;
+  --foco: #047857;
+
+  --background: var(--fondo);
+  --foreground: var(--texto);
+  --radio-sm: 0.75rem;
+  --radio-md: 1rem;
+  --radio-lg: 1.5rem;
+  --sombra-tarjeta: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.08);
+  --sombra-elevada: 0 1px 2px rgb(15 23 42 / 0.05), 0 16px 40px -16px rgb(15 23 42 / 0.16);
+}
+
+/*
+ * El tema claro es el predeterminado aunque el sistema prefiera el oscuro. El oscuro se
+ * activa con la clase `dark` en <html>, que pone el selector de tema (Magic UI) y que
+ * app/layout.tsx ya entrega desde el servidor a partir de la cookie del tema.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root.dark {
+  & {
+    color-scheme: dark;
+
+    --fondo: #09090b;
+    --tarjeta: #18181b;
+    --superficie: #18181b;
+    --superficie-hundida: #27272a;
+    --borde: #27272a;
+    --borde-fuerte: #3f3f46;
+
+    --texto: #fafafa;
+    --texto-suave: #a1a1aa;
+
+    --primario: #10b981;
+    --primario-suave: #052e22;
+    --primario-boton: #10b981;
+    --primario-boton-hover: #34d399;
+    --sobre-primario-boton: #09090b;
+    --verde-texto: #34d399;
+    --secundario: #fafafa;
+    --sobre-secundario: #09090b;
+    --terciario: #4ade80;
+    --terciario-suave: #0f2a18;
+    /* En oscuro, una tarjeta blanca encandila: la cifra principal va sobre verde profundo. */
+    --invertida: #064e3b;
+    --sobre-invertida: #fafafa;
+    /* El botón ya es #10B981 en oscuro: un círculo del mismo verde sería invisible. */
+    --punto-interactivo: #fafafa;
+
+    --alerta: #fcd34d;
+    --alerta-texto: #fcd34d;
+    --alerta-suave: #2a2110;
+    --error: #fca5a5;
+    --error-suave: #2a1515;
+    --foco: #34d399;
+
+    --sombra-tarjeta: 0 1px 2px rgb(0 0 0 / 0.4);
+    --sombra-elevada: 0 16px 40px -16px rgb(0 0 0 / 0.7);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-fondo: var(--fondo);
+  --color-tarjeta: var(--tarjeta);
+  --color-superficie: var(--superficie);
+  --color-superficie-hundida: var(--superficie-hundida);
+  --color-borde: var(--borde);
+  --color-borde-fuerte: var(--borde-fuerte);
+  --color-texto: var(--texto);
+  --color-texto-suave: var(--texto-suave);
+  --color-primario: var(--primario);
+  --color-primario-suave: var(--primario-suave);
+  --color-verde-texto: var(--verde-texto);
+  --color-secundario: var(--secundario);
+  --color-sobre-secundario: var(--sobre-secundario);
+  --color-terciario: var(--terciario);
+  --color-terciario-suave: var(--terciario-suave);
+  --color-alerta: var(--alerta);
+  --color-alerta-texto: var(--alerta-texto);
+  --color-alerta-suave: var(--alerta-suave);
+  --color-error: var(--error);
+  --color-error-suave: var(--error-suave);
+  --font-sans: var(--font-jakarta);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --foco: #fbbf24;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 20rem;
+  background: var(--fondo);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01";
+}
+
+::selection {
+  background: var(--primario);
+  color: #09090b;
+}
+
+:focus-visible,
+input[type="date"]:focus,
+input[type="date"]:focus-within {
+  outline: 3px solid var(--foco);
+  outline-offset: 3px;
 }
 
 /*
- * Foco visible en todo control operable por teclado (RNF-11, CA-12).
- *
- * Se define una sola vez aquí, en lugar de clase por clase, para que ningún control
- * nuevo quede sin indicador por olvido. Se usa :focus-visible y no :focus para no
- * dibujar el contorno cuando el control se activa con el ratón.
+ * Transición del selector de tema (Magic UI): la vista nueva se revela en círculo desde
+ * el botón. Se anula la animación por omisión del navegador y se fija el recorte
+ * inicial para que Firefox no pinte el tema nuevo completo antes de animarlo.
  */
-:focus-visible {
-  outline: 2px solid var(--foco);
-  outline-offset: 2px;
-  border-radius: 2px;
+:root[data-transicion-tema="activa"]::view-transition-old(root),
+:root[data-transicion-tema="activa"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root[data-transicion-tema="activa"]::view-transition-new(root) {
+  clip-path: var(--tema-recorte-inicial);
+}
+
+/*
+ * Transiciones entre rutas (<ViewTransition> de React, componente TransicionRuta): la
+ * página saliente se desvanece y la entrante sube 8 px mientras aparece. La barra y el
+ * resto de la raíz no se mueven, así el usuario conserva su punto de referencia.
+ */
+::view-transition {
+  /* Los clics durante la animación llegan a la página real y no se pierden. */
+  pointer-events: none;
+}
+
+::view-transition-old(.ruta-sale) {
+  animation: 140ms ease-in both ruta-desvanece;
+}
+
+::view-transition-new(.ruta-entra) {
+  animation: 260ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both ruta-aparece;
+}
+
+@keyframes ruta-desvanece {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ruta-aparece {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/*
+ * Clases de componente en `@layer components`: así las utilidades de Tailwind, que
+ * viven en `@layer utilities`, pueden ajustarlas (`hidden sm:inline-flex`, `w-full`).
+ * Fuera de toda capa, estas reglas ganarían siempre a cualquier utilidad.
+ */
+@layer components {
+  /* ── Cuadrícula Bento ─────────────────────────────────────────────── */
+
+  .bento {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  @media (min-width: 48rem) {
+    .bento {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  /* Celda de la cuadrícula. `superficie` se conserva como alias para el prototipo /demo. */
+  .tarjeta,
+  .superficie {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-lg);
+    background: var(--tarjeta);
+    box-shadow: var(--sombra-tarjeta);
+  }
+
+  /* Celda anidada dentro de una tarjeta: mismo lenguaje, un nivel más tenue. */
+  .elevado {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-md);
+    background: var(--superficie-hundida);
+  }
+
+  /* Celda de alto contraste, reservada para la cifra principal de una pantalla. */
+  .tarjeta-invertida {
+    border-radius: var(--radio-lg);
+    background: var(--invertida);
+    color: var(--sobre-invertida);
+  }
+
+  .hundido {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-sm);
+    background: var(--superficie-hundida);
+  }
+
+  .hundido:hover {
+    border-color: var(--borde-fuerte);
+  }
+
+  /* Rótulo corto sobre un título o una cifra. */
+  .rotulo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1rem;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+  }
+
+  /* Contenedor cuadrado del icono de una tarjeta. */
+  .icono-tarjeta {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.875rem;
+    background: var(--primario-suave);
+    color: var(--verde-texto);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 999px;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1rem;
+    white-space: nowrap;
+  }
+
+  .chip-exito {
+    background: var(--terciario-suave);
+    color: var(--terciario);
+  }
+
+  .chip-alerta {
+    background: var(--alerta-suave);
+    color: var(--alerta-texto);
+  }
+
+  .chip-error {
+    background: var(--error-suave);
+    color: var(--error);
+  }
+
+  .chip-neutro {
+    border: 1px solid var(--borde);
+    background: var(--superficie-hundida);
+    color: var(--texto-suave);
+  }
+
+  /* Número de paso en el encabezado de una tarjeta del panel. */
+  .paso {
+    display: inline-flex;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--secundario);
+    color: var(--sobre-secundario);
+    font-size: 0.8125rem;
+    font-weight: 800;
+  }
+
+  /* ── Botones ──────────────────────────────────────────────────────── */
+
+  .boton-primario,
+  .boton-secundario,
+  .boton-invertido {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radio-sm);
+    padding: 0.625rem 1.125rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .boton-primario {
+    border: 1px solid var(--primario-boton);
+    background: var(--primario-boton);
+    color: var(--sobre-primario-boton);
+  }
+
+  .boton-invertido {
+    border: 1px solid var(--secundario);
+    background: var(--secundario);
+    color: var(--sobre-secundario);
+  }
+
+  .boton-secundario {
+    border: 1px solid var(--borde-fuerte);
+    background: var(--tarjeta);
+    color: var(--texto);
+  }
+
+  .boton-primario:disabled,
+  .boton-secundario:disabled,
+  .boton-invertido:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .boton-primario:not(:disabled):hover {
+    border-color: var(--primario-boton-hover);
+    background: var(--primario-boton-hover);
+  }
+
+  .boton-secundario:not(:disabled):hover {
+    background: var(--superficie-hundida);
+  }
+
+  .boton-primario:not(:disabled):active,
+  .boton-secundario:not(:disabled):active,
+  .boton-invertido:not(:disabled):active {
+    transform: translateY(1px);
+  }
+
+  /* ── Interactive Hover Button (Magic UI) ──────────────────────────── */
+
+  .boton-interactivo {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .boton-interactivo-contenido,
+  .boton-interactivo-alterno {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+  }
+
+  .boton-interactivo-contenido {
+    position: relative;
+    z-index: 1;
+  }
+
+  .boton-interactivo-punto {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--punto-interactivo);
+  }
+
+  .boton-interactivo-alterno {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    color: #09090b;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(3rem);
+  }
+
+  /* ── Animated Shiny Text (Magic UI) ───────────────────────────────── */
+
+  .texto-brillante-animado {
+    color: var(--texto-suave);
+    font-weight: 650;
+  }
+
+  .salto-contenido {
+    position: fixed;
+    z-index: 50;
+    top: 1rem;
+    left: 1rem;
+    min-height: 2.75rem;
+    translate: 0 -200%;
+    border: 2px solid var(--foco);
+    border-radius: var(--radio-sm);
+    background: var(--tarjeta);
+    color: var(--texto);
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+  }
+
+  .salto-contenido:focus {
+    translate: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .boton-primario,
+    .boton-secundario,
+    .boton-invertido,
+    .hundido {
+      transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease;
+    }
+
+    /* Entrada de las celdas (Aparecer): CSS y no Motion, para que el contenido se vea
+       aunque JavaScript no haya hidratado. Cada celda espera 50 ms por su --orden. */
+    .aparecer {
+      animation: celda-aparece 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-delay: calc(var(--orden, 0) * 50ms);
+    }
+
+    @keyframes celda-aparece {
+      from {
+        opacity: 0;
+        translate: 0 12px;
+      }
+    }
+
+    .tarjeta-interactiva {
+      transition:
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+    }
+
+    /* La elevación y la escala las aplica Motion (SC-08); dos transformaciones sobre el
+       mismo elemento competirían entre sí. */
+    .tarjeta-interactiva:hover {
+      border-color: var(--borde-fuerte);
+      box-shadow: var(--sombra-elevada);
+    }
+
+    .boton-interactivo-punto,
+    .boton-interactivo-texto,
+    .boton-interactivo-alterno {
+      transition:
+        transform 300ms ease,
+        opacity 300ms ease;
+    }
+
+    /* El círculo se expande hasta cubrir el botón y su color queda como fondo. Solo el
+       texto se desvanece: si se desvaneciera el contenedor, el círculo expandido se
+       volvería invisible y se vería el fondo del botón en su lugar. */
+    .boton-interactivo:not(:disabled):hover .boton-interactivo-punto {
+      transform: scale(120);
+    }
+
+    .boton-interactivo:not(:disabled):hover .boton-interactivo-texto {
+      opacity: 0;
+      transform: translateX(3rem);
+    }
+
+    .boton-interactivo:not(:disabled):hover .boton-interactivo-alterno {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .texto-brillante-animado {
+      color: transparent;
+      background-image: linear-gradient(
+        90deg,
+        var(--texto-suave) 0%,
+        var(--texto-suave) 38%,
+        var(--texto) 50%,
+        var(--texto-suave) 62%,
+        var(--texto-suave) 100%
+      );
+      background-size: calc(100% + var(--shiny-width)) 100%;
+      background-clip: text;
+      animation: texto-brillante 2.4s ease-in-out infinite;
+    }
+
+    .texto-brillante-animado[data-una-vez] {
+      animation-iteration-count: 1;
+    }
+
+    @keyframes texto-brillante {
+      from {
+        background-position: 100% 0;
+      }
+      to {
+        background-position: -100% 0;
+      }
+    }
+  }
 }

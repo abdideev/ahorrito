@@ -3,7 +3,16 @@
 import { useActionState } from "react";
 import { DIAS_SEMANA } from "@/lib/captura/dias";
 import { ESTADO_CAPTURA_INICIAL, type EstadoCaptura } from "@/lib/captura/estado";
-import { campo, error as claseError, etiqueta, mensaje as claseMensaje } from "@/components/captura/estilos";
+import {
+  ayuda as claseAyuda,
+  botonGuardar,
+  campo,
+  error as claseError,
+  etiqueta,
+  mensaje as claseMensaje,
+  campoPesos,
+  prefijoPesos,
+} from "@/components/captura/estilos";
 
 interface Props {
   accion: (estado: EstadoCaptura, formulario: FormData) => Promise<EstadoCaptura>;
@@ -33,25 +42,31 @@ export function FormularioPresupuesto({ accion, montoSemanal, diaInicioSemana }:
   const errorDia = estado.errores.diaInicioSemana;
 
   return (
-    <form action={enviar} noValidate className="mt-4 space-y-4">
-      <div className="sm:flex sm:gap-4">
-        <div className="sm:flex-1">
+    <form action={enviar} noValidate className="space-y-5">
+      <div className="grid gap-5">
+        <div>
           <label htmlFor="montoSemanal" className={etiqueta}>
             ¿Cuánto dinero recibes cada semana?
           </label>
-          <input
-            id="montoSemanal"
-            name="montoSemanal"
-            type="text"
-            inputMode="decimal"
-            autoComplete="off"
-            required
-            defaultValue={valorMonto}
-            aria-invalid={Boolean(errorMonto)}
-            aria-describedby={["ayuda-monto", errorMonto ? "error-monto" : null].filter(Boolean).join(" ")}
-            className={campo}
-          />
-          <p id="ayuda-monto" className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="relative">
+            <span aria-hidden="true" className={prefijoPesos}>
+              $
+            </span>
+            <input
+              id="montoSemanal"
+              name="montoSemanal"
+              type="text"
+              inputMode="decimal"
+              autoComplete="off"
+              placeholder="1200.00"
+              required
+              defaultValue={valorMonto}
+              aria-invalid={Boolean(errorMonto)}
+              aria-describedby={["ayuda-monto", errorMonto ? "error-monto" : null].filter(Boolean).join(" ")}
+              className={campoPesos}
+            />
+          </div>
+          <p id="ayuda-monto" className={claseAyuda}>
             En pesos, con hasta dos decimales. Por ejemplo, 1200.50
           </p>
           {errorMonto && (
@@ -61,7 +76,7 @@ export function FormularioPresupuesto({ accion, montoSemanal, diaInicioSemana }:
           )}
         </div>
 
-        <div className="mt-4 sm:mt-0 sm:flex-1">
+        <div>
           <label htmlFor="diaInicioSemana" className={etiqueta}>
             ¿Qué día inicia tu semana?
           </label>
@@ -96,7 +111,7 @@ export function FormularioPresupuesto({ accion, montoSemanal, diaInicioSemana }:
       <button
         type="submit"
         disabled={pendiente}
-        className="rounded bg-zinc-900 px-5 py-2.5 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+        className={`${botonGuardar} sm:w-full`}
       >
         {pendiente ? "Guardando…" : "Guardar presupuesto"}
       </button>

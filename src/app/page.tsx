@@ -1,69 +1,202 @@
 import Image from "next/image";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Aparecer } from "@/components/ui/movimiento";
+import { IconoCalendario, IconoEscudo, IconoInfo, IconoTendencia } from "@/components/ui/iconos";
+import { InteractiveHoverLink } from "@/components/ui/interactive-hover-button";
+import { TransicionRuta } from "@/components/ui/transicion-ruta";
+import { RUTA_PRIVACIDAD } from "@/lib/autenticacion/rutas";
+
+const beneficios: { titulo: string; descripcion: string; icono: ReactNode }[] = [
+  {
+    titulo: "Aparta con tiempo",
+    descripcion: "Cada pago se reparte entre las semanas que tienes antes de su fecha límite.",
+    icono: <IconoCalendario className="size-6" />,
+  },
+  {
+    titulo: "Cuida tu semana",
+    descripcion: "Sabes cuánto te queda sin descuidar tus compromisos, y qué semanas vienen cargadas.",
+    icono: <IconoEscudo className="size-6" />,
+  },
+  {
+    titulo: "Avanza hacia tu meta",
+    descripcion: "Tu ahorro entra al plan desde el principio, en lugar de esperar a lo que sobre.",
+    icono: <IconoTendencia className="size-6" />,
+  },
+];
+
+/**
+ * Semana ilustrativa de la tarjeta lateral. Son cifras de ejemplo, rotuladas así en
+ * pantalla: la portada no tiene sesión y no conoce datos del usuario.
+ */
+const SEMANA_EJEMPLO = {
+  disponible: "$1,200.00",
+  apartar: "$850.00",
+  queda: "$350.00",
+  proporcionApartada: 850 / 1200,
+  pagos: [
+    { nombre: "Renta", monto: "$600.00" },
+    { nombre: "Internet", monto: "$250.00" },
+  ],
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <TransicionRuta>
+      <div className="flex min-h-dvh flex-1 flex-col">
+        <a href="#contenido" className="salto-contenido">
+          Saltar al contenido
+        </a>
+
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+          <Link
+            href="/"
+            aria-label="Ahorrito, ir al inicio"
+            className="inline-flex min-h-11 items-center rounded-xl px-1"
           >
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src="/ahorrito-logo.svg"
+              alt="Ahorrito"
+              width={160}
+              height={47}
+              loading="eager"
+              className="h-auto w-32 sm:w-36 dark:brightness-[2.6]"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          </Link>
+
+          <nav aria-label="Acceso a la cuenta" className="flex items-center gap-2">
+            <Link
+              href="/iniciar-sesion"
+              className="inline-flex min-h-11 items-center rounded-xl px-3 text-sm font-semibold text-texto underline-offset-4 hover:underline"
+            >
+              Iniciar sesión
+            </Link>
+            <Link href="/registro" className="boton-invertido hidden text-sm sm:inline-flex">
+              Crear cuenta
+            </Link>
+            <AnimatedThemeToggler />
+          </nav>
+        </header>
+
+        <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-10 sm:px-6 sm:pt-8">
+          <div className="bento">
+            <Aparecer
+              como="section"
+              indice={0}
+              aria-labelledby="titulo-portada"
+              className="tarjeta flex flex-col justify-between gap-10 p-6 sm:p-10 md:col-span-4"
+            >
+              <div>
+                <p className="chip chip-neutro">
+                  <span aria-hidden="true" className="size-2 rounded-full bg-primario" />
+                  <AnimatedShinyText unaVez>Tu plan semanal de dinero</AnimatedShinyText>
+                </p>
+                <h1
+                  id="titulo-portada"
+                  className="mt-6 max-w-2xl text-4xl leading-[1.05] font-extrabold tracking-tight text-texto sm:text-5xl lg:text-6xl"
+                >
+                  Llega a cada pago con dinero apartado.
+                </h1>
+                <p className="mt-5 max-w-xl text-lg leading-8 text-texto-suave">
+                  Convierte tu presupuesto, tus fechas límite y tu meta de ahorro en un plan claro
+                  para cada semana.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <InteractiveHoverLink href="/registro" className="w-full sm:w-auto">
+                  Crear mi plan
+                </InteractiveHoverLink>
+                <Link href="/iniciar-sesion" className="boton-secundario w-full sm:w-auto">
+                  Ya tengo una cuenta
+                </Link>
+              </div>
+            </Aparecer>
+
+            <Aparecer
+              como="section"
+              indice={1}
+              aria-labelledby="titulo-ejemplo"
+              className="tarjeta-invertida flex flex-col gap-6 p-6 sm:p-8 md:col-span-2"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <h2 id="titulo-ejemplo" className="text-sm font-semibold opacity-80">
+                  Así se ve una semana
+                </h2>
+                <span className="chip bg-primario text-[#09090b]">Ejemplo</span>
+              </div>
+
+              <div>
+                <p className="text-sm opacity-80">Te queda esta semana</p>
+                <p className="mt-1 text-4xl font-extrabold tracking-tight tabular-nums">
+                  {SEMANA_EJEMPLO.queda}
+                </p>
+                <div
+                  aria-hidden="true"
+                  className="mt-4 h-2 overflow-hidden rounded-full bg-current/15"
+                >
+                  <div
+                    className="h-full rounded-full bg-primario"
+                    style={{ width: `${SEMANA_EJEMPLO.proporcionApartada * 100}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-sm opacity-80">
+                  Apartas {SEMANA_EJEMPLO.apartar} de {SEMANA_EJEMPLO.disponible}
+                </p>
+              </div>
+
+              <ul className="mt-auto space-y-2 text-sm">
+                {SEMANA_EJEMPLO.pagos.map((pago) => (
+                  <li
+                    key={pago.nombre}
+                    className="flex items-center justify-between rounded-xl bg-current/10 px-3 py-2.5"
+                  >
+                    <span>{pago.nombre}</span>
+                    <span className="font-bold tabular-nums">{pago.monto}</span>
+                  </li>
+                ))}
+              </ul>
+            </Aparecer>
+
+            {beneficios.map((beneficio, indice) => (
+              <Aparecer
+                como="section"
+                indice={indice + 2}
+                interactiva
+                key={beneficio.titulo}
+                aria-labelledby={`beneficio-${indice}`}
+                className="tarjeta tarjeta-interactiva flex flex-col gap-5 p-6 md:col-span-2"
+              >
+                <span className="icono-tarjeta">{beneficio.icono}</span>
+                <div>
+                  <h2 id={`beneficio-${indice}`} className="text-lg font-bold text-texto">
+                    {beneficio.titulo}
+                  </h2>
+                  <p className="mt-2 leading-7 text-texto-suave">{beneficio.descripcion}</p>
+                </div>
+              </Aparecer>
+            ))}
+
+            <Aparecer
+              como="footer"
+              indice={5}
+              className="elevado flex flex-wrap items-start gap-3 p-5 text-sm leading-6 text-texto-suave md:col-span-6 md:items-center"
+            >
+              <IconoInfo className="size-5 shrink-0 text-texto" />
+              <p className="min-w-0 flex-1">Ahorrito organiza tu información; no sustituye asesoría financiera profesional.</p>
+              {/* RF-15: el aviso integral, a un clic y sin sesión (CA-26). */}
+              <Link
+                href={RUTA_PRIVACIDAD}
+                className="inline-flex min-h-11 items-center font-bold text-texto underline decoration-2 underline-offset-4"
+              >
+                Aviso de privacidad
+              </Link>
+            </Aparecer>
+          </div>
+        </main>
+      </div>
+    </TransicionRuta>
   );
 }

@@ -1,7 +1,19 @@
 "use client";
 
 import { useActionState } from "react";
+import {
+  ayuda as claseAyuda,
+  campoConIcono,
+  error as claseError,
+  etiqueta,
+  iconoCampo,
+  mensaje as claseMensaje,
+} from "@/components/captura/estilos";
+import { AvisoSimplificado } from "@/components/privacidad/aviso-simplificado";
+import { IconoCandado, IconoCorreo } from "@/components/ui/iconos";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { ESTADO_INICIAL, type EstadoFormulario } from "@/lib/autenticacion/estado";
+import { VALOR_ACEPTA_AVISO } from "@/lib/privacidad/aviso";
 
 interface Props {
   accion: (estado: EstadoFormulario, formulario: FormData) => Promise<EstadoFormulario>;
@@ -10,6 +22,8 @@ interface Props {
   ayudaContrasena?: string;
   /** Ruta a la que volver después de iniciar sesión. El servidor la valida de nuevo. */
   siguiente?: string;
+  /** Registro: muestra el aviso simplificado y la casilla de consentimiento (RF-15). */
+  pedirConsentimiento?: boolean;
 }
 
 /**
@@ -26,13 +40,9 @@ export function FormularioCredenciales({
   autocompletarContrasena,
   ayudaContrasena,
   siguiente,
+  pedirConsentimiento = false,
 }: Props) {
   const [estado, enviar, pendiente] = useActionState(accion, ESTADO_INICIAL);
-
-  const etiqueta = "block text-sm font-medium text-zinc-700 dark:text-zinc-300";
-  const campo =
-    "mt-1 w-full rounded border border-zinc-400 bg-white px-3 py-2 text-zinc-900 aria-[invalid=true]:border-red-600 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100";
-  const error = "mt-1 text-sm text-red-700 dark:text-red-400";
 
   const describeContrasena =
     [ayudaContrasena ? "ayuda-contrasena" : null, estado.errores.contrasena ? "error-contrasena" : null]
@@ -47,19 +57,23 @@ export function FormularioCredenciales({
         <label htmlFor="correo" className={etiqueta}>
           Correo electrónico
         </label>
-        <input
-          id="correo"
-          name="correo"
-          type="email"
-          autoComplete="email"
-          required
-          defaultValue={estado.correo}
-          aria-invalid={Boolean(estado.errores.correo)}
-          aria-describedby={estado.errores.correo ? "error-correo" : undefined}
-          className={campo}
-        />
+        <div className="relative">
+          <IconoCorreo className={iconoCampo} />
+          <input
+            id="correo"
+            name="correo"
+            type="email"
+            autoComplete="email"
+            placeholder="tu@correo.com"
+            required
+            defaultValue={estado.correo}
+            aria-invalid={Boolean(estado.errores.correo)}
+            aria-describedby={estado.errores.correo ? "error-correo" : undefined}
+            className={campoConIcono}
+          />
+        </div>
         {estado.errores.correo && (
-          <p id="error-correo" className={error}>
+          <p id="error-correo" className={claseError}>
             {estado.errores.correo}
           </p>
         )}
@@ -69,48 +83,75 @@ export function FormularioCredenciales({
         <label htmlFor="contrasena" className={etiqueta}>
           Contraseña
         </label>
-        <input
-          id="contrasena"
-          name="contrasena"
-          type="password"
-          autoComplete={autocompletarContrasena}
-          required
-          aria-invalid={Boolean(estado.errores.contrasena)}
-          aria-describedby={describeContrasena}
-          className={campo}
-        />
+        <div className="relative">
+          <IconoCandado className={iconoCampo} />
+          <input
+            id="contrasena"
+            name="contrasena"
+            type="password"
+            autoComplete={autocompletarContrasena}
+            placeholder={autocompletarContrasena === "new-password" ? "Crea una contraseña" : "Tu contraseña"}
+            required
+            aria-invalid={Boolean(estado.errores.contrasena)}
+            aria-describedby={describeContrasena}
+            className={campoConIcono}
+          />
+        </div>
         {ayudaContrasena && (
-          <p id="ayuda-contrasena" className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <p id="ayuda-contrasena" className={claseAyuda}>
             {ayudaContrasena}
           </p>
         )}
         {estado.errores.contrasena && (
-          <p id="error-contrasena" className={error}>
+          <p id="error-contrasena" className={claseError}>
             {estado.errores.contrasena}
           </p>
         )}
       </div>
 
+      {pedirConsentimiento && (
+        <div className="space-y-1.5">
+          {/* El servidor rechaza el registro sin la casilla (CA-26); `required` no basta
+              porque el formulario usa `noValidate` y se puede enviar sin la interfaz. */}
+          <div className="flex items-start gap-3">
+            <input
+              id="acepta-aviso"
+              name="acepta_aviso"
+              type="checkbox"
+              value={VALOR_ACEPTA_AVISO}
+              required
+              defaultChecked={estado.aceptaAviso}
+              aria-invalid={Boolean(estado.errores.aviso)}
+              aria-describedby={["aviso-simplificado", estado.errores.aviso ? "error-aviso" : null]
+                .filter(Boolean)
+                .join(" ")}
+              className="mt-0.5 size-6 shrink-0 accent-terciario"
+            />
+            <label htmlFor="acepta-aviso" className="text-sm leading-6 font-semibold text-texto">
+              Acepto el aviso de privacidad y el tratamiento de mis datos, incluidos los patrimoniales.
+            </label>
+          </div>
+          <AvisoSimplificado id="aviso-simplificado" />
+          {estado.errores.aviso && (
+            <p id="error-aviso" className={`${claseError} pl-9`}>
+              {estado.errores.aviso}
+            </p>
+          )}
+        </div>
+      )}
+
       {estado.mensaje && (
         <p
           role={estado.tipo === "error" ? "alert" : "status"}
-          className={
-            estado.tipo === "error"
-              ? "rounded border border-red-600 p-3 text-sm text-red-700 dark:text-red-400"
-              : "rounded border border-emerald-600 p-3 text-sm text-emerald-800 dark:text-emerald-300"
-          }
+          className={claseMensaje(estado.tipo)}
         >
           {estado.mensaje}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pendiente}
-        className="w-full rounded bg-zinc-900 px-5 py-2.5 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
-      >
+      <InteractiveHoverButton type="submit" disabled={pendiente} className="w-full">
         {pendiente ? "Procesando…" : textoBoton}
-      </button>
+      </InteractiveHoverButton>
     </form>
   );
 }
