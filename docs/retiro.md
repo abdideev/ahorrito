@@ -80,10 +80,12 @@ del retiro contando las cuentas en `auth.users`.
 
 ## 11.4 Respaldo antes del retiro
 
-- **Cómo:** con una de las opciones de `docs/operacion.md`, 9.5. Hoy son ejecutables la B
-  (DataGrip) y la C (exportar CSV desde el panel).
-- **Dónde:** se guarda en la carpeta privada y se anota el conteo de filas por tabla en el acta.
-- **Estado:** documentado pero no ejecutado.
+- **Cómo:** con la opción C de `docs/operacion.md`, 9.5 (`supabase/verificacion/respaldo-datos.sql`),
+  ya ejercitada el 21/10/2026 (`docs/verificacion/2026-10-21-respaldo.md`).
+- **Dónde:** en `C:\evidencia-validacion\respaldos\`; en el acta se anotan el conteo por tabla
+  y la huella SHA-256.
+- **Estado:** el mecanismo está ejercitado; el respaldo **final**, el del retiro, queda pendiente
+  hasta que el retiro ocurra.
 
 ## 11.5 Acta de retiro (sin ejecutar)
 
