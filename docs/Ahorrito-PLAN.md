@@ -587,7 +587,7 @@ etiqueta `v1.0.0` y acta de liberación firmada.
 unos 4 minutos con 37 s de compilación (CA-25). SMTP propio con una cuenta de Gmail dedicada y
 plantilla en español, sin dominio propio: el registro real de un correo ajeno al proyecto confirmó
 la cuenta (CA-01), lo que resuelve RES-16. Redirección 308 con HSTS y 0 peticiones `http://`
-(CA-21 b). 20 de 20 planes en producción con mediana de 360 ms (CA-08). Juego final de 28
+(CA-21 b). 20 de 20 planes en producción con mediana de 358.5 ms (CA-08; corregida el 21/10/2026, #53). Juego final de 28
 capturas desde `v1.0.0-rc.1`. Se corrigió el defecto #37. `v1.0.0` se etiquetó sobre `b072b45`, y
 la prueba de humo contra producción pasó. El procedimiento, la configuración, la reversión y el
 acta están en `docs/liberacion.md`.
