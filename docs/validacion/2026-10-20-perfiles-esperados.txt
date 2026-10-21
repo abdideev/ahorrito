@@ -1,0 +1,41 @@
+Fecha de referencia: 2026-10-20 · desplazamiento: +15 días
+
+P1 · Ingreso muy ajustado
+  presupuesto: 700.00 semanales, inicia en lunes
+  pago: Renta · 1,800.00 · 2026-11-20 · 3 mes(es)
+  pago: Transporte · 600.00 · 2026-10-30 · 3 mes(es)
+  pago: Servicio de internet · 350.00 · 2026-11-04 · 3 mes(es)
+  pago: Teléfono · 250.00 · 2026-11-12 · 3 mes(es)
+  PRIMER PLAN (presupuesto y pagos): 14 semanas (2026-10-19 a 2027-01-20)
+    sobrecargadas: 5, 7, 9, 14
+    en déficit: 1, 2, 6, 7, 8, 9
+    semana 1: aparta 839.17, queda -139.17
+    remanente mínimo: -139.17
+
+P2 · Vencimiento grande a corto plazo
+  presupuesto: 1,500.00 semanales, inicia en jueves
+  pago: Inscripción escolar · 6,000.00 · 2026-10-31 · 1 mes(es)
+  pago: Renta · 2,000.00 · 2026-11-16 · 3 mes(es)
+  pago: Gimnasio · 300.00 · 2026-11-09 · 3 mes(es)
+  PRIMER PLAN (presupuesto y pagos): 14 semanas (2026-10-15 a 2027-01-16)
+    sobrecargadas: 3, 5, 9, 14
+    en déficit: 1, 2, 3
+    semana 1: aparta 2,475.00, queda -975.00
+    remanente mínimo: -975.00
+
+P3 · Meta poco realista
+  presupuesto: 2,000.00 semanales, inicia en domingo
+  pago: Renta · 2,500.00 · 2026-11-18 · 2 mes(es)
+  pago: Servicios del hogar · 600.00 · 2026-11-06 · 2 mes(es)
+  ingreso extra (después del primer plan): 1,000.00 · 2026-11-07
+  meta (después del primer plan): 25,000.00 · 2026-12-19
+  PRIMER PLAN (presupuesto y pagos): 9 semanas (2026-10-18 a 2026-12-18)
+    sobrecargadas: 5, 9
+    en déficit: ninguna
+    semana 1: aparta 700.00, queda 1,300.00
+    remanente mínimo: 1,255.00
+  PLAN CON LO OPCIONAL: 9 semanas (2026-10-18 a 2026-12-19)
+    meta: no alcanzable · ahorro posible 12,800.00 · faltante 12,200.00
+
+Comando: FECHA_REFERENCIA=2026-10-20 pnpm exec vitest run --config docs/validacion/scripts/vitest.perfiles-validacion.mts --reporter=verbose
+Ejecutado: 20/10/2026 18:19 (UTC-6), código de v1.1.0 (src sin cambios desde 4d14004)
