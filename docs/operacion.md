@@ -124,7 +124,7 @@ si se revisa casi enseguida. No hay alertas automáticas.
 
 ## 9.5 Mecanismos de respaldo
 
-**Hoy no existe ningún respaldo de los datos de producción.**
+**Primer respaldo de los datos ejecutado el 21/10/2026 a las 16:58**, con la opción C (evidencia: `docs/verificacion/2026-10-21-respaldo.md`; 7 tablas, conteos idénticos a la base, SHA-256 registrado). Antes de esa fecha no existía ninguno.
 
 - El plan gratuito de Supabase **no incluye respaldos automáticos**: "Automatic backups: Free = Not
   included"; los planes de pago guardan 7 días o más (https://supabase.com/pricing).
@@ -138,10 +138,10 @@ si se revisa casi enseguida. No hay alertas automáticas.
 |---|---|---|---|
 | A · CLI de Supabase | `pnpm exec supabase db dump --linked --data-only -f <carpeta privada>/datos-AAAA-MM-DD.sql` (y sin `--data-only` para el esquema) | La CLI ya está vinculada al proyecto (`supabase/.temp/project-ref`). [SUPUESTO] El volcado remoto usa `pg_dump` dentro de Docker, y **este equipo no tiene Docker** (`docker: command not found`); instalarlo queda fuera de esta fase | **No ejecutable hoy** |
 | B · DataGrip (ya instalado) | Conectar al proyecto con la cadena de conexión del panel (Database → Connect) y exportar cada tabla de `public` como SQL `INSERT` o CSV a la carpeta privada | DataGrip 2025.3.5 está en este equipo | **Documentado pero no ejercitado** |
-| C · Panel de Supabase | En el editor SQL, `select * from public.<tabla>` y "Export to CSV" por tabla | Solo el navegador | **Documentado pero no ejercitado** |
+| C · Panel de Supabase | En el editor SQL, la consulta B de `supabase/verificacion/respaldo-datos.sql` (todo el esquema `public` en un JSON) y la consulta A para el conteo | Solo el navegador | **Ejercitado el 21/10/2026** |
 
-- **Dónde se guarda:** fuera del repositorio, en la carpeta privada del escritorio. Contiene datos
-  personales (correos en `auth.users`).
+- **Dónde se guarda:** fuera del repositorio, en `C:\evidencia-validacion\respaldos\`. Contiene
+  datos personales (correos en `public.perfiles`). `auth.users` no se respalda; solo se cuenta.
 - **Cuándo:** antes del retiro (11.4) y, si se quiere, después de las sesiones de validación.
 
 ## 9.6 Recuperación
@@ -183,6 +183,6 @@ servicio.
 | 9.2 | 9.2 y RACI 1.7.1 | — | Documentado |
 | 9.3 | Registros de Vercel usados el 04/10; pruebas de humo | Alertas automáticas (fuera de alcance) | Ejercitado en parte |
 | 9.4 | Issues de defectos | Abrir `ret-5` | Ejercitado en parte |
-| 9.5 | Esquema versionado | **Ningún respaldo de datos ejecutado** | Documentado pero no ejercitado |
+| 9.5 | Esquema versionado; respaldo de datos del 21/10/2026 (`docs/verificacion/2026-10-21-respaldo.md`) | Repetirlo después de las sesiones y antes del retiro | Ejercitado |
 | 9.6 | Restauración del 28/09 | Prueba de restauración de datos y de reversión | Documentado pero no ejercitado en parte |
 | 9.7 | Justificación | — | N/A |
