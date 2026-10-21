@@ -47,6 +47,12 @@ async function cronometrarPlanes({ solicitudes = 20, borrar = true, limiteMs = 3
   }
   const dentro = filas.filter((f) => f.planMs !== null && f.planMs <= limiteMs).length;
   const tiempos = filas.map((f) => f.planMs).filter((t) => t !== null).sort((a, b) => a - b);
+  // Con un número par de tiempos, la mediana es el promedio de los dos centrales. La versión del
+  // 04/10/2026 tomaba el elemento n/2 (el 11.º de 20) y por eso publicó 310 y 360 ms en lugar de
+  // 303 y 358.5 (incidencia #53).
+  const mitad = Math.floor(tiempos.length / 2);
+  const mediana =
+    tiempos.length === 0 ? null : tiempos.length % 2 === 1 ? tiempos[mitad] : (tiempos[mitad - 1] + tiempos[mitad]) / 2;
   let borrados = 0;
   if (borrar) {
     for (const f of filas) {
@@ -59,7 +65,7 @@ async function cronometrarPlanes({ solicitudes = 20, borrar = true, limiteMs = 3
     solicitudes,
     dentroDelLimite: `${dentro}/${solicitudes}`,
     cumple: dentro >= Math.ceil(solicitudes * 0.9),
-    planMs: { minimo: tiempos[0], mediana: tiempos[Math.floor(tiempos.length / 2)], maximo: tiempos.at(-1) },
+    planMs: { minimo: tiempos[0], mediana, maximo: tiempos.at(-1) },
     borrados,
     filas: filas.map((f) => ({ n: f.n, http: f.http, planMs: f.planMs, explicacionMs: f.explicacionMs, explicacion: f.explicacion })),
   };

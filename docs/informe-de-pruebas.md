@@ -42,7 +42,7 @@ unitarias, 20 de 20 de integración y 6 de 6 de interfaz.
 | CA-05 | RF-08 | **Cumplido** | La semana con 700 de vencimientos y 500 de presupuesto lleva el chip "Carga alta"; la prueba unitaria está en verde | `2026-10-04-funcionales.md` |
 | CA-06 | RF-09 | **Cumplido** | Unitaria `evaluacion.test.ts`: no alcanzable, con el faltante | `regresion/2026-10-04-unitarias.json` |
 | CA-07 | RF-11 | **Cumplido** | Descargo entre 97 y 187 px en una ventana de 800 (escritorio) y entre 16 y 194 px en una de 812 (móvil, **primera medición en móvil**); lo protege E2E-01 | `2026-10-03-ca07.md`, `2026-10-04-sc10-e2e.md` |
-| CA-08 | RNF-01 | **En parte** | Local: **20 de 20** en 30 s o menos, con mediana de 310 ms y máximo de 804 ms. Falta producción | `2026-10-04-ca08-local.json` |
+| CA-08 | RNF-01 | **En parte** | Local: **20 de 20** en 30 s o menos, con mediana de 303 ms (el script publicó 310; corregido el 21/10/2026, #53) y máximo de 804 ms. Falta producción | `2026-10-04-ca08-local.json` |
 | CA-09 | RNF-03 | **Cumplido** | **5 de 5** desde la interfaz con la clave revocada (HTTP 400 en el servidor); 10 de 10 en el servidor el 18/09 | `2026-10-04-ca09-ca11-ca17.md` |
 | CA-10 | RNF-04 | **Cumplido** | **13 de 13** intentos denegados con 0 filas ajenas, más el rechazo `42501` de la escritura a nombre de otro usuario. La denegación se manifiesta como 0 filas, 404 o `42501`, sin revelar si el recurso existe (AM-01, decisión del 03/10) | `2026-10-03-ca10.md` |
 | CA-11 | RNF-10 | **Cumplido** | **10 de 10** solicitudes al proveedor (el 100 % de la sesión) sin datos identificables | `2026-10-04-ca09-ca11-ca17.md` |
@@ -68,7 +68,7 @@ unitarias, 20 de 20 de integración y 6 de 6 de interfaz.
 
 | Medición | Valor | Fuente |
 |---|---|---|
-| Llegada del plan (CA-08, local, n = 20) | Mínimo 245 ms, mediana 310 ms, máximo 804 ms | `2026-10-04-ca08-local.json` |
+| Llegada del plan (CA-08, local, n = 20) | Mínimo 245 ms, mediana 303 ms (el script publicó 310; corregido el 21/10/2026, #53), máximo 804 ms | `2026-10-04-ca08-local.json` |
 | Llegada de la explicación con servicio (n = 25) | De 2.0 a 3.6 s | CA-08 y CA-17 |
 | Recálculo sin explicación (CA-19, n = 5) | De 293 a 721 ms | `2026-10-04-funcionales.md` |
 | Aviso sin servicio de IA (CA-09, n = 5) | De 419 a 1,825 ms | `2026-10-04-ca09-ca11-ca17.md` |

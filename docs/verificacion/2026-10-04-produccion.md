@@ -98,7 +98,7 @@ al terminar. Resultado completo: `produccion/2026-10-04-ca08-produccion.json`.
 | | Producción (05/10/2026 00:27 UTC) | Local (04/10, como referencia) |
 |---|---|---|
 | Dentro de 30 s | **20 de 20** | 20 de 20 |
-| Plan: mínimo / mediana / máximo | 284 / **360** / 1,189 ms | 245 / 310 / 804 ms |
+| Plan: mínimo / mediana / máximo | 284 / **360** / 1,189 ms. **Corrección del 21/10/2026 (#53):** mediana real 358.5 ms | 245 / 310 / 804 ms. **Corrección (#53):** mediana real 303 ms |
 | HTTP | 200 en las 20 | 200 en las 20 |
 
 **Resultado: CA-08 cumplido en producción** (se exigían al menos 18 de 20). La primera solicitud
