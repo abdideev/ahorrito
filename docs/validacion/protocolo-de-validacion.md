@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Versión del protocolo | **1.1**, corregida por revisión antes de cualquier sesión; **aprobada** el 21/10/2026 |
+| Versión del protocolo | **1.2**: cambio de la ubicación de la evidencia privada, decidido y aprobado por STK-01 el 21/10/2026 a las 03:43, antes de cualquier sesión |
 | Redactado | 20/10/2026 (1.0); corregido el 21/10/2026 (1.1) |
 | Aprobación | 1.0 aprobada por STK-01 el 20/10/2026; 1.1 aprobada por STK-01 el 21/10/2026, registrada a las 02:40 (sección 17), antes de enviar cualquier instrucción a los evaluadores |
 | Proceso de la norma | Validación (lista de verificación, puntos 7.1 a 7.6) y revisión de requisitos con los interesados (2.4, retroactiva) |
@@ -14,6 +14,7 @@
 |---|---|---|---|
 | 1.0 | 20/10/2026. Redactada después de las 18:19 (salida del script de perfiles) y antes de las 18:23 (última escritura de la hoja de datos). La aprobación se registró en el archivo a las 23:38 | Versión inicial | Aprobada por STK-01 el 20/10/2026 |
 | 1.1 | 21/10/2026, 02:34 (última escritura de los cuatro documentos) | **Corregida por revisión antes de cualquier sesión** (ningún evaluador recibió instrucciones ni abrió la aplicación). Cinco correcciones de STK-01: (1) en la Parte B, E3 borra también el ingreso extra y la meta, que impedían el cuadre (verificado con el motor); (2) la consulta de tiempos se ejecuta después de la Parte A y antes del mensaje 3 (sección 7 y anexo A); (3) nueva redacción de la pregunta de experiencia previa (sección 6); (4) grabación en Windows 10 e iPhone con botón de inicio (instrucciones); (5) consentimiento de participación y "nombre en acta" (sección 15). Además: las sesiones programadas para el 20/10/2026 no se realizaron ese día, y se corrige la programación (sección 13), no el registro; se recalculó el resultado esperado con referencia 21/10/2026 (idéntico al del 20/10) y se declara su validez (sección 5) | Aprobada por STK-01 el 21/10/2026, registrada a las 02:40 |
+| 1.2 | 21/10/2026, 03:43 | La evidencia privada (videos, capturas sin recortar y correspondencia) se guarda en `C:\evidencia-validacion`, fuera del repositorio y fuera de OneDrive, en lugar de una carpeta del escritorio, que se sincronizaba con la nube (sección 15). Se ajustan el mensaje 1 y el paso 8 de la Parte A, y el plan de retiro. La 1.1 se fusionó en el pull request #45 (21/10/2026, 03:07) y ningún evaluador había recibido instrucciones | Decidido y aprobado por STK-01 el 21/10/2026, 03:43 |
 
 ---
 
@@ -296,13 +297,11 @@ válida.
 
 - **En el repositorio y en los documentos,** los evaluadores son E1, E2 y E3. **Ningún nombre,
   correo, video ni captura con datos reales** entra al repositorio.
-- **Videos, capturas sin recortar y correspondencia** se guardan **fuera del repositorio**, en una
-  carpeta del escritorio del responsable (decisión de STK-01, 20/10/2026), hasta la calificación.
-  Después se borran según el plan de retiro (`docs/retiro.md`).
-- **Cuidado:** el escritorio de este equipo está dentro de OneDrive (la ruta del escritorio es
-  `OneDrive\Desktop`), así que la carpeta se sincroniza con la nube de la cuenta del responsable.
-  La carpeta no se comparte con nadie, y el plan de retiro incluye borrarla también de la papelera
-  de OneDrive.
+- **Videos, capturas sin recortar y correspondencia** se guardan en **`C:\evidencia-validacion`**,
+  en el equipo del responsable: **fuera del repositorio y fuera de OneDrive**, así que no se
+  sincronizan con ninguna nube (decisión de STK-01, 21/10/2026, versión 1.2). La carpeta no se
+  comparte con nadie. Se guardan hasta la calificación y después se borran según el plan de retiro
+  (`docs/retiro.md`).
 - **Consulta de tiempos:** usa marcadores (`CORREO_E1`…). Los correos reales se escriben solo en el
   editor del panel de Supabase y **no se guardan**.
 - **Lo que sí entra al repositorio:** la hoja de registro anonimizada (anexo A), que el responsable
@@ -355,6 +354,7 @@ válida.
 |---|---|---|---|
 | Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Aprobado (versión 1.0), con la hoja de datos y las instrucciones que forman parte de él | 20/10/2026 |
 | Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Aprobado (versión 1.1), con la hoja de datos y las instrucciones 1.1 | 21/10/2026, registrada a las 02:40 |
+| Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Aprobado (versión 1.2, ubicación de la evidencia) | 21/10/2026, 03:43 |
 
 ---
 

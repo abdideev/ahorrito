@@ -13,9 +13,14 @@
 5. la respuesta al consentimiento del mensaje 1 se registra como "consentimiento: sí/no" y "nombre
    en acta: sí/no", **sin el nombre**.
 
-**Estado:** la versión 1.0 se aprobó con el protocolo el 20/10/2026. Esta es la versión 1.1, del
-21/10/2026, corregida por revisión antes de cualquier sesión y **aprobada** con el protocolo 1.1 el
-21/10/2026 (registrada a las 02:40).
+**Estado:** versión 1.2, del 21/10/2026. La 1.0 se aprobó el 20/10/2026; la 1.1, corregida por
+revisión, se aprobó el 21/10/2026 a las 02:40; la 1.2 (ubicación de la evidencia privada en el
+mensaje 1 y en el paso 8 de la Parte A) la aprobó STK-01 el 21/10/2026 a las 03:43, antes de enviar
+cualquier mensaje.
+
+**Dónde se guarda lo que envían los evaluadores (uso interno):** `C:\evidencia-validacion`, fuera
+del repositorio y fuera de OneDrive (protocolo, sección 15). Nada de esa carpeta se copia al
+repositorio.
 
 ---
 
@@ -51,7 +56,8 @@
 > Cuando me contestes, te envío la segunda parte.
 >
 > Al responder aceptas participar. Lo que envíes (respuestas, video y capturas) se usa solo para
-> esta evaluación, lo guardo fuera del proyecto y lo borro al terminar; en el documento apareces
+> esta evaluación, lo guardo en una carpeta de mi computadora, fuera del proyecto y sin subirlo a
+> ninguna nube, y lo borro al terminar; en el documento apareces
 > como E_. Puedes retirarte cuando quieras. ¿Aceptas que tu nombre aparezca en el acta de
 > aceptación, o prefieres seguir como E_?
 
@@ -132,7 +138,8 @@
 > **Paso 8. Contesta las preguntas** de la plantilla de abajo y envíamela con:
 >
 > - **el video:** si muestra tu correo, tu bandeja o algo personal, recórtalo o envíamelo por
->   privado. Yo lo guardo fuera del proyecto y lo borro al terminar la evaluación;
+>   privado. Yo lo guardo en una carpeta de mi computadora, fuera del proyecto y sin subirlo a
+>   ninguna nube, y lo borro al terminar la evaluación;
 > - **una captura de pantalla de tu plan;**
 > - **tu dispositivo, sistema y navegador con su versión:**
 >   - [E1] En el navegador: menú → Ayuda o Configuración → "Acerca de". En Windows: Inicio →
