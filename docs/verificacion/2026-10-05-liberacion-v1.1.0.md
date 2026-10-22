@@ -14,6 +14,14 @@ la base de datos ni en las variables de entorno.
 | `pnpm test:integracion` | `Test Files 2 passed (2)` · `Tests 20 passed \| 2 skipped (22)` |
 | `pnpm test:e2e` | `6 passed (1.3m)` |
 
+> **Precisión (22/10/2026).** `playwright.config.ts` arranca `pnpm exec next start`, que **no
+> compila**. La primera corrida local de `pnpm test:e2e` del 05/10/2026 usó una compilación del
+> 04/10/2026 a las 02:24 (`.next/BUILD_ID`), anterior a la corrección del #37 y al botón de `v1.1.0`.
+> Al detectarlo se ejecutó `pnpm build` y se repitieron las pruebas: 6 de 6. No quedó registrado si
+> la salida de la tabla (`1.3m`) es de la primera corrida o de la repetición: **no verificado**. La
+> prueba de humo contra producción (abajo) no tiene este problema, porque prueba lo que Vercel
+> compiló.
+
 ## Ramas y etiqueta
 
 ```text
