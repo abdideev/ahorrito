@@ -989,3 +989,248 @@ texto de esta bitácora (búsqueda de "SUPUESTO", "Texto nuevo", "Evidencia:" y 
 | 2 | 4.4, observación de comentarios en línea | Depende de que envíes las revisiones pendientes | Condicionado |
 | 3 | 5.2, I-02 | **Nuevo hallazgo.** Dice "Pruebas unitarias del orquestador (27 casos)". Hoy `pnpm exec vitest list src/app/api/planes/orquestador.test.ts` da **9** casos (7 bloques `it`, dos de ellos `it.each`); `degradacion.test.ts` tiene 7 y `[id]/route.test.ts`, 4. Ninguna combinación da 27. Texto nuevo propuesto: "Pruebas unitarias del orquestador (9 casos) y de degradación (7 casos)". **No verificado:** de dónde salió el 27 | Pendiente |
 | 4 | 1.8.2 | Fila opcional de la fase de validación (9.3.3) | Opcional, no aplicada |
+
+---
+
+## 10. Fase 7: validación y cierre (versión 4.4 del documento)
+
+**Estado:** pendiente. Preparada el 22/10/2026, después de fusionar el pull request #57 (informe de
+validación y acta). El responsable la aplica a mano en `docs/ACS-U1-APP-AvilaNeriAbdiel.docx`.
+Los textos actuales se extrajeron del .docx versionado (versión 4.3).
+
+**Regla de esta entrada.** Las filas que registran un hecho de su fecha **no se reescriben**: el
+acta de liberación de 8.7 y la tabla de 8.2 dicen "CA-20 pendiente" porque lo estaba el 04 y el
+05/10. Solo cambia lo que describe el estado vigente.
+
+### 10.1 Historial de versiones, fila nueva
+
+> 4.4 | 22/10/2026 | Cierre de la Fase 7: sección 7 con los resultados de la validación (OBJ-05
+> cumple; CA-20 y OBJ-02, 2 de 3 demostrados; aceptado con concesión del cliente); CA-20 en 4.1.3 y
+> en la sección 6; RSG-03 y revisión retroactiva de requisitos (Parte 0) en 1.8.7 y 2.4; pull
+> requests #45 a #57 en 4.4; defectos retroactivos #50 a #54 en 4.6; corrección de I-02 en 5.2;
+> versión final v1.1.0 en la sección 8 | Abdiel Avila Neri
+
+### 10.2 Sección 1.8.7, RSG-03 (pendiente desde 9.3.6 y 9.11)
+
+- **Texto actual (acción de mitigación):** "Someter los requisitos a revisión con STK-04 antes de su
+  aprobación. Redactar los criterios de aceptación antes de iniciar la construcción."
+- **Texto nuevo:** agregar al final:
+
+  > Materializado: la revisión con STK-04 no se realizó y la contingencia (revisión del docente)
+  > tampoco se ejecutó. Se compensó en parte con los criterios de aceptación redactados antes de
+  > construir y con una revisión retroactiva de los requisitos por los tres evaluadores al inicio
+  > de la validación (21 y 22/10/2026, sección 2.4). En la validación, el sesgo sigue vigente porque
+  > los evaluadores conocen al autor (sección 7.3).
+
+- **Evidencia:** `docs/informe-de-validacion.md`, secciones 5, 7 y 9.
+
+### 10.3 Sección 2.4, revisión de los requisitos
+
+**Párrafo nuevo**, al final de "Revisión externa no realizada":
+
+> Revisión retroactiva (21 y 22/10/2026). Al inicio de la validación, antes de usar la aplicación,
+> los tres evaluadores leyeron los requisitos y respondieron qué falta y qué no se entiende (Parte 0
+> del protocolo de validación). Dejaron cinco observaciones: ingresos recurrentes e irregulares,
+> pagos semanales, recordatorios, una aplicación móvil y el término "huevo de Pascua", que uno de
+> ellos no entendió. Ninguna es un defecto; se registran como posibles solicitudes de cambio
+> (docs/informe-de-validacion.md, sección 7). La revisión es retroactiva: la línea base ya estaba
+> aprobada y el sistema construido.
+
+**Contradicción 11 de 9.10** (los evaluadores aparecen como consultados en 1.7.1 y 2.4): queda
+resuelta por la revisión retroactiva. Si 1.7.1 dice que fueron consultados en el análisis, se
+añade "(de forma retroactiva, en la validación)".
+
+### 10.4 Sección 4.1.3, filas de RNF-02 y RNF-07
+
+| Requisito | Texto actual | Texto nuevo |
+|---|---|---|
+| RNF-02 Facilidad de aprendizaje | Pendiente · CA-20, Fase 7 | **En parte** · CA-20: 2 de 3 evaluadores demostrados (2 min 49 s y 3 min 42 s); el tercero quedó pendiente por una grabación cortada. Aceptado con concesión del cliente (sección 7) |
+| RNF-07 Compatibilidad | En parte · CA-23: … sin Safari | En parte · CA-23: … una versión de cada uno. En la validación, el guion pasó 11 de 11 en Safari 18.7.8 sobre iPadOS; Safari en macOS sin evidencia |
+
+### 10.5 Sección 4.4, revisiones de código
+
+**Fila nueva** de la tabla:
+
+> 7 | — | #45 y #46 (protocolo), #47 (secciones 6 a 8), #48 (operación, mantenimiento y retiro), #49
+> (scripts de validación), #55 (mediana de CA-08), #56 (respaldo y evaluación preliminar), #57
+> (informe y acta) y el cierre | Pull request de cierre de dev hacia main (sin etiqueta nueva)
+
+**Párrafo nuevo, después de la tabla de no conformidades:**
+
+> Al cierre de la Fase 7 se fusionaron 36 pull requests (#2 a #57). Tienen comentario de revisión en
+> línea 11: #35, #38, #39, #45 a #49 y #55 a #57 (API pública de GitHub, 22/10/2026). La mediana
+> entre la creación y la fusión es de 0.7 minutos; autor y revisor son la misma persona. En la Fase
+> 7, cada pull request llevó un comentario en línea antes de fusionarse. El comentario de cierre de
+> la incidencia #53 se publicó después de fusionar el pull request #55 que la corrigió, y se
+> declara.
+
+- **Evidencia:** `GET /repos/abdideev/ahorrito/pulls?state=closed` y `/pulls/{n}/comments`,
+  22/10/2026; `docs/evaluacion-final.md`, sección 3.
+- **[SUPUESTO]** Que el comentario tardío de #53 ya está publicado; no lo verifiqué.
+
+### 10.6 Sección 4.6, registro y control de defectos
+
+- **Texto actual:** "Al cierre de la Fase 6 existen dieciséis incidencias, todas cerradas: diez de
+  tipo cambio (…) y seis de tipo defecto."
+- **Texto nuevo:** "Al cierre de la Fase 7 existen veintiuna incidencias, todas cerradas: diez de
+  tipo cambio (…) y once de tipo defecto." Se conserva la lista de los seis primeros y se agrega:
+
+  > El 21/10/2026 se registraron de forma retroactiva cinco defectos más, que se habían corregido o
+  > resuelto sin incidencia:
+  >
+  > - #50, severidad cosmética, prioridad baja: el apellido del autor aparecía con acento en los
+  >   créditos y en el aviso de privacidad.
+  > - #51, severidad menor, prioridad media: con sesión, "Volver al inicio" del aviso de privacidad
+  >   llevaba a la portada y parecía un cierre de sesión.
+  > - #52, severidad menor, prioridad media: el aviso simplificado alargaba la tarjeta del registro y
+  >   obligaba a desplazar.
+  > - #53, severidad menor: el script de CA-08 informaba como mediana el 11.º valor de 20; corregido en
+  >   el pull request #55 (303 ms en local y 358.5 ms en producción, antes 310 y 360). No cambia el
+  >   resultado de CA-08.
+  > - #54, severidad mayor en producción, prioridad media: el proyecto de Supabase se pausó por
+  >   inactividad el 28/09/2026 y dejó la aplicación sin base de datos; se reanudó sin pérdida de
+  >   datos. Es el único incidente de operación (docs/operacion.md, 9.4).
+  >
+  > Las sesiones de validación no reportaron defectos.
+
+- **Párrafo "Además, tres hallazgos…":** cambiar el final por "Esos tres hallazgos son los defectos
+  #50 a #52, registrados de forma retroactiva."
+- **Evidencia:** API pública de GitHub, 22/10/2026: 21 incidencias, 0 abiertas; severidades del
+  cuerpo de cada incidencia.
+- **Acción tuya en GitHub:** **#53 no tiene etiquetas.** Ponle `defecto` y su prioridad, para que
+  la API la cuente como las demás.
+
+### 10.7 Sección 5.2, I-02 (pendiente desde 9.11)
+
+- **Texto actual:** "Pruebas unitarias del orquestador (27 casos)"
+- **Texto nuevo:** "Pruebas unitarias del orquestador (9 casos) y de degradación (7 casos)"
+- **Evidencia:** `pnpm exec vitest list src/app/api/planes/orquestador.test.ts` (9) y
+  `degradacion.test.ts` (7), según 9.11. **No verificado:** de dónde salió el 27.
+
+### 10.8 Sección 6, CA-20
+
+| Lugar | Texto actual | Texto nuevo |
+|---|---|---|
+| 6.3, fila RNF-02 / CA-20 | Medición con usuarios · Pendiente · Fase 7 | Medición con usuarios · 2 de 3, con concesión · docs/informe-de-validacion.md |
+| 6.6, fila CA-20 | Pendiente · Fase 7: tres usuarios y perfiles P1 a P3 | 2 de 3 demostrados · E1, 2 min 49 s; E3, 3 min 42 s; E2 pendiente (grabación cortada); aceptado con concesión del cliente (sección 7) |
+| 6.10, resumen "Pendientes por diseño" | 1: CA-20 (Fase 7) | 0. CA-20 se midió en la Fase 7: 2 de 3 demostrados, con concesión (sección 7) |
+| 6.10, limitación sobre CA-20 | "CA-20 (RNF-02) no puede cerrarse sin usuarios y se mide en la Fase 7." | "CA-20 (RNF-02) se midió con usuarios en la Fase 7 y quedó demostrado para 2 de 3 evaluadores (sección 7)." |
+| 6.10, "Estado de avance y siguiente actualización" | "…Esta sección se actualizará al cerrar la Fase 7 con el resultado de CA-20, y antes si se amplía la cobertura de navegadores de CA-23." | "…Con el cierre de la Fase 7 se incorporó el resultado de CA-20. CA-23 no se amplió; la validación añadió evidencia de Safari en iPadOS (sección 7)." |
+
+### 10.9 Sección 7, validación (resultados)
+
+**7 (introducción), alcance.**
+
+- **Texto actual:** "Alcance de esta versión (corte al 20/10/2026). Las sesiones de validación se
+  acordaron… Ningún resultado de sesión se registra antes de que ocurra…"
+- **Texto nuevo:**
+
+  > Alcance de esta versión (corte al 22/10/2026). Las sesiones se realizaron del 21/10/2026 a las
+  > 23:57 al 22/10/2026 a las 01:06 (horas de la base de datos), sobre la versión v1.1.0 (commit 4d14004) en producción, con la
+  > conducción autoadministrada de cada evaluador y el protocolo de validación 1.2, aprobado antes de
+  > la primera sesión. Los resultados de esta sección provienen del informe de validación
+  > (docs/informe-de-validacion.md) y llevan la fecha y la hora reales de cada sesión.
+
+**7.1, párrafo final.**
+
+- **Texto actual:** "…24 cumplen, uno cumple en parte (CA-23) y uno está pendiente (CA-20, que esta
+  sección cierra). La decisión de aceptación (aceptado, aceptado con observaciones o no aceptado) se
+  define en el protocolo de validación, que se aprueba antes de la primera sesión."
+- **Texto nuevo:** "…24 cumplen, uno cumple en parte (CA-23) y CA-20 se mide en esta sección. La
+  decisión de aceptación (aceptado, aceptado con observaciones, no aceptado o decisión aplazada) se
+  definió en el protocolo de validación, aprobado el 20/10/2026 y corregido antes de cualquier
+  sesión (versiones 1.1 y 1.2 del 21/10/2026)."
+
+**7.2.**
+
+- **Texto actual:** "…Falta la evaluación por usuarios en ese mismo entorno, que son las sesiones de
+  esta fase. Hasta entonces el punto es parcial."
+- **Texto nuevo:** "…Los tres evaluadores usaron la aplicación en ese mismo entorno de producción,
+  con sus propias cuentas y sus propios correos, el 21 y el 22/10/2026."
+
+**7.3, las tres frases que no coincidían con el protocolo aprobado** (pendientes desde la 4.3):
+
+| # | Texto actual | Texto nuevo |
+|---|---|---|
+| 1 | "…sin experiencia previa con Ahorrito, uno por cada perfil…" | "…que declararon al inicio de su sesión no haber usado la aplicación ni visto su código o sus documentos antes de ese día, uno por cada perfil…" |
+| 2 | Fila Dispositivos: "Dos de los tres evaluadores usan equipos Apple, lo que permite probar Safari (CA-23) como tarea aparte de la medición" | "Previstos: Windows, Mac con Safari e iPhone con Safari. Usados: Fedora Linux con Firefox, Mac con el navegador Dia e iPad con Safari (desviaciones declaradas en el informe). El guion de CA-23 en Safari se ejecutó como Parte B, sin medir tiempo; es evidencia adicional de RNF-07 y no modifica el texto de CA-23" |
+| 3 | Fila Versión probada: "v1.1.0 (4d14004). Se propone congelarla durante la fase: cualquier cambio exige una solicitud de cambio previa (sección 4.4, fila 3)" | "v1.1.0 (4d14004), congelada durante toda la fase: no hubo cambios en src/ (git diff 4d14004 -- src, vacío el 22/10/2026)" |
+
+**7.3, fila nueva:**
+
+> Sesiones realizadas, en orden y con la hora de creación de la cuenta en la base de datos | E3 (P3):
+> 21/10/2026, 23:57 · E1 (P1): 22/10/2026, 00:47 · E2 (P2): 22/10/2026, 01:01. Los tres dieron su
+> consentimiento; ninguno quedó excluido por experiencia previa
+
+**7.3, "Limitaciones declaradas", agregar al final:** "En la práctica hubo dos tiempos completos y
+no tres, y cada combinación de dispositivo se probó con una sola persona."
+
+**7.4.**
+
+- **Texto actual:** "Pendiente. Las necesidades NEC-05… El cierre de este punto es el informe de
+  validación (7.5)."
+- **Texto nuevo:**
+
+  > NEC-05 (un plan comprensible) se contrastó con OBJ-05, que **se cumple**: claridad y
+  > accionabilidad de 4 y 4, 5 y 5, y 5 y 5, cada evaluador y cada pregunta por separado. NEC-06
+  > (reducir el esfuerzo de captura) se contrastó con OBJ-02 y CA-20: **2 de 3 evaluadores
+  > demostrados** (2 min 49 s con P1 y 3 min 42 s con P3, frente a un umbral de 8 minutos). El
+  > tercero (P2) quedó pendiente porque su grabación empieza después del registro. La base de datos
+  > registra 4 min 36 s desde que creó su cuenta, pero el protocolo no permite completar un tiempo
+  > con otras fuentes. Los planes obtenidos coinciden con el resultado esperado del motor, salvo el
+  > de P3, por dos errores de captura del evaluador (una fecha y una meta), que no son defectos de la
+  > aplicación.
+
+**7.5.**
+
+- **Texto actual:** "Pendiente. El informe de validación (docs/informe-de-validacion.md) registrará…"
+- **Texto nuevo:**
+
+  > El informe de validación (docs/informe-de-validacion.md) registra, por evaluador, la fecha y la
+  > hora reales, el dispositivo y el navegador, el tiempo del registro al primer plan con su
+  > desglose, las dos calificaciones y las observaciones, y, por criterio, el resultado de CA-20,
+  > OBJ-02 y OBJ-05. Se basa en un registro anonimizado (docs/validacion/registros/) procesado con
+  > un script cuyas reglas tienen 28 pruebas. Declara ocho desviaciones del protocolo: dispositivos
+  > distintos de los previstos, la grabación cortada, la consulta de tiempos ejecutada después de la
+  > Parte B en dos evaluadores, el horario, la decisión de cierre y las horas anotadas de un
+  > evaluador, que no coinciden con la base de datos. Las sesiones no reportaron
+  > defectos. La Parte B pasó 11 de 11 en Safari sobre iPadOS. La Parte 0 dejó cinco observaciones
+  > para el mantenimiento (sección 2.4).
+
+**7.6.**
+
+- **Texto actual:** "Pendiente. El acta de aceptación la firmará el cliente (STK-01) una vez cerradas
+  las sesiones…"
+- **Texto nuevo:**
+
+  > El cliente (STK-01) decidió el 22/10/2026 **aceptar el sistema con concesión**
+  > (docs/validacion/acta-de-aceptacion.md). Con un resultado pendiente, el protocolo preveía aplazar
+  > la decisión hasta contar con un evaluador sustituto. El cliente optó por cerrar sin sustituto,
+  > aceptó el riesgo de que CA-20 no quede demostrado para el tercer evaluador y lo registró como
+  > desviación del protocolo, tomada después de conocer los resultados. Ningún resultado se modificó.
+  > La concesión se levanta con un sustituto sin experiencia previa, en Mac con Safari, con el perfil
+  > P2. Los evaluadores participaron como consultados, sin autoridad de aprobación (sección 1.3); sus
+  > nombres figuran solo en la copia firmada del acta, fuera del repositorio.
+
+**Estado de avance y siguiente actualización.**
+
+- **Texto actual:** "Los puntos 7.1 y 7.2 tienen evidencia; el 7.2 es parcial… Los puntos 7.3 a 7.6
+  están pendientes de las sesiones…"
+- **Texto nuevo:** "Los seis puntos de esta sección tienen evidencia. El 7.4 se cumple en parte:
+  CA-20 y OBJ-02 quedaron demostrados para 2 de 3 evaluadores, con la concesión del cliente de 7.6."
+
+### 10.10 Sección 8, versión final
+
+- **Agregar al final del primer párrafo de la sección 8:** "La versión final del sistema es v1.1.0
+  (4d14004): la Fase 7 validó esa versión sin cambiarla y solo agregó documentación, que llega a
+  main con el pull request de cierre."
+- **No cambian** 8.2 ni el acta de 8.7: registran la liberación del 04 y el 05/10/2026.
+- **Contradicción 7 de 9.10** (congelamiento de dev en 8.1, paso 1): agregar a ese paso "Terminó con
+  la liberación de v1.0.0; v1.1.0 (#41) entró después, sin solicitud de cambio (4.4, fila 3)".
+
+### 10.11 Lo que no cambia
+
+- **Secciones 1 a 3:** salvo 1.8.7 y 2.4, nada de lo validado contradice el análisis ni el diseño.
+  Las observaciones de la Parte 0 son necesidades nuevas, no errores de los requisitos.
+- **Secciones 4.3 y 5.4:** no hay etiquetas nuevas. La versión final sigue siendo v1.1.0.
+- **Anexo B:** las capturas de los evaluadores contienen datos personales y no entran al documento.

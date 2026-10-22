@@ -64,3 +64,24 @@
 | Rol | Nombre | Decisión | Firma | Fecha |
 |---|---|---|---|---|
 | Líder del proyecto y cliente (STK-01) | Abdiel Avila Neri | Aceptado con concesión | Pendiente | Pendiente |
+
+## 6. Nota posterior a la firma (22/10/2026)
+
+Esta nota se agrega después de la firma y no modifica el texto firmado de las secciones 1 a 5.
+
+1. **Firma.** STK-01 firmó el acta el 22/10/2026. La copia firmada, que incluye los nombres de los
+   evaluadores, se guarda fuera del repositorio, en `C:\evidencia-validacion` (protocolo, sección
+   15). Por eso la tabla de la sección 5 de esta versión del repositorio dice "Pendiente".
+2. **Horas de las sesiones.** La línea "Sesiones" del encabezado toma las horas que anotaron los
+   evaluadores. Según la revisión del 22/10/2026, las sesiones se fechan con la base de datos
+   (informe de validación 1.2, sección 2):
+
+   | Orden | Evaluador | Cuenta creada |
+   |---|---|---|
+   | 1 | E3 | 21/10/2026, 23:57 |
+   | 2 | E1 | 22/10/2026, 00:47 |
+   | 3 | E2 | 22/10/2026, 01:01 |
+
+   La hora anotada por E2 (00:06) no coincide con la base de datos y se declara como desviación
+   D-08.
+3. **Efecto.** Ninguno sobre los resultados de la sección 1 ni sobre la decisión de la sección 2.

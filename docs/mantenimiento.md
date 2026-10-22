@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Versión del documento | 1.0, 21/10/2026 |
+| Versión del documento | 1.1, 22/10/2026: el PLAN §1.7 ya está aplicado (10.6) y el historial llega a la versión 4.4 del documento maestro y al pull request #57 (10.7). La 1.0 es del 21/10/2026 |
 | Procedimiento base | Control de cambios del documento maestro, sección 2.8, y `docs/Ahorrito-PLAN.md`, secciones 2.4 y 2.6 |
 | Restricción | RES-15: no hay mantenimiento comprometido después de la entrega. Lo que sigue es el proceso aplicado durante el proyecto, que rige hasta la calificación |
 
@@ -92,15 +92,15 @@ compilar antes en las respuestas del 05/10, H.2.
   - PLAN §1.7 (tabla de cambios de alcance).
 - **Bitácora:** `docs/verificacion/cambios-al-documento.md` registra cada cambio que el trabajo
   obliga a hacer en el documento maestro, con texto actual, texto nuevo y evidencia.
-- **Estado: ejercitado.** Falta aplicar las contradicciones del PLAN §1.7 listadas el 20/10/2026.
+- **Estado: ejercitado.** Las contradicciones del PLAN §1.7 (bitácora 9.10, filas 1 a 5) se aplicaron el 22/10/2026, al cerrar la Fase 7.
 
 ## 10.7 Historial de versiones
 
 | Fuente | Evidencia |
 |---|---|
 | Etiquetas anotadas en `main` | `v0.1.0`, `v0.2.0`, `v0.3.0`, `v0.9.0`, `v1.0.0` y `v1.1.0`; `v1.0.0-rc.1` en `dev` (`git tag -n1`) |
-| Documento maestro | "Historial de versiones del documento", de 1.0 a 4.1 |
-| Repositorio | Historial de commits y pull requests (#2 a #44) |
+| Documento maestro | "Historial de versiones del documento", de 1.0 a 4.4 |
+| Repositorio | Historial de commits y pull requests (#2 a #57) |
 | Identificación de versiones | `docs/liberacion.md` 8.2 |
 
 **Estado: ejercitado.**
@@ -116,5 +116,5 @@ compilar antes en las respuestas del 05/10, H.2.
 | 10.3 | Ejercitado | — |
 | 10.4 | Ejercitado con una excepción declarada (#41) | — |
 | 10.5 | Ejercitado | Hacer que `pnpm test:e2e` compile antes, o exigirlo en el procedimiento |
-| 10.6 | Ejercitado | Aplicar el PLAN §1.7 |
+| 10.6 | Ejercitado | — |
 | 10.7 | Ejercitado | — |
