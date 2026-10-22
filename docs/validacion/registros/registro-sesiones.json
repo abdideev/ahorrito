@@ -1,0 +1,212 @@
+{
+  "_instrucciones": "Registro anonimizado de las sesiones de validación, transcrito de las hojas de registro del anexo A (llenadas por STK-01 a partir de la evidencia privada en C:\\evidencia-validacion). Solo E1, E2 y E3: ningún nombre, correo ni video. Horas en 24 h; donde la hoja usaba 12 h con A.M. se convirtió (12:47 A.M. = 00:47). Las notas de transcripción van en _notas.",
+  "fechaReferenciaEsperada": "2026-10-22",
+  "_notas": [
+    "E1 y E2 generaron su plan el 22/10/2026 (00:50 y 00:09). Desde el 22/10 cambia el resultado esperado de P2: se recalculó con FECHA_REFERENCIA=2026-10-22 (P1 y P3 idénticos al 21/10).",
+    "E3: inicio a las 23:56 del 21/10/2026 (confirmado por STK-01 el 22/10/2026); su primer plan se generó a las 00:00 del 22/10 (lista de planes guardados). El resultado esperado de P3 es el mismo el 21 y el 22/10.",
+    "La consulta de tiempos se ejecutó una sola vez, a las 01:36 del 22/10/2026, para los tres: antes del mensaje 3 solo para E1. En E2 y E3 no se usan primer_pago ni ultimo_acceso (protocolo, sección 7).",
+    "Los campos ayuda.hora y ayuda.descripcion decían 'no' en las hojas; sin ayuda no aplican y se dejan en null.",
+    "Revisión de STK-01 del 22/10/2026: las sesiones se fechan con la base de datos. Cuenta creada: E3 21/10/2026 23:57; E1 22/10/2026 00:47:52; E2 22/10/2026 01:01:44 (primer plan 01:06:20). Las horas anotadas de E1 y E3 coinciden (menos de 2 min); las de E2 (00:06 a 00:09) no: unos 55 min antes. anotado conserva lo que escribió cada evaluador (informe de validación 1.2, D-08)."
+  ],
+  "evaluadores": [
+    {
+      "evaluador": "E1",
+      "perfil": "P1",
+      "sustituyeA": null,
+      "consentimiento": true,
+      "nombreEnActa": true,
+      "fechaSesion": "2026-10-22",
+      "dispositivo": {
+        "sistema": "Fedora Linux 44",
+        "navegador": "Firefox 158.0 (64-bit)"
+      },
+      "experienciaPrevia": {
+        "respuestaLiteral": "no",
+        "excluido": false,
+        "motivo": null
+      },
+      "grabacion": {
+        "estado": "completa",
+        "registroVisible": "00:02",
+        "crearCuentaPulsado": "00:17",
+        "deVueltaConSesion": "00:42",
+        "generarPulsado": "02:50",
+        "planVisible": "02:51",
+        "correoEnSpam": false,
+        "inicioSesionManual": false
+      },
+      "baseDeDatos": {
+        "horaEjecucion": "01:36",
+        "ejecutadaAntesDelMensaje3": true,
+        "sCreacionAConfirmacion": 22,
+        "sConfirmacionAPrimerPago": 43,
+        "sPrimerPagoAPrimerPlan": 88,
+        "sCreacionAPrimerPlan": 153,
+        "cuentaCreada": "2026-10-22T00:47:52-06:00"
+      },
+      "anotado": {
+        "horaInicio": "00:47",
+        "horaPlan": "00:50"
+      },
+      "correoNoLlegoEn10Min": false,
+      "ayuda": {
+        "recibida": false,
+        "hora": null,
+        "descripcion": null
+      },
+      "explicacion": "si",
+      "obj05": {
+        "claridad": 4,
+        "accionabilidad": 4
+      },
+      "comentariosResumen": null,
+      "parte0": {
+        "faltaAlgo": "Falta colocar ingresos recurrentes, de fin de semana, de dos o tres dias de trabajo, etc. Faltan pagos semanales.",
+        "algoNoSeEntiende": "Todo es entendible, y necesario"
+      },
+      "parteB": "no aplica",
+      "comparacionEsperado": {
+        "horizonte": "14 semanas, 19 oct 2026 a 20 ene 2027",
+        "semana1Aparta": 839.17,
+        "coincide": true,
+        "fuente": "captura de Planes guardados, plan del 22/10/2026 00:50 (evidencia privada)"
+      }
+    },
+    {
+      "evaluador": "E2",
+      "perfil": "P2",
+      "sustituyeA": null,
+      "consentimiento": true,
+      "nombreEnActa": true,
+      "fechaSesion": "2026-10-22",
+      "dispositivo": {
+        "sistema": "macOS Golden Gate 27.0",
+        "navegador": "Dia 1.53.0 (88760)"
+      },
+      "experienciaPrevia": {
+        "respuestaLiteral": "no, nunca lo había usado ni visto",
+        "excluido": false,
+        "motivo": null
+      },
+      "grabacion": {
+        "estado": "cortada",
+        "registroVisible": null,
+        "crearCuentaPulsado": null,
+        "deVueltaConSesion": "00:02",
+        "generarPulsado": "00:54",
+        "planVisible": "00:55",
+        "correoEnSpam": false,
+        "inicioSesionManual": true
+      },
+      "baseDeDatos": {
+        "horaEjecucion": "01:36",
+        "ejecutadaAntesDelMensaje3": false,
+        "sCreacionAConfirmacion": 17,
+        "sConfirmacionAPrimerPago": 225,
+        "sPrimerPagoAPrimerPlan": 34,
+        "sCreacionAPrimerPlan": 276,
+        "cuentaCreada": "2026-10-22T01:01:44-06:00",
+        "primerPlan": "2026-10-22T01:06:20-06:00"
+      },
+      "anotado": {
+        "horaInicio": "00:06",
+        "horaPlan": "00:09"
+      },
+      "correoNoLlegoEn10Min": false,
+      "ayuda": {
+        "recibida": false,
+        "hora": null,
+        "descripcion": null
+      },
+      "explicacion": "si",
+      "obj05": {
+        "claridad": 5,
+        "accionabilidad": 5
+      },
+      "comentariosResumen": "todo bien",
+      "parte0": {
+        "faltaAlgo": "Aplicación movil",
+        "algoNoSeEntiende": "Todo se entiende"
+      },
+      "parteB": {
+        "pasosCorrectos": "11 de 11",
+        "fallos": "ninguno",
+        "version": "macOS Golden Gate 27.0; navegador Dia 1.53.0, no Safari"
+      },
+      "comparacionEsperado": {
+        "horizonte": "13 semanas, 22 oct 2026 a 16 ene 2027",
+        "semana1Aparta": 3600,
+        "coincide": true,
+        "fuente": "captura del panel (evidencia privada); esperado con referencia 22/10"
+      }
+    },
+    {
+      "evaluador": "E3",
+      "perfil": "P3",
+      "sustituyeA": null,
+      "consentimiento": true,
+      "nombreEnActa": true,
+      "fechaSesion": "2026-10-21",
+      "dispositivo": {
+        "sistema": "iPadOS 18.7.8",
+        "navegador": "Safari 18.7.8"
+      },
+      "experienciaPrevia": {
+        "respuestaLiteral": "No",
+        "excluido": false,
+        "motivo": null
+      },
+      "grabacion": {
+        "estado": "completa",
+        "registroVisible": "00:16",
+        "crearCuentaPulsado": "00:43",
+        "deVueltaConSesion": "01:08",
+        "generarPulsado": "03:57",
+        "planVisible": "03:58",
+        "correoEnSpam": false,
+        "inicioSesionManual": false
+      },
+      "baseDeDatos": {
+        "horaEjecucion": "01:36",
+        "ejecutadaAntesDelMensaje3": false,
+        "sCreacionAConfirmacion": 20,
+        "sConfirmacionAPrimerPago": 1309,
+        "sPrimerPagoAPrimerPlan": -1135,
+        "sCreacionAPrimerPlan": 194,
+        "cuentaCreada": "2026-10-21T23:57-06:00"
+      },
+      "anotado": {
+        "horaInicio": "23:56",
+        "horaPlan": "00:01"
+      },
+      "correoNoLlegoEn10Min": false,
+      "ayuda": {
+        "recibida": false,
+        "hora": null,
+        "descripcion": null
+      },
+      "explicacion": "si",
+      "obj05": {
+        "claridad": 5,
+        "accionabilidad": 5
+      },
+      "comentariosResumen": "En mi caso no tuve ningún inconveniente al usar la aplicación considero que es una herramienta sencilla",
+      "parte0": {
+        "faltaAlgo": "En mi opinión considero que sería necesario que fuera una aplicación móvil para así tener un mayor control en el teléfono también considero que es necesario que se implementen notificaciones o recordatorios",
+        "algoNoSeEntiende": "No entiendo que es un “huevo de pascua”"
+      },
+      "parteB": {
+        "pasosCorrectos": "11 de 11",
+        "fallos": "ninguno",
+        "version": "iPadOS 18.7.8; Safari 18.7.8"
+      },
+      "comparacionEsperado": {
+        "horizonte": "primer plan (00:00): 8 semanas, 18 oct a 11 dic 2026; esperado: 9 semanas, 18 oct a 18 dic",
+        "semana1Aparta": null,
+        "coincide": false,
+        "fuente": "capturas de Planes guardados (evidencia privada)",
+        "observacion": "Errores de captura del evaluador: la renta se capturó con fecha límite 11/11/2026 en lugar de 18/11/2026 (confirmado en el video por STK-01), lo que explica el horizonte de 8 semanas que termina el 11/12; y la meta se capturó como 2,500.00 en lugar de 25,000.00 (sale alcanzable; esperado no alcanzable). No cambia la regla de CA-20, que mide el tiempo."
+      }
+    }
+  ]
+}

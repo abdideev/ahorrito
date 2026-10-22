@@ -186,29 +186,30 @@ ahorrito/
 
 ### 1.7 Estado del proyecto
 
-Actualizado al 5 de octubre de 2026.
+Actualizado al 22 de octubre de 2026, cierre del proyecto.
 
 | Fase | Contenido | Estado | Evidencia |
 |---|---|---|---|
 | 0 | Preparación del entorno | Completada | Ramas `main` y `dev`, etiquetas de incidencias, proyecto compilando |
 | 1 | Motor de cálculo determinista (C-03) | **Completada** | 94 pruebas en verde, cobertura del núcleo 99.2 %, versión `v0.1.0` |
-| 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Completada** | 7 pruebas de integración en verde, CA-10 cumplido con 11 intentos |
+| 2 | Persistencia y autenticación (C-05, C-06, C-07) | **Completada** | 7 pruebas de integración en verde, CA-10 cumplido con 11 intentos en su momento (vigente: 13 de 13, `docs/verificacion/2026-10-03-ca10.md`) |
 | 3 | Integración con la IA (C-02, C-04) | **Completada** | 224 pruebas unitarias en verde, CA-09 cumplido 10 de 10 en el servidor, primera evidencia de CA-11 |
-| 4 | Interfaz de usuario (C-01) | **Completada** | 330 pruebas unitarias y 21 de integración en verde, CA-07, CA-09 y CA-13 verificados en la aplicación, contraste mínimo 7.55:1 |
+| 4 | Interfaz de usuario (C-01) | **Completada** | 330 pruebas unitarias y 19 de integración en verde más 2 omitidas, CA-07, CA-09 y CA-13 verificados en la aplicación. Contraste mínimo vigente, tras el rediseño: 4.79:1 en claro y 5.81:1 en oscuro (`docs/verificacion/2026-10-03-ca12.md`) |
 | 5 | Verificación | **Completada** | Plan e informe de pruebas aprobados; 21 de 26 criterios cumplidos, 3 en parte y 2 pendientes del despliegue o de usuarios; 354 unitarias, 20 de integración y 6 de interfaz en verde |
-| 6 | Despliegue y liberación | **Completada** | `v1.0.0` en `main` (`b072b45`), en producción en https://ahorrito-nine.vercel.app; CA-01, CA-08, CA-21 y CA-25 cumplidos en producción; `docs/liberacion.md` |
-| 7 | Validación y cierre | **Siguiente** | — |
+| 6 | Despliegue y liberación | **Completada** | `v1.0.0` en `main` (`b072b45`) y, desde el 05/10/2026, `v1.1.0` (`4d14004`), en producción en https://ahorrito-nine.vercel.app; CA-01, CA-08, CA-21 y CA-25 cumplidos en producción; `docs/liberacion.md` |
+| 7 | Validación y cierre | **Completada** | Sesiones del 21 y 22/10/2026 sobre `v1.1.0`: OBJ-05 cumple; CA-20 y OBJ-02, 2 de 3 demostrados, con E2 pendiente; acta "aceptado con concesión". Operación, mantenimiento, retiro y evaluación final (94.7 %). `docs/informe-de-validacion.md` |
 
 **Requisitos implementados:** los quince, RF-01 a RF-15 (RF-15 por SC-09). Verificados en la
-Fase 5 con su criterio: RF-01 a RF-15, RNF-03, RNF-04, RNF-06, RNF-08, RNF-10 y RNF-11. En parte:
-RNF-01 (CA-08, solo local), RNF-05 (CA-21 a) y RNF-07 (CA-23, una versión por navegador). Quedan
-para la Fase 6 RNF-01 y RNF-05 en producción y RNF-09 (CA-25), y para la Fase 7 RNF-02 (CA-20).
+Fase 5 con su criterio: RF-01 a RF-15, RNF-03, RNF-04, RNF-06, RNF-08, RNF-10 y RNF-11. En la
+Fase 6, en producción: RNF-01 (CA-08), RNF-05 (CA-21) y RNF-09 (CA-25). En parte: RNF-07 (CA-23,
+una versión por navegador; en la validación se añadió Safari en iPadOS, sin Safari en macOS).
+RNF-02 (CA-20): 2 de 3 demostrados en la Fase 7, aceptado con concesión del cliente.
 
 **Cambios de alcance aprobados:**
 
 | ID | Incidencia | Cambio | Estado |
 |---|---|---|---|
-| SC-01 | — | Extiende el horizonte hasta la fecha objetivo de la meta, con tope de seis meses | Implementado |
+| SC-01 | #1 | Extiende el horizonte hasta la fecha objetivo de la meta, con tope de seis meses | Implementado |
 | SC-02 | #8 | Huevo de Pascua que revela los créditos del proyecto (RF-14) | Implementado |
 | SC-03 | #10 | Ajuste del modelo de datos para almacenar el plan completo | Implementado |
 | SC-04 | #13 | El repositorio de planes no recibe el identificador de usuario | Implementado |
@@ -587,20 +588,36 @@ etiqueta `v1.0.0` y acta de liberación firmada.
 unos 4 minutos con 37 s de compilación (CA-25). SMTP propio con una cuenta de Gmail dedicada y
 plantilla en español, sin dominio propio: el registro real de un correo ajeno al proyecto confirmó
 la cuenta (CA-01), lo que resuelve RES-16. Redirección 308 con HSTS y 0 peticiones `http://`
-(CA-21 b). 20 de 20 planes en producción con mediana de 360 ms (CA-08). Juego final de 28
+(CA-21 b). 20 de 20 planes en producción con mediana de 358.5 ms (CA-08; corregida el 21/10/2026, #53). Juego final de 28
 capturas desde `v1.0.0-rc.1`. Se corrigió el defecto #37. `v1.0.0` se etiquetó sobre `b072b45`, y
 la prueba de humo contra producción pasó. El procedimiento, la configuración, la reversión y el
 acta están en `docs/liberacion.md`.
 
 ---
 
-### Fase 7 — Validación y cierre
+### Fase 7 — Validación y cierre · COMPLETADA
 
 **Semanas 13 y 14.**
 
 Validación con los tres usuarios representativos usando perfiles ficticios contrastantes,
 medición de OBJ-02 y OBJ-05, informe de validación, documentación de operación, mantenimiento
 y retiro, y evaluación final contra la lista de verificación.
+
+**Pull requests:** #45 y #46 (protocolo 1.0 a 1.2), #47 (secciones 6 a 8 del documento maestro),
+#48 (operación, mantenimiento y retiro), #49 (scripts de validación), #55 (mediana de CA-08,
+defecto #53), #56 (respaldo y evaluación preliminar), #57 (informe y acta) y el cierre.
+
+**Resultado obtenido.** Protocolo aprobado el 20/10/2026 (1.0) y corregido antes de cualquier
+sesión (1.1 y 1.2, 21/10/2026). Sesiones autoadministradas sobre `v1.1.0` congelada (`4d14004`),
+del 21/10/2026 a las 23:57 al 22/10/2026 a las 01:06 (horas de la base de datos). **OBJ-05 cumple** (4 y 4, 5 y 5, 5 y 5).
+**CA-20 y OBJ-02: 2 de 3 demostrados** (E1, 2 min 49 s; E3, 3 min 42 s); E2 queda pendiente
+porque su grabación está cortada (cota inferior de 4 min 36 s en la base de datos). STK-01 cerró
+con **"aceptado con concesión"**, declarado como desviación D-07. La Parte B pasó 11 de 11 en
+Safari sobre iPadOS; Safari en macOS quedó sin validar (E2 usó Dia). La Parte 0 dejó cinco
+observaciones para el mantenimiento. Primer respaldo de datos el 21/10/2026. Se registraron de
+forma retroactiva los defectos #50 a #54 y se corrigió la mediana de CA-08 (303 y 358.5 ms).
+Evaluación final: **178 de 188 puntos (94.7 %)**. La versión final del sistema es `v1.1.0`; esta
+fase solo cambió documentación.
 
 ---
 

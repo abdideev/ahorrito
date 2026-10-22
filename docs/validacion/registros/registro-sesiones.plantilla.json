@@ -1,0 +1,174 @@
+{
+  "_instrucciones": "Copia este archivo como registro-sesiones.json y llénalo desde la evidencia privada (C:\\evidencia-validacion). Solo E1, E2 y E3: ningún nombre, correo ni video. Lo que no tenga evidencia queda en null o \"pendiente\". grabacion.estado: \"completa\", \"cortada\", \"no entregada\" o \"pendiente\"; marcas en mm:ss del video. Un sustituto se agrega como otro objeto con \"sustituyeA\": \"E_\". Protocolo, sección 7 y anexo A.",
+  "fechaReferenciaEsperada": "2026-10-21",
+  "evaluadores": [
+    {
+      "evaluador": "E1",
+      "perfil": "P1",
+      "sustituyeA": null,
+      "consentimiento": null,
+      "nombreEnActa": null,
+      "fechaSesion": null,
+      "dispositivo": {
+        "sistema": null,
+        "navegador": null
+      },
+      "experienciaPrevia": {
+        "respuestaLiteral": null,
+        "excluido": null,
+        "motivo": null
+      },
+      "grabacion": {
+        "estado": "pendiente",
+        "registroVisible": null,
+        "crearCuentaPulsado": null,
+        "deVueltaConSesion": null,
+        "generarPulsado": null,
+        "planVisible": null,
+        "correoEnSpam": null,
+        "inicioSesionManual": null
+      },
+      "baseDeDatos": {
+        "horaEjecucion": null,
+        "ejecutadaAntesDelMensaje3": null,
+        "sCreacionAConfirmacion": null,
+        "sConfirmacionAPrimerPago": null,
+        "sPrimerPagoAPrimerPlan": null,
+        "sCreacionAPrimerPlan": null
+      },
+      "anotado": {
+        "horaInicio": null,
+        "horaPlan": null
+      },
+      "correoNoLlegoEn10Min": false,
+      "ayuda": {
+        "recibida": null,
+        "hora": null,
+        "descripcion": null
+      },
+      "explicacion": null,
+      "obj05": {
+        "claridad": null,
+        "accionabilidad": null
+      },
+      "comentariosResumen": null,
+      "parte0": {
+        "faltaAlgo": null,
+        "algoNoSeEntiende": null
+      },
+      "parteB": "no aplica"
+    },
+    {
+      "evaluador": "E2",
+      "perfil": "P2",
+      "sustituyeA": null,
+      "consentimiento": null,
+      "nombreEnActa": null,
+      "fechaSesion": null,
+      "dispositivo": {
+        "sistema": null,
+        "navegador": null
+      },
+      "experienciaPrevia": {
+        "respuestaLiteral": null,
+        "excluido": null,
+        "motivo": null
+      },
+      "grabacion": {
+        "estado": "pendiente",
+        "registroVisible": null,
+        "crearCuentaPulsado": null,
+        "deVueltaConSesion": null,
+        "generarPulsado": null,
+        "planVisible": null,
+        "correoEnSpam": null,
+        "inicioSesionManual": null
+      },
+      "baseDeDatos": {
+        "horaEjecucion": null,
+        "ejecutadaAntesDelMensaje3": null,
+        "sCreacionAConfirmacion": null,
+        "sConfirmacionAPrimerPago": null,
+        "sPrimerPagoAPrimerPlan": null,
+        "sCreacionAPrimerPlan": null
+      },
+      "anotado": {
+        "horaInicio": null,
+        "horaPlan": null
+      },
+      "correoNoLlegoEn10Min": false,
+      "ayuda": {
+        "recibida": null,
+        "hora": null,
+        "descripcion": null
+      },
+      "explicacion": null,
+      "obj05": {
+        "claridad": null,
+        "accionabilidad": null
+      },
+      "comentariosResumen": null,
+      "parte0": {
+        "faltaAlgo": null,
+        "algoNoSeEntiende": null
+      },
+      "parteB": null
+    },
+    {
+      "evaluador": "E3",
+      "perfil": "P3",
+      "sustituyeA": null,
+      "consentimiento": null,
+      "nombreEnActa": null,
+      "fechaSesion": null,
+      "dispositivo": {
+        "sistema": null,
+        "navegador": null
+      },
+      "experienciaPrevia": {
+        "respuestaLiteral": null,
+        "excluido": null,
+        "motivo": null
+      },
+      "grabacion": {
+        "estado": "pendiente",
+        "registroVisible": null,
+        "crearCuentaPulsado": null,
+        "deVueltaConSesion": null,
+        "generarPulsado": null,
+        "planVisible": null,
+        "correoEnSpam": null,
+        "inicioSesionManual": null
+      },
+      "baseDeDatos": {
+        "horaEjecucion": null,
+        "ejecutadaAntesDelMensaje3": null,
+        "sCreacionAConfirmacion": null,
+        "sConfirmacionAPrimerPago": null,
+        "sPrimerPagoAPrimerPlan": null,
+        "sCreacionAPrimerPlan": null
+      },
+      "anotado": {
+        "horaInicio": null,
+        "horaPlan": null
+      },
+      "correoNoLlegoEn10Min": false,
+      "ayuda": {
+        "recibida": null,
+        "hora": null,
+        "descripcion": null
+      },
+      "explicacion": null,
+      "obj05": {
+        "claridad": null,
+        "accionabilidad": null
+      },
+      "comentariosResumen": null,
+      "parte0": {
+        "faltaAlgo": null,
+        "algoNoSeEntiende": null
+      },
+      "parteB": null
+    }
+  ]
+}

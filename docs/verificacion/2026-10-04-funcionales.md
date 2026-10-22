@@ -126,7 +126,7 @@ explicación. Resultado completo en `2026-10-04-ca08-local.json`.
 | | Valor |
 |---|---|
 | Dentro de 30 s | **20 de 20** |
-| Plan: mínimo / mediana / máximo | 245 / 310 / 804 ms |
+| Plan: mínimo / mediana / máximo | 245 / 310 / 804 ms. **Corrección del 21/10/2026 (#53):** la mediana real es 303 ms; el script tomaba el 11.º valor de 20 |
 | Explicación: rango | 2,039 a 2,963 ms, las 20 recibidas |
 | HTTP | 200 en las 20 |
 | Planes de prueba borrados al terminar | 20 de 20 |
