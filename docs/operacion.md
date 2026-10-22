@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Versión del documento | 1.0, 21/10/2026 |
+| Versión del documento | 1.1, 22/10/2026: la pausa del 28/09 ya está registrada como #54 (9.1, 9.4 y resumen) y la recuperación de datos ya tiene respaldo que restaurar (9.6). La 1.0 es del 21/10/2026 |
 | Sistema | Ahorrito v1.1.0 (`4d14004`), https://ahorrito-nine.vercel.app |
 | Periodo de operación | Desde la liberación de `v1.0.0` (04/10/2026) hasta la calificación del proyecto. Después, plan de retiro (`docs/retiro.md`) |
 | Restricción | RES-15: el proyecto no contempla operación posterior a la entrega académica. Este documento define la operación del periodo de validación y calificación |
@@ -48,8 +48,8 @@ https://supabase.com/pricing y https://supabase.com/docs/guides/platform/upgradi
 | 3 | Esperar a que el proyecto quede activo y ejecutar la prueba de humo |
 | 4 | Registrar el incidente (9.4) |
 
-**Estado: ejercitado una vez**, el 28/09/2026, sin pérdida de datos. Hay incidencia retroactiva
-pendiente de abrir (texto `ret-5`).
+**Estado: ejercitado una vez**, el 28/09/2026, sin pérdida de datos. Registrado de forma
+retroactiva como la incidencia #54 (21/10/2026).
 
 ### Si se agota la cuota de Gemini (respuesta 429)
 
@@ -118,9 +118,9 @@ si se revisa casi enseguida. No hay alertas automáticas.
   - acción de recuperación;
   - prueba de humo posterior;
   - causa.
-- **Estado: ejercitado en parte.** Los defectos del producto tienen incidencias (#3, #27, #30, #31,
-  #34 y #37). El único incidente de operación, la pausa del 28/09, se registra de forma retroactiva
-  (`ret-5`, pendiente de abrir).
+- **Estado: ejercitado.** Los defectos del producto tienen incidencias (#3, #27, #30, #31, #34,
+  #37 y, de forma retroactiva, #50 a #53). El único incidente de operación, la pausa del 28/09, se
+  registró de forma retroactiva como #54 (21/10/2026), con la etiqueta `defecto`.
 
 ## 9.5 Mecanismos de respaldo
 
@@ -151,7 +151,7 @@ si se revisa casi enseguida. No hay alertas automáticas.
 | Proyecto pausado | 9.1, "Si Supabase se pausa" | Ejercitado (28/09) |
 | Versión defectuosa en producción | `docs/liberacion.md` 8.6 | Documentado pero no ejercitado |
 | Clave expuesta o revocada | Revocar y generar otra en el proveedor; actualizar Vercel; redesplegar (RSG-05) | Documentado pero no ejercitado |
-| Pérdida de datos | Restaurar el esquema con `supabase db push` desde `supabase/migrations/` y los datos desde el respaldo de 9.5 | **Documentado pero no ejercitado; hoy no hay respaldo que restaurar** |
+| Pérdida de datos | Restaurar el esquema con `supabase db push` desde `supabase/migrations/` y los datos desde el respaldo de 9.5 | **Documentado pero no ejercitado.** Desde el 21/10/2026 existe un respaldo que restaurar (`docs/verificacion/2026-10-21-respaldo.md`); la restauración no se ha probado |
 
 **Prueba de restauración propuesta:**
 
@@ -182,7 +182,7 @@ servicio.
 | 9.1 | Este manual; despliegues de `v1.0.0` y `v1.1.0`; pausa del 28/09 resuelta | Ejecutar la rutina de actividad con su registro | Ejercitado en parte |
 | 9.2 | 9.2 y RACI 1.7.1 | — | Documentado |
 | 9.3 | Registros de Vercel usados el 04/10; pruebas de humo | Alertas automáticas (fuera de alcance) | Ejercitado en parte |
-| 9.4 | Issues de defectos | Abrir `ret-5` | Ejercitado en parte |
+| 9.4 | Issues de defectos; pausa del 28/09 en #54 | — | Ejercitado |
 | 9.5 | Esquema versionado; respaldo de datos del 21/10/2026 (`docs/verificacion/2026-10-21-respaldo.md`) | Repetirlo después de las sesiones y antes del retiro | Ejercitado |
 | 9.6 | Restauración del 28/09 | Prueba de restauración de datos y de reversión | Documentado pero no ejercitado en parte |
 | 9.7 | Justificación | — | N/A |
