@@ -5,7 +5,8 @@
     "E1 y E2 generaron su plan el 22/10/2026 (00:50 y 00:09). Desde el 22/10 cambia el resultado esperado de P2: se recalculó con FECHA_REFERENCIA=2026-10-22 (P1 y P3 idénticos al 21/10).",
     "E3: inicio a las 23:56 del 21/10/2026 (confirmado por STK-01 el 22/10/2026); su primer plan se generó a las 00:00 del 22/10 (lista de planes guardados). El resultado esperado de P3 es el mismo el 21 y el 22/10.",
     "La consulta de tiempos se ejecutó una sola vez, a las 01:36 del 22/10/2026, para los tres: antes del mensaje 3 solo para E1. En E2 y E3 no se usan primer_pago ni ultimo_acceso (protocolo, sección 7).",
-    "Los campos ayuda.hora y ayuda.descripcion decían 'no' en las hojas; sin ayuda no aplican y se dejan en null."
+    "Los campos ayuda.hora y ayuda.descripcion decían 'no' en las hojas; sin ayuda no aplican y se dejan en null.",
+    "Revisión de STK-01 del 22/10/2026: las sesiones se fechan con la base de datos. Cuenta creada: E3 21/10/2026 23:57; E1 22/10/2026 00:47:52; E2 22/10/2026 01:01:44 (primer plan 01:06:20). Las horas anotadas de E1 y E3 coinciden (menos de 2 min); las de E2 (00:06 a 00:09) no: unos 55 min antes. anotado conserva lo que escribió cada evaluador (informe de validación 1.2, D-08)."
   ],
   "evaluadores": [
     {
@@ -40,7 +41,8 @@
         "sCreacionAConfirmacion": 22,
         "sConfirmacionAPrimerPago": 43,
         "sPrimerPagoAPrimerPlan": 88,
-        "sCreacionAPrimerPlan": 153
+        "sCreacionAPrimerPlan": 153,
+        "cuentaCreada": "2026-10-22T00:47:52-06:00"
       },
       "anotado": {
         "horaInicio": "00:47",
@@ -102,7 +104,9 @@
         "sCreacionAConfirmacion": 17,
         "sConfirmacionAPrimerPago": 225,
         "sPrimerPagoAPrimerPlan": 34,
-        "sCreacionAPrimerPlan": 276
+        "sCreacionAPrimerPlan": 276,
+        "cuentaCreada": "2026-10-22T01:01:44-06:00",
+        "primerPlan": "2026-10-22T01:06:20-06:00"
       },
       "anotado": {
         "horaInicio": "00:06",
@@ -168,7 +172,8 @@
         "sCreacionAConfirmacion": 20,
         "sConfirmacionAPrimerPago": 1309,
         "sPrimerPagoAPrimerPlan": -1135,
-        "sCreacionAPrimerPlan": 194
+        "sCreacionAPrimerPlan": 194,
+        "cuentaCreada": "2026-10-21T23:57-06:00"
       },
       "anotado": {
         "horaInicio": "23:56",

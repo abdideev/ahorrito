@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Versión del informe | 1.0, 22/10/2026 |
+| Versión del informe | **1.2**, 22/10/2026, por la revisión de STK-01 del mismo día: las sesiones se fechan con la base de datos y no con las horas anotadas, se corrigen el orden y la separación de las sesiones (sección 2 y D-06) y se agrega D-08 (horas anotadas de E2). La 1.1 registró la consulta de defectos abiertos del 22/10 (0; sección 8); la 1.0 es la del pull request #57 |
 | Proceso de la norma | Validación (lista de verificación, puntos 7.1 a 7.6) y revisión de requisitos con los interesados (2.4, retroactiva) |
 | Versión validada | **v1.1.0**, commit `4d14004`, congelada durante toda la fase (`src/` sin cambios desde `4d14004`: `git diff --quiet 4d14004 -- src`, comprobado el 22/10/2026 a las 02:20) |
 | URL | https://ahorrito-nine.vercel.app |
@@ -32,14 +32,22 @@ desviación (sección 3, D-07).
 
 ## 2. Sesiones realizadas
 
-Sesiones autoadministradas, sin moderador. Horas del centro de México; la de inicio es la anotada
-por el evaluador.
+Sesiones autoadministradas, sin moderador. Horas del centro de México. **Las sesiones se fechan con
+la base de datos** (creación de la cuenta y primer plan), que no depende del reloj ni de la memoria
+del evaluador. Las horas anotadas se conservan en el registro como respaldo: las de E1 y E3
+coinciden con la base de datos (menos de 2 min de diferencia) y las de E2 no (D-08).
 
-| Evaluador | Perfil | Fecha y hora de inicio | Primer plan generado | Dispositivo y navegador | Consentimiento | Nombre en acta |
-|---|---|---|---|---|---|---|
-| E3 | P3 | 21/10/2026, 23:56 | 22/10/2026, 00:00 (lista de planes guardados) | iPad, iPadOS 18.7.8, Safari 18.7.8 | Sí | Sí |
-| E2 | P2 | 22/10/2026, 00:06 | 22/10/2026 (hora anotada 00:09) | Mac, macOS Golden Gate 27.0, **Dia 1.53.0** | Sí | Sí |
-| E1 | P1 | 22/10/2026, 00:47 | 22/10/2026, 00:50 (lista de planes guardados) | **Fedora Linux 44**, Firefox 158.0 | Sí | Sí |
+| Orden | Evaluador | Perfil | Cuenta creada (base de datos) | Primer plan (base de datos) | Hora anotada por el evaluador | Dispositivo y navegador | Consentimiento | Nombre en acta |
+|---|---|---|---|---|---|---|---|---|
+| 1 | E3 | P3 | 21/10/2026, 23:57 | 22/10/2026, 00:00 (+194 s) | 23:56 a 00:01 | iPad, iPadOS 18.7.8, Safari 18.7.8 | Sí | Sí |
+| 2 | E1 | P1 | 22/10/2026, 00:47:52 | 22/10/2026, 00:50 (+153 s) | 00:47 a 00:50 | **Fedora Linux 44**, Firefox 158.0 | Sí | Sí |
+| 3 | E2 | P2 | 22/10/2026, 01:01:44 | 22/10/2026, 01:06:20 (+276 s) | 00:06 a 00:09 (D-08) | Mac, macOS Golden Gate 27.0, **Dia 1.53.0** | Sí | Sí |
+
+- **Fuente de las horas:** revisión de STK-01 del 22/10/2026 sobre el resultado de la consulta de
+  tiempos (evidencia privada). La hora de E1 se obtiene restando a la de E2 los 13 min 52 s que
+  separan las dos cuentas. Los primeros planes de E3 y de E1 se calculan con la cuenta más el
+  intervalo de la base de datos. Las horas de los primeros planes de E3 y de E1 coinciden con las
+  de la lista de planes guardados (00:00 y 00:50).
 
 - **Experiencia previa:** los tres respondieron que no ("Antes de hoy, ¿habías usado Ahorrito, o
   visto su código o sus documentos?"). Ninguno quedó excluido.
@@ -59,8 +67,9 @@ por el evaluador.
 | D-03 | E3 usó **iPad (iPadOS)**, no iPhone | Sección 3 | Safari sobre WebKit en tableta, no en teléfono. La pantalla del iPad es mayor que la del iPhone: el tiempo de E3 puede ser menor que el que tendría en un iPhone |
 | D-04 | **Grabación de E2 cortada:** empieza cuando E2 ya está en su panel con sesión; no se ven la pantalla de registro ni "Crear mi cuenta". Causa declarada: problemas con la captura de pantalla | Secciones 7 y 8 | **E2 queda pendiente** (sección 4.2) |
 | D-05 | La consulta de tiempos se ejecutó **después de la Parte B** para E2 y E3 | Sección 7 | Por regla, no se usan sus columnas de primer pago ni de último acceso. En E3, el primer pago vigente es posterior al primer plan (−1135 s), porque la Parte B borra y vuelve a crear pagos. El intervalo creación → primer plan no se altera: coincide con la grabación de E3 (diferencia de 1 s) |
-| D-06 | Las sesiones ocurrieron del 21/10 a las 23:56 al 22/10 a las 00:50, en el orden E3, E2 y E1, y E2 empezó **10 minutos** después de E3, no 15 | Sección 13 | Ninguno observado: no hubo 429. El resultado esperado se recalculó con referencia 22/10/2026 (`docs/validacion/2026-10-22-perfiles-esperados.txt`): cambia P2 y P1 y P3 son idénticos al 21/10 |
+| D-06 | Las sesiones ocurrieron del 21/10/2026 a las 23:57 al 22/10/2026 a las 01:06, en el orden **E3, E1 y E2** (no E1, E2 y E3), y entre las cuentas de E1 y E2 hubo **13 min 52 s**, menos de los 15 min propuestos. Entre E3 y E1 hubo unos 51 min | Sección 13 | Ninguno observado: no hubo 429. Dos sesiones pasaron al 22/10: el resultado esperado se recalculó con referencia 22/10/2026 (`docs/validacion/2026-10-22-perfiles-esperados.txt`); cambia P2, y P1 y P3 son idénticos al 21/10 |
 | D-07 | **Cierre con concesión del cliente**, decisión que no está en la tabla de la sección 14 y que se tomó después de conocer los resultados | Sección 14 | El acta se firma sin evidencia completa de CA-20. Se declara aquí y en el acta; no cambia ningún resultado |
+| D-08 | **Las horas anotadas por E2 no coinciden con la base de datos:** anotó de 00:06 a 00:09, y su cuenta se creó a las 01:01:44 y su primer plan a las 01:06:20, unos 55 min después. No coinciden ni la hora absoluta ni la duración (sección 4.2) | Secciones 7 (fuente 3) y anexo A | Ninguno sobre el resultado: las horas anotadas son respaldo y no deciden. Resta confianza a lo que E2 anotó de memoria y refuerza que su tiempo no se complete con esa fuente. Las sesiones se fechan con la base de datos (sección 2) |
 
 ## 4. CA-20 y OBJ-02: del registro al primer plan
 
@@ -102,9 +111,15 @@ anotadas ni estimaciones. La cota de E2 es de 276 s, menor de 480 s: **pendiente
 - **Lectura:** E2 habría superado los 8 minutos solo si el formulario de registro le hubiera tomado
   más de 3 min 24 s, de 7 a 13 veces lo que tomó a E1 y a E3. **No está demostrado**: es una
   inferencia, no una medición.
-- **Horas anotadas de E2** (00:06 a 00:09): son incompatibles con la base de datos. La anotación da
-  como máximo 3 min 59 s, y la base de datos registra 4 min 36 s solo desde la creación de la
-  cuenta. Se registra como observación; las horas anotadas son respaldo y no deciden.
+- **Horas anotadas de E2** (00:06 a 00:09): son incompatibles con la base de datos en dos sentidos
+  (D-08):
+  - **Hora absoluta:** la cuenta se creó a las 01:01:44 y el primer plan se generó a las 01:06:20,
+    unos 55 min después de lo anotado.
+  - **Duración:** la anotación da como máximo 3 min 59 s, y la base de datos registra 4 min 36 s solo
+    desde la creación de la cuenta.
+
+  Se registra como observación; las horas anotadas son respaldo y no deciden. Por eso tampoco se
+  usan para estimar el tramo no grabado.
 
 ### 4.3 Comparación con el resultado esperado
 
@@ -178,7 +193,7 @@ anotadas ni estimaciones. La cota de E2 es de 276 s, menor de 480 s: **pendiente
 |---|---|
 | CA-20: 3 de 3 evaluadores válidos en 8 minutos o menos, sin ayuda | **No demostrada:** 2 de 3; E2 pendiente |
 | OBJ-05: los tres con 4 o más en las dos preguntas | Cumplida |
-| Sin defectos bloqueantes ni mayores abiertos | Cumplida: 0 abiertos según la API de GitHub el 21/10/2026 (`docs/evaluacion-final.md`); las sesiones no reportaron defectos. No se volvió a consultar el 22/10 (`gh` no está disponible en este equipo) |
+| Sin defectos bloqueantes ni mayores abiertos | Cumplida: 0 incidencias abiertas (API pública de GitHub, `GET /repos/abdideev/ahorrito/issues?state=open`, 22/10/2026); las sesiones no reportaron defectos |
 
 **Según el protocolo,** la decisión sería **"decisión aplazada"** hasta completar la evidencia con un
 sustituto, o "no aceptado" si se declara CA-20 no cumplido.
