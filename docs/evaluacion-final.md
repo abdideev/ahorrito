@@ -2,17 +2,19 @@
 
 | Campo | Valor |
 |---|---|
-| Versión | 1.0, **preliminar**, 21/10/2026: antes de las sesiones de validación |
+| Versión | 1.2, **final**, 22/10/2026, por la revisión de STK-01 del mismo día: 7.6 sube a 2 (acta firmada el 22/10/2026) y 11.5 pasa de N/A a 1 (el retiro aplica y no ha ocurrido). La 1.1, del 22/10/2026, recalculó la sección 7 después de las sesiones; la 1.0, preliminar, es del 21/10/2026 |
 | Escala | 2 = cumple; 1 = cumple parcialmente; 0 = no cumple; N/A = no aplica, con justificación |
 | Fórmula | Porcentaje = puntos obtenidos / puntos aplicables × 100 (lista de verificación, sección 13) |
 | Interpretación (de la lista; no son umbrales de la norma) | 90-100 % alto; 75-89 % aceptable con oportunidades de mejora; 50-74 % parcial; menos de 50 % bajo |
 | Cálculo | Generado con `node docs/verificacion/scripts/evaluacion-final.mjs docs/evaluacion-final.md`; los totales no se escriben a mano |
 
-## 1. Resultado preliminar
+## 1. Resultado final
 
-- **169 de 186 puntos aplicables: 90.9 %** (alto nivel de cumplimiento).
-- 95 puntos: 80 con 2, 9 con 1, 4 con 0 y 2 N/A.
-- **8 puntos dependen de algo aún no ejecutado** (columna "Depende de"). Los de la sección 7 cuentan hoy con 0 o 1 porque las sesiones no han terminado: es un resultado **preliminar**, que se recalcula al cerrar la validación sin cambiar los demás puntajes.
+- **178 de 188 puntos aplicables: 94.7 %** (alto nivel de cumplimiento).
+- 95 puntos: 84 con 2, 10 con 1, 0 con 0 y 1 N/A.
+- **2 puntos dependen de algo aún no ejecutado** (columna "Depende de"). Respecto de la versión preliminar (21/10/2026) cambian los puntos de la sección 7, recalculados con el informe de validación, y el 11.5 (versión 1.2); ningún otro puntaje se modificó.
+
+**Nota sobre el criterio de las actas.** El 7.6 vale 2 porque el acta de aceptación se firmó. Con ese mismo criterio, 1.5 y 2.5 valdrían 1 y no 2: sus actas (alcance del 16/08 y aprobación de los requisitos) están en el documento maestro con las líneas de firma sin rubricar. Con ese ajuste, el resultado sería **176 de 188 (93.6 %)**. Se conservan en 2 porque la aprobación consta en el propio documento y en su historial de versiones; la diferencia se declara para que el criterio sea explícito.
 
 | Sección | Puntos | Aplicables | Obtenidos | Porcentaje |
 |---|---|---|---|---|
@@ -22,11 +24,11 @@
 | 4. Implementación / construcción | 9 | 9 | 17 de 18 | 94.4 % |
 | 5. Integración | 5 | 5 | 10 de 10 | 100.0 % |
 | 6. Verificación | 10 | 10 | 20 de 20 | 100.0 % |
-| 7. Validación | 6 | 6 | 3 de 12 | 25.0 % |
+| 7. Validación | 6 | 6 | 11 de 12 | 91.7 % |
 | 8. Liberación e implementación | 7 | 7 | 13 de 14 | 92.9 % |
 | 9. Operación | 7 | 6 | 10 de 12 | 83.3 % |
 | 10. Mantenimiento | 7 | 7 | 14 de 14 | 100.0 % |
-| 11. Retiro o disposición | 5 | 4 | 8 de 8 | 100.0 % |
+| 11. Retiro o disposición | 5 | 5 | 9 de 10 | 90.0 % |
 | 12. Gestión transversal | 12 | 12 | 21 de 24 | 87.5 % |
 
 ## 2. Matriz punto por punto
@@ -51,7 +53,7 @@
 | 2.1 | ¿Requisitos del usuario? | documento maestro 2.1 (RU-01 a RU-08) | **2** | — |
 | 2.2 | ¿Requisitos funcionales? | documento maestro 2.2 (RF-01 a RF-15) | **2** | — |
 | 2.3 | ¿Requisitos no funcionales? | documento maestro 2.3 (RNF-01 a RNF-11, ISO/IEC 25010) | **2** | — |
-| 2.4 | ¿Revisados con los interesados? | documento maestro 2.4: solo revisión interna; la externa con STK-04 no se realizó y el docente no revisó (RSG-03 materializado). La Parte 0 de la validación es una revisión retroactiva | **1** | Parte 0 de las sesiones (sube la evidencia, no el puntaje: sigue siendo retroactiva) |
+| 2.4 | ¿Revisados con los interesados? | documento maestro 2.4: solo revisión interna; la externa con STK-04 no se realizó y el docente no revisó (RSG-03 materializado). La Parte 0 de la validación (21 y 22/10/2026) fue una revisión retroactiva con cinco observaciones (docs/informe-de-validacion.md, sección 7): sube la evidencia, no el puntaje | **1** | — |
 | 2.5 | ¿Requisitos aprobados? | documento maestro 2.5 (aprobación del 16/08 como línea base). Firmas sin rubricar en el .docx | **2** | — |
 | 2.6 | ¿Identificador único? | documento maestro 2.6 | **2** | — |
 | 2.7 | ¿Trazables hasta la implementación? | documento maestro 2.7 (matriz completa con implementación y caso de prueba; 4.1 del .docx) | **2** | — |
@@ -80,7 +82,7 @@
 | 4.1 | ¿El código implementa los requisitos? | documento maestro 4.1; src/; 356 pruebas unitarias | **2** | — |
 | 4.2 | ¿Control de versiones? | Repositorio público en GitHub; main y dev protegidas (API, 05/10) | **2** | — |
 | 4.3 | ¿Se controlan las versiones? | Etiquetas v0.1.0 a v1.1.0 (git tag -n1) | **2** | — |
-| 4.4 | ¿Revisiones de código? | Todo entró por pull request (34), pero solo 9 de 34 tienen comentario de revisión en línea (#35, #38, #39, #45 a #49 y #55; API, 21/10) y la mediana de creación a fusión es de 0.7 min. Revisor y autor son la misma persona | **1** | — |
+| 4.4 | ¿Revisiones de código? | Todo entró por pull request (36), pero solo 11 de 36 tienen comentario de revisión en línea (#35, #38, #39, #45 a #49 y #55 a #57; API, 22/10) y la mediana de creación a fusión es de 0.7 min. Revisor y autor son la misma persona | **1** | — |
 | 4.5 | ¿Estándares de programación? | documento maestro 4.5; pnpm lint sin errores; TypeScript estricto; regla que aísla src/core | **2** | — |
 | 4.6 | ¿Defectos registrados y controlados? | Issues con etiquetas: 11 defectos registrados (#3, #27, #30, #31, #34, #37 y, de forma retroactiva el 21/10/2026, #50 a #54), todos cerrados; #53 se corrigió en el PR #55 | **2** | — |
 | 4.7 | ¿Se controlan los cambios al código? | Commits con convención y Refs #n; pull requests. Excepción declarada: #41 | **2** | — |
@@ -117,11 +119,11 @@
 | No. | Punto | Evidencia | Puntaje | Depende de |
 |---|---|---|---|---|
 | 7.1 | ¿Criterios de aceptación definidos? | documento maestro 2.10 y 7.1; protocolo de validación 1.2 | **2** | — |
-| 7.2 | ¿Evaluado en el entorno previsto? | Producción verificada por el desarrollador (CA-01, CA-08, CA-21 b, CA-25); falta la evaluación por usuarios | **1** | sesiones con E1 a E3 |
-| 7.3 | ¿Participaron los usuarios? | Protocolo e instrucciones aprobados (#45, #46); sesiones pendientes | **0** | sesiones con E1 a E3 |
-| 7.4 | ¿Se comprobaron las necesidades? | Pendiente: CA-20, OBJ-02 y OBJ-05 | **0** | sesiones y procesamiento |
-| 7.5 | ¿Resultados de validación documentados? | Scripts listos; informe pendiente | **0** | docs/informe-de-validacion.md |
-| 7.6 | ¿El cliente aprobó el sistema? | Acta de aceptación pendiente | **0** | acta firmada por STK-01 |
+| 7.2 | ¿Evaluado en el entorno previsto? | Producción verificada por el desarrollador (CA-01, CA-08, CA-21 b, CA-25) y evaluada por E1 a E3 en producción sobre v1.1.0 (docs/informe-de-validacion.md, sección 2) | **2** | — |
+| 7.3 | ¿Participaron los usuarios? | Tres evaluadores sin experiencia previa, el 21 y el 22/10/2026, con el protocolo 1.2 aprobado antes. Dispositivos distintos de los previstos (desviaciones D-01 a D-03 del informe) | **2** | — |
+| 7.4 | ¿Se comprobaron las necesidades? | OBJ-05 cumple (4 y 4, 5 y 5, 5 y 5). CA-20 y OBJ-02: 2 de 3 demostrados (2 min 49 s y 3 min 42 s); E2 pendiente por grabación cortada, cerrado con concesión del cliente | **1** | sustituto para E2 con grabación completa |
+| 7.5 | ¿Resultados de validación documentados? | docs/informe-de-validacion.md (resultados, desviaciones, Parte 0 y Parte B) y registro anonimizado procesado por script (#57) | **2** | — |
+| 7.6 | ¿El cliente aprobó el sistema? | Acta de aceptación redactada con la decisión "aceptado con concesión" (docs/validacion/acta-de-aceptacion.md); firmada por STK-01 el 22/10/2026 (copia firmada, con los nombres de los evaluadores, fuera del repositorio) | **2** | — |
 
 ### 8. Liberación e implementación
 
@@ -167,7 +169,7 @@
 | 11.2 | ¿Sistemas o usuarios afectados? | docs/retiro.md 11.2 | **2** | — |
 | 11.3 | ¿Qué ocurre con los datos? | docs/retiro.md 11.3 (borrado en cascada; plazo de 30 días del aviso) | **2** | — |
 | 11.4 | ¿Respaldo antes del retiro? | Mecanismo definido y ejercitado el 21/10/2026 (supabase/verificacion/respaldo-datos.sql); el respaldo final se hace al retirar | **2** | — |
-| 11.5 | ¿Retiro documentado formalmente? | Acta preparada y sin ejecutar: el retiro ocurre después de la calificación | **N/A** | el retiro mismo, posterior a la calificación |
+| 11.5 | ¿Retiro documentado formalmente? | El retiro aplica y no ha ocurrido: ocurre después de la calificación. El acta de retiro está preparada en docs/retiro.md 11.5, sin ejecutar | **1** | el retiro mismo, posterior a la calificación |
 
 ### 12. Gestión transversal
 
@@ -184,36 +186,38 @@
 | 12.9 | ¿Métricas del proceso? | Tabla de métricas de esta evaluación (sección 3) | **2** | — |
 | 12.10 | ¿Oportunidades de mejora? | Lecciones aprendidas del informe de pruebas (sección 9); desviaciones declaradas | **2** | — |
 | 12.11 | ¿Evaluación periódica del proceso? | Revisiones del 03/10, del 05/10 y esta evaluación final; no hubo evaluación periódica sistemática | **1** | — |
-| 12.12 | ¿Participación de las partes interesadas? | STK-01 aprueba cada entregable; STK-04 no participó en requisitos (2.4) y participa en la validación (pendiente); STK-03 no revisó requisitos | **1** | sesiones con E1 a E3 |
+| 12.12 | ¿Participación de las partes interesadas? | STK-01 aprueba cada entregable; STK-04 no participó en requisitos (2.4) y sí en la validación y en la revisión retroactiva (Parte 0); STK-03 no revisó requisitos | **1** | — |
 
 ## 3. Métricas del proceso (12.9)
 
-Datos tomados el 21/10/2026 de `git` (historia de `origin/dev`) y de la API pública de GitHub.
+Datos tomados el 22/10/2026 de `git` (historia de `origin/dev`) y de la API pública de GitHub.
 
 | Métrica | Valor | Comando o fuente |
 |---|---|---|
-| Periodo con commits | 09/09/2026 a 21/10/2026 | `git log origin/dev --reverse` |
-| Commits (sin fusiones) | 206 | `git rev-list --count --no-merges origin/dev` |
-| Commits por fase (sin fusiones) | Hasta v0.1.0: 35 · v0.1.0→v0.2.0: 41 · v0.2.0→v0.3.0: 18 · v0.3.0→v0.9.0: 26 · v0.9.0→v1.0.0: 79 · v1.0.0→v1.1.0: 4 · después de v1.1.0: 3 | `git rev-list --count --no-merges <etiqueta>..<etiqueta>` |
-| Commits por tipo | feat 67 · docs 50 · test 35 · chore 22 · style 18 · fix 9 · refactor 3 · iniciales 2 | `git log --format=%s` agrupado por prefijo |
-| Pull requests fusionados | 34 (#2 a #55) | API `/pulls?state=closed` |
-| Pull requests con comentario de revisión en línea | 9 de 34 (#35, #38, #39, #45 a #49 y #55) | API `/pulls/{n}/comments` |
-| De la creación a la fusión de un pull request | Mínimo 0.1 min · mediana 0.7 min · máximo 10.7 min; 28 de 34 en menos de 2 min | API, `merged_at − created_at` |
+| Periodo con commits | 09/09/2026 a 22/10/2026 | `git log origin/dev --reverse` |
+| Commits (sin fusiones) | 214 | `git rev-list --count --no-merges origin/dev` |
+| Commits por fase (sin fusiones) | Hasta v0.1.0: 35 · v0.1.0→v0.2.0: 41 · v0.2.0→v0.3.0: 18 · v0.3.0→v0.9.0: 26 · v0.9.0→v1.0.0: 79 · v1.0.0→v1.1.0: 4 · después de v1.1.0: 11 | `git rev-list --count --no-merges <etiqueta>..<etiqueta>` |
+| Commits por tipo | feat 67 · docs 56 · test 36 · chore 22 · style 18 · fix 10 · refactor 3 · iniciales 2 | `git log --format=%s` agrupado por prefijo |
+| Pull requests fusionados | 36 (#2 a #57) | API `/pulls?state=closed` |
+| Pull requests con comentario de revisión en línea | 11 de 36 (#35, #38, #39, #45 a #49 y #55 a #57) | API `/pulls/{n}/comments` |
+| De la creación a la fusión de un pull request | Mínimo 0.1 min · mediana 0.7 min · máximo 37.7 min; 29 de 36 en menos de 2 min | API, `merged_at − created_at` |
 | Solicitudes de cambio | 10 (SC-01 a SC-10), todas autorizadas y cerradas | Issues con etiqueta `cambio` |
 | Defectos con incidencia, por fase | Fase 0: 1 (#3) · Fases 1-3: 0 · Fase 4 y rediseño: 1 (#27) · Fase 5: 3 (#30, #31, #34) + 3 retroactivas (#50, #51, #52) · Fase 6: 1 (#37) · script de CA-08: 1 (#53) · operación del 28/09: 1 (#54) | Issues con etiqueta `defecto` |
 | Defectos corregidos sin incidencia en su momento | 3 (Fase 5), registrados de forma retroactiva el 21/10/2026 (#50 a #52) | Issues |
 | Problemas de integración | 14 (documento maestro 5.3) | documento maestro |
-| Defectos abiertos | 0 | API |
+| Defectos abiertos | 0 | API, 22/10/2026 |
 | Versiones etiquetadas | 7 (v0.1.0, v0.2.0, v0.3.0, v0.9.0, v1.0.0-rc.1, v1.0.0, v1.1.0) | `git tag` |
-| Pruebas automatizadas | 356 unitarias (29 archivos) · 20 de integración + 2 omitidas · 6 de interfaz · 28 de los scripts de validación | Ejecuciones del 05/10 y del 21/10 |
+| Pruebas automatizadas | 356 unitarias (29 archivos) · 20 de integración + 2 omitidas · 6 de interfaz · 28 de los scripts de validación | Ejecuciones del 05/10, del 21/10 y del 22/10 |
 | Cobertura del motor (src/core) | 99.19 % líneas · 98.63 % ramas · 100 % funciones | `pnpm test:cov` (05/10; src sin cambios desde entonces) |
-| Criterios de aceptación | 24 de 26 cumplidos, 1 en parte (CA-23), 1 pendiente (CA-20) | docs/liberacion.md 8.2 |
+| Criterios de aceptación | 24 de 26 cumplidos, 1 en parte (CA-23), 1 con 2 de 3 demostrados y concesión del cliente (CA-20) | docs/liberacion.md 8.2; docs/informe-de-validacion.md |
 | Adelanto sobre el cronograma | Liberación el 04/10, planeada para el 06/11 (H6): unas 4.7 semanas | documento maestro 1.8.3 |
 
 ## 4. Qué cambiaría el resultado
 
 | Acción | Puntos que afecta |
 |---|---|
-| Sesiones, informe de validación y acta de aceptación | 7.2 a 7.6, 12.12 (y 2.4 como evidencia) |
+| Sustituto para E2 (Mac con Safari, P2, grabación completa) | 7.4 |
+| Rubricar las actas de 1.5 y 2.5 en el documento maestro | Evita que 1.5 y 2.5 bajen a 1 con el criterio de 7.6 |
+| Ejecutar el retiro después de la calificación, con su acta | 11.5 |
 | Probar la reversión de 8.6 (por ejemplo, Instant Rollback en Vercel y regreso) | 8.6 y 9.6 |
 | Enviar las revisiones en línea pendientes de los pull requests, si existen | 4.4 |
